@@ -38,5 +38,6 @@ The project involves developing a POS system user interface and an ECommerce web
 
 ### Link name
 **- POS:** http://localhost:3000/pos
+
 **- eCom:** http://localhost:3000/
 
