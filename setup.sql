@@ -1,7 +1,7 @@
 CREATE DATABASE pos;
-\c POS;
+\c pos;
 -- TODO: add item table here
 CREATE TABLE item_category (
 	id SERIAL PRIMARY KEY,
-	name VARCHAR(50),
+	name VARCHAR(50)
 );
