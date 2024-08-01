@@ -3,16 +3,15 @@ const { Pool } = require("pg");
 const env = require("../env.json");
 
 const app = express();
-
 const hostname = "localhost";
 const port = 3000;
 
-app.use(express.json());
-
-let pool = new Pool(env);
+const pool = new Pool(env);
 pool.connect().then(() => {
     console.log("Connected to database");
 });
+
+app.use(express.json());
 
 // TODO: everything
 
