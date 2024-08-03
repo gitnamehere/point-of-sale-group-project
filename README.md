@@ -19,15 +19,19 @@ The project involves developing a POS system user interface and an ECommerce web
 ### Extremely Stretchness Goalmericas
 **- Stripe Integration:** The feature allows the use of credit/debit cards transaction on the POS system and website
 
-### Installation
+## Running the Project
 #### Requirements:
 - Node.js
   
-- PostgreSQL
+- PostgreSQL and psql
 
-### Initialize
-- npm install
+#### Installing Dependencies
+- `npm i`
 
-### Usuage (Both eComs and POS)
+#### Setting up env.json
+Copy `sample-env.json` into a new file `env.json`, and replace `user` and `password` with your postgres username and password 
+
+### Starting the Server
 **Setup server:** `npm run setup`
+
 **Start server:** `npm run start`
