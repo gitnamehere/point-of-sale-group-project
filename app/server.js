@@ -34,16 +34,16 @@ app.post("/api/item/add", (req, res) => {
 
     if (
         !body.hasOwnProperty("category") ||
-        !body.hasOwnProperty("description") ||
         !body.hasOwnProperty("name") ||
+        !body.hasOwnProperty("description") ||
         !body.hasOwnProperty("price")
     ) {
         return res.sendStatus(400);
     }
 
-    const {category, description, name, price} = body;
+    const {category, name, description, price} = body;
 
-    pool.query("INTSERT INTO item_category(category, description, name, price) VALUES($1 $2 $3 $4)", [category, description, name, price]
+    pool.query("INTSERT INTO item_category(category, name, description, price) VALUES($1 $2 $3 $4)", [category, name, description, price]
         .then(result => {
             return res.sendStatus(200);
         })
