@@ -13,6 +13,8 @@ pool.connect().then(() => {
 });
 
 app.use(express.json());
+app.use(express.static("public")) 
+
 
 // TODO: everything
 
@@ -36,20 +38,23 @@ app.post("/api/item/add", (req, res) => {
         !body.hasOwnProperty("category") ||
         !body.hasOwnProperty("name") ||
         !body.hasOwnProperty("description") ||
-        !body.hasOwnProperty("price")
+        !body.hasOwnProperty("price") ||
+        body.name.length > 50 ||
+        body.name.length < 1 
     ) {
         return res.sendStatus(400);
     }
 
     const {category, name, description, price} = body;
 
-    pool.query("INTSERT INTO item_category(category, name, description, price) VALUES($1 $2 $3 $4)", [category, name, description, price]
+    pool.query("INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)", [category, name, description, price])
         .then(result => {
-            return res.sendStatus(200);
+            res.sendStatus(200);
         })
         .catch(error => {
+	        console.log(error);
             return res.sendStatus(500);
-        }))
+        })
 });
 
 app.listen(port, hostname, () => {

@@ -5,9 +5,7 @@
 </head>
 <body>
 
-<h1>Create Your Item<</h1>
-
-<p>Some random text</p>
+<h1>Create Your Item Page</h1>
 
 <h2>Add an item to the database</h2>
 
@@ -17,18 +15,15 @@
 	<div>
 		<label for="category">Category:</label>
 		<select id="category" name="category">
-			<option value="holidays">Holidays</option>
-			<option value="birthdays">Birthdays</option>
-			<option value="professional">Professional</option>
 		</select>
 	</div>
 	<div>
 		<label for="name">Name:</label>
-		<input id="name" type="text" name="name">
+		<input id="name" type="text" name="name", size=40>
 	</div>
 	<div>
 		<label for="description">Desc:</label>
-		<textarea id="description" type="text" name="description" style="width: 300px; height: 100px;">
+		<textarea id="description" type="text" name="description" style="width: 300px; height: 100px;"></textarea>
 	</div>
 	<div>
 		<label for="price">Price:</label>
@@ -36,6 +31,8 @@
 	</div>
 	<button id="submit">Create Item</button>
 </div>
+
+<div id="message"></div>
 
 <script src="create.js"></script>
 
