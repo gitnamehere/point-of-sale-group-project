@@ -43,12 +43,7 @@ submit.addEventListener("click", () => {
         body: JSON.stringify(item),
     })
     .then(response => {
-        if (!response.ok) {
-            message.textContent = "Failure";
-        }
-        else {
-            message.textContent = "Success";
-        }
+        message.textContent = (response.ok ? "Success" : "Failure");
     })
     .catch(error => {
         console.log(error);
