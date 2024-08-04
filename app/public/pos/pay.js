@@ -8,7 +8,7 @@ const changeElement = document.getElementById("change");
 const payButton = documnet.getElementById("pay");
 const message = document.getElementById("message");
 
-fetch("api/item/")
+fetch("/api/items")
     .then(response => {
         return response.json();
     })
