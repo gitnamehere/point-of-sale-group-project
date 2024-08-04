@@ -90,6 +90,28 @@ app.post("/api/item/add", (req, res) => {
         })
 });
 
+app.post("/api/category/add", (req, res) => {
+    const body = req.body;
+
+    if (
+        !body.hasOwnProperty("name") ||
+        body.name.length > 50 ||
+        body.name.length < 1 
+    ) {
+        return res.sendStatus(400);
+    }
+
+    pool.query("INSERT INTO item_category(name) VALUES($1)", [body.name])
+        .then(result => {
+            res.sendStatus(200);
+        })
+        .catch(error => {
+	        console.log(error);
+            return res.sendStatus(500);
+        })
+});
+
+
 app.listen(port, hostname, () => {
     console.log(`http://${hostname}:${port}`);
 });
