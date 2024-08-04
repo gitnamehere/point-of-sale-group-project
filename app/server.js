@@ -1,7 +1,6 @@
 const express = require("express");
 const { Pool } = require("pg");
 const env = require("../env.json");
-const { error } = require("console");
 
 const app = express();
 const hostname = "localhost";

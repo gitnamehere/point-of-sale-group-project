@@ -14,3 +14,11 @@ CREATE TABLE item (
 	price DECIMAL(10,2),
 	CONSTRAINT fk_item_category FOREIGN KEY (category) REFERENCES item_category(id)
 );
+
+CREATE TABLE order_item (
+	id SERIAL PRIMARY KEY,
+	item_id INT NOT NULL,
+	quantity INT NOT NULL,
+	date_ordered DATE NOT NULL,
+	CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES item(id)
+);
