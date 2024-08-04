@@ -23,7 +23,9 @@ The project involves developing a POS system user interface and an ECommerce web
 #### Requirements:
 - Node.js
   
-- PostgreSQL and psql
+- PostgreSQL
+
+- psql (CLI tool for Postgres)
 
 #### Installing Dependencies
 - `npm i`
