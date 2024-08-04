@@ -20,5 +20,5 @@ CREATE TABLE order_item (
 	item_id INT NOT NULL,
 	quantity INT NOT NULL,
 	date_ordered DATE NOT NULL,
-	CONSTRAINT fk_order_item FOREIGN KEY (item_id) REFERENCES item(id)
+	CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES item(id)
 );
