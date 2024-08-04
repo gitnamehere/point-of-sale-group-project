@@ -5,7 +5,7 @@ const taxElement = 0.08; // placeholder - need to hash out specifics for tax cal
 const totalElement = document.getElementById("total");
 const cashInput = document.getElementById("cash");
 const changeElement = document.getElementById("change");
-const payButton = documnet.getElementById("pay");
+const payButton = document.getElementById("pay");
 const message = document.getElementById("message");
 
 fetch("/api/items")
