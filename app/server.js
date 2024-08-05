@@ -22,11 +22,11 @@ app.get("/api/items", (req, res) => {
     if (req.query.hasOwnProperty("category")) {
         return pool.query("SELECT * FROM item WHERE category = $1", [req.query.category])
         .then(result => {
-            res.json(result.rows);
+            return res.json(result.rows);
         })
         .catch(error => {
             console.log(error);
-            res.sendStatus(500);
+            return res.sendStatus(500);
         })
     }
 
@@ -55,11 +55,11 @@ app.get("/api/items/:id", (req, res) => {
 app.get("/api/item/categories", (req, res) => {
     pool.query("SELECT * FROM item_category")
     .then(result => {
-        res.json(result.rows);
+        return res.json(result.rows);
     })
     .catch(error => {
         console.log(error);
-        res.sendStatus(500);
+        return res.sendStatus(500);
     })
 });
 
@@ -82,7 +82,7 @@ app.post("/api/item/add", (req, res) => {
 
     pool.query("INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)", [category, name, description, price])
         .then(result => {
-            res.sendStatus(200);
+            return res.sendStatus(200);
         })
         .catch(error => {
 	        console.log(error);
@@ -106,7 +106,7 @@ app.post("/api/category/add", (req, res) => {
             res.sendStatus(200);
         })
         .catch(error => {
-	        console.log(error);
+		    console.log(error);
             return res.sendStatus(500);
         })
 });
