@@ -1,3 +1,45 @@
 body {
     background-color: #EEE;
+    height: 100%;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    /* height is set to the height of the window minus the header size */
+    height: calc(100vh - 80px);
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 80px;
+}
+
+.section {
+    overflow-y: scroll;
+}
+
+#categories {
+    flex: 2;
+    flex-direction: column;
+}
+
+.category-item {
+    margin-bottom: 8px;
+    border: 1px solid black;
+    border-radius: 8px;
+    height: 40px;
+}
+
+#items {
+    flex: 3;
+    background-color: yellow;
+}
+
+#ticket {
+    flex: 2;
+    background-color: green;
 }
