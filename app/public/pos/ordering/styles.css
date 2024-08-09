@@ -44,7 +44,19 @@ body {
 
 #items {
     flex: 4;
+    display: grid;
+    /* 4 items per row */
+    grid-template-columns: auto auto auto auto;
+    grid-gap: 8px;
+    padding: 8px;
     background-color: yellow;
+}
+
+.item {
+    /* item buttons are at least 128px tall, and can stretch to fill out space on categories with few rows up to 256px */
+    min-height: 128px;
+    max-height: 256px;
+    border: 1px solid black;
 }
 
 #ticket {
