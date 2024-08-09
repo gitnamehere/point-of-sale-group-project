@@ -103,7 +103,7 @@ app.post("/api/category/add", (req, res) => {
 
     pool.query("INSERT INTO item_category(name) VALUES($1)", [body.name])
         .then(result => {
-            res.sendStatus(200);
+            return res.sendStatus(200);
         })
         .catch(error => {
 		    console.log(error);
@@ -111,6 +111,52 @@ app.post("/api/category/add", (req, res) => {
         })
 });
 
+// PUT API endpoint to update exisiting item
+app.put("/api/items/:id", (req, res) => {
+    const body = req.body;
+
+    if (
+        !body.hasOwnProperty("name") ||
+        !body.hasOwnProperty("description") ||
+        !body.hasOwnProperty("price") ||
+        body.name.length > 50 ||
+        body.name.length < 1  
+    ) {
+        return res.sendStatus(400);
+    }
+
+	const { name, description, price } = req.body;
+    const id = req.params.id;
+    
+	pool.query("UPDATE item SET name = $1, description = $2, price = $3 WHERE id = $4", [name, description, price, id])
+	    .then(() => { 
+            return res.sendStatus(200);
+        })
+	    .catch(error => {
+		    console.log(error);
+		    return res.sendStatus(500);
+	    })
+});
+
+// DELETE API endpoint to delete exisiting item
+app.delete("/api/items/:id", (req, res) => {
+    const params = req.params;
+
+    if (!params.hasOwnProperty("id")) {
+        return res.sendStatus(400);
+    }
+
+    const id = params.id;
+    
+	pool.query("DELETE FROM item WHERE id = $1", [id])
+	    .then(() => { 
+            return res.sendStatus(200);
+        })
+	    .catch(error => {
+		    console.log(error);
+		    return res.sendStatus(500);
+	    })
+});
 
 app.listen(port, hostname, () => {
     console.log(`http://${hostname}:${port}`);
