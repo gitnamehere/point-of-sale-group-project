@@ -64,7 +64,7 @@ apply.addEventListener("click", () => {
                 tr.innerHTML = `
                     <td>${item.name}</td>
                     <td>${item.description}</td>
-                    <td>${item.price}</td>
+                    <td>$${item.price}</td>
                 `;
                 tr.addEventListener("click", () => {
                     selectedItemId = item.id;
