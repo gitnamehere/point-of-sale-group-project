@@ -85,7 +85,7 @@ app.post("/api/item/add", (req, res) => {
             return res.sendStatus(200);
         })
         .catch(error => {
-	        console.log(error);
+            console.log(error);
             return res.sendStatus(500);
         })
 });
@@ -106,7 +106,7 @@ app.post("/api/category/add", (req, res) => {
             return res.sendStatus(200);
         })
         .catch(error => {
-		    console.log(error);
+            console.log(error);
             return res.sendStatus(500);
         })
 });
@@ -125,17 +125,17 @@ app.put("/api/items/:id", (req, res) => {
         return res.sendStatus(400);
     }
 
-	const { name, description, price } = req.body;
+    const { name, description, price } = req.body;
     const id = req.params.id;
     
-	pool.query("UPDATE item SET name = $1, description = $2, price = $3 WHERE id = $4", [name, description, price, id])
-	    .then(() => { 
+    pool.query("UPDATE item SET name = $1, description = $2, price = $3 WHERE id = $4", [name, description, price, id])
+        .then(() => { 
             return res.sendStatus(200);
         })
-	    .catch(error => {
-		    console.log(error);
-		    return res.sendStatus(500);
-	    })
+        .catch(error => {
+            console.log(error);
+            return res.sendStatus(500);
+        })
 });
 
 // DELETE API endpoint to delete exisiting item
@@ -148,14 +148,14 @@ app.delete("/api/items/:id", (req, res) => {
 
     const id = params.id;
     
-	pool.query("DELETE FROM item WHERE id = $1", [id])
-	    .then(() => { 
+    pool.query("DELETE FROM item WHERE id = $1", [id])
+        .then(() => { 
             return res.sendStatus(200);
         })
-	    .catch(error => {
-		    console.log(error);
-		    return res.sendStatus(500);
-	    })
+        .catch(error => {
+            console.log(error);
+            return res.sendStatus(500);
+        })
 });
 
 app.listen(port, hostname, () => {

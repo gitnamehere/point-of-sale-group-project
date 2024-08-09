@@ -53,7 +53,7 @@ apply.addEventListener("click", () => {
 
     fetch(`/api/items?category=${category}`)
         .then(response => {
-		    return response.json()
+            return response.json()
         })
         .then(body => {
             message.textContent = "";
@@ -105,8 +105,8 @@ update.addEventListener("click", () => {
         message.textContent = (response.ok ? "Item has been modified" : "Item could not be modified");
     })
     .catch(error => {
-	    console.log(error)
-	});
+        console.log(error)
+    });
 });
 
 // delete the selected item
@@ -127,6 +127,6 @@ del.addEventListener("click", () => {
         message.textContent = (response.ok ? "Item has been deleted" : "Item could not be deleted");
     })
     .catch(error => {
-	    console.log(error)
-	});
+        console.log(error)
+    });
 });
