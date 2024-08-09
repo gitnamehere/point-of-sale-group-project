@@ -57,6 +57,7 @@ apply.addEventListener("click", () => {
         })
         .then(body => {
             message.textContent = "";
+            selectedItemId = null;
             clearTable();
             resetInputs();
             for (let item of body) {
