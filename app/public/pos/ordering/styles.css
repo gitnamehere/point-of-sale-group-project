@@ -1,14 +1,14 @@
 body {
-    background-color: #EEE;
-    height: 100%;
     margin: 0;
+    height: 100%;
+    background-color: #EEE;
 }
 
 .container {
     display: flex;
     flex-direction: row;
-    /* height is set to the height of the window minus the header size */
-    height: calc(100vh - 80px);
+    /* height is set to the height of the window minus the header and bottom row size */
+    height: calc(100vh - 160px);
 }
 
 .header {
@@ -16,6 +16,12 @@ body {
     flex-direction: row;
     align-items: center;
     height: 80px;
+    background-color: red;
+}
+
+.bottom {
+    height: 80px;
+    background-color: orange;
 }
 
 .section {
