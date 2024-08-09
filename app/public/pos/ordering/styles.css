@@ -1,3 +1,7 @@
+* {
+    font-family: sans-serif;
+}
+
 body {
     margin: 0;
     height: 100%;
@@ -15,8 +19,10 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
+    padding: 0 16px;
     height: 80px;
-    background-color: red;
+    background-color: #333;
+    color: #EEE;
 }
 
 .bottom {
@@ -31,6 +37,7 @@ body {
 #categories {
     flex: 2;
     flex-direction: column;
+    padding: 8px;
 }
 
 .category-item {
@@ -38,7 +45,6 @@ body {
     border: 1px solid black;
     padding: 8px;
     height: 40px;
-    font-family: sans-serif;
     font-weight: 700;
 }
 
@@ -48,8 +54,7 @@ body {
     /* 4 items per row */
     grid-template-columns: auto auto auto auto;
     grid-gap: 8px;
-    padding: 8px;
-    background-color: yellow;
+    padding: 8px 0;
 }
 
 .item {

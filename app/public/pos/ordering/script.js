@@ -1,11 +1,18 @@
 console.log("Hello World!");
 
-let categories = document.getElementById("categories");
+const categoryList = document.getElementById("categories");
+const itemGrid = document.getElementById("items");
 
-for (let i = 0; i < 25; i++) {
+let categories = ["Example 1", "Example 2", "Example 3", "Example 4"];
+
+for (let i = 0; i < categories.length; i++) {
     let category = document.createElement("div");
     category.className = "category-item"
-    category.textContent = ("Example Category " + (i + 1));
+    category.textContent = categories[i];
 
-    categories.appendChild(category);
+    category.addEventListener("click", () => {
+        alert(`Clicked on Category: ${i + 1}!`);
+    })
+
+    categoryList.appendChild(category);
 }
