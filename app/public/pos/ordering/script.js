@@ -2,6 +2,9 @@ console.log("Hello World!");
 
 const categoryList = document.getElementById("categories");
 const itemGrid = document.getElementById("items");
+const ticketTable = document.getElementById("ticket-table");
+
+let order = [];
 
 function fetchItemsByCategoryId(id) {
     fetch(`/api/items?category=${id}`)
@@ -16,7 +19,7 @@ function fetchItemsByCategoryId(id) {
                 let item = document.createElement("div");
                 item.textContent = body[i].name;
                 item.className = "item";
-                item.addEventListener("click", () => console.log(`Item Data: ${JSON.stringify(body[i])}`));
+                item.addEventListener("click", () => addItemToOrder(body[i]));
 
                 itemGrid.append(item);
             }
@@ -24,6 +27,25 @@ function fetchItemsByCategoryId(id) {
         .catch(error => console.log(error))
     })
     .catch(error => console.log(error))
+}
+
+function addItemToOrder(item) {
+    let {name, price} = item;
+
+    order.push(item);
+
+    let itemRow = document.createElement("tr");
+    let itemQuantity = document.createElement("td");
+    itemQuantity.textContent = "1";
+    itemRow.append(itemQuantity);
+    let itemName = document.createElement("td");
+    itemName.textContent = name;
+    itemRow.append(itemName);
+    let itemPrice = document.createElement("td");
+    itemPrice.textContent = `$${price}`;
+    itemRow.append(itemPrice);
+
+    ticketTable.append(itemRow);
 }
 
 fetch("/api/item/categories")

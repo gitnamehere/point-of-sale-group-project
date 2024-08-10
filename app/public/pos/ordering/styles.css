@@ -31,6 +31,7 @@ body {
 }
 
 .section {
+    padding: 8px;
     overflow-y: auto;
 }
 
@@ -38,7 +39,6 @@ body {
     flex: 2;
     flex-direction: column;
     border-right: 1px solid black;
-    padding: 8px;
 }
 
 .category-item {
@@ -56,12 +56,11 @@ body {
     /* 4 items per row */
     grid-template-columns: auto auto auto auto;
     grid-gap: 8px;
-    padding: 8px;
 }
 
 .item {
     border: 1px solid black;
-    padding: 8px;;
+    padding: 8px;
     /* item buttons are at least 128px tall (plus 16px padding), 
     and can stretch to fill out space on categories with few rows up to 160px (also add 16px padding) */
     min-height: 128px;
@@ -70,5 +69,14 @@ body {
 
 #ticket {
     flex: 2;
-    background-color: green;
+    border-left: 1px solid black;
+}
+
+table {
+    border: 1px solid black;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid black;
 }
