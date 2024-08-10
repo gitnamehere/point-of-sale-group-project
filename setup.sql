@@ -34,5 +34,6 @@ CREATE TABLE cart_item (
 --wip
 CREATE TABLE orders (
 	id SERIAL PRIMARY KEY,
-	items JSON -- will be changed later to something that can be an array of order_items
+	items JSON, -- will be changed later to something that can be an array of order_items
+	subtotal DECIMAL(10,2) -- for development use only, will be removed later
 )

@@ -163,7 +163,7 @@ app.post("/api/orders/create", (req, res) => {
 
     if (!body.hasOwnProperty("order")) return res.sendStatus(400);
     // TODO: add validation
-    pool.query("INSERT INTO orders (items) VALUES ($1)", [JSON.stringify(body.order)])
+    pool.query("INSERT INTO orders (items, subtotal) VALUES ($1, $2)", [JSON.stringify(body.order), body.subtotal])
     .then(result => {
         res.json(result.rows);
     })

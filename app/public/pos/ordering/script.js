@@ -95,7 +95,10 @@ orderButton.addEventListener("click", () => {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({order})
+        body: JSON.stringify({
+            order,
+            subtotal: subtotal.textContent
+        })
     })
     .then(response => alert("Order added!"))
     .catch(error => console.log(error));
