@@ -23,3 +23,10 @@ CREATE TABLE order_item (
 	date_ordered DATE NOT NULL,
 	CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES item(id)
 );
+
+CREATE TABLE cart_item (
+	id SERIAL PRIMARY KEY,
+	item_id INT NOT NULL,
+	quantity INT NOT NULL,
+	CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES item(id)
+);
