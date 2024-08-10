@@ -111,6 +111,14 @@ app.post("/api/category/add", (req, res) => {
         })
 });
 
+app.post("/api/order/create", (req, res) => {
+    const body = req.body;
+
+    if (!body.hasOwnProperty("order")) return res.sendStatus(400);
+
+    console.log(body.order);
+    res.sendStatus(200);
+});
 
 app.listen(port, hostname, () => {
     console.log(`http://${hostname}:${port}`);
