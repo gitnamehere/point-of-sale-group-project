@@ -32,7 +32,7 @@ app.get("/api/auth/demoKey", (req, res) => {
 })
 
 app.get("/pos/", authentication, (req, res) => {
-    return res.status(200);
+    return res.status(200).json({ message: "Token valid"});
 });
 
 app.listen(port, hostname, () => {
