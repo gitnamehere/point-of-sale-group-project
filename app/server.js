@@ -157,13 +157,31 @@ app.delete("/api/items/:id", (req, res) => {
             return res.sendStatus(500);
         })
 });
-app.post("/api/order/create", (req, res) => {
+
+app.post("/api/orders/create", (req, res) => {
     const body = req.body;
 
     if (!body.hasOwnProperty("order")) return res.sendStatus(400);
+    // TODO: add validation
+    pool.query("INSERT INTO orders (items) VALUES ($1)", [JSON.stringify(body.order)])
+    .then(result => {
+        res.json(result.rows);
+    })
+    .catch(error => {
+        console.log(error);
+        res.sendStatus(500);
+    })
+});
 
-    console.log(body.order);
-    res.sendStatus(200);
+app.get("/api/orders", (req, res) => {
+    pool.query("SELECT * FROM orders")
+    .then(result => {
+        res.json(result.rows);
+    })
+    .catch(error => {
+        console.log(error);
+        res.sendStatus(500);
+    });
 });
 
 app.listen(port, hostname, () => {

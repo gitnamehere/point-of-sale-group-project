@@ -77,7 +77,7 @@ function updateSubtotal() {
 }
 
 orderButton.addEventListener("click", () => {
-    fetch("/api/order/create", {
+    fetch("/api/orders/create", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
