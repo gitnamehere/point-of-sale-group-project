@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS pos;
 CREATE DATABASE pos;
 \c pos;
 
