@@ -67,6 +67,10 @@ body {
     max-height: 160px;
 }
 
+.category-item:hover, .item:hover {
+    background-color: #BBB;
+}
+
 #ticket {
     flex: 2;
     border-left: 1px solid black;
