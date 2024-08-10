@@ -65,8 +65,8 @@ function addItemToOrder(item) {
 }
 
 function updateSubtotal() {
+    const items = ticketTable.children;
     let subtotalCount = 0;
-    let items = ticketTable.children;
 
     for (let i = 0; i < items.length; i++) {
         // have to use parseFloat or it will concatenate strings
@@ -77,6 +77,8 @@ function updateSubtotal() {
 }
 
 orderButton.addEventListener("click", () => {
+    if (Object.keys(order).length === 0) return;
+
     fetch("/api/orders/create", {
         method: "POST",
         headers: {
@@ -84,7 +86,7 @@ orderButton.addEventListener("click", () => {
         },
         body: JSON.stringify({order})
     })
-    .then(response => console.log(response))
+    .then(response => alert("Order added!"))
     .catch(error => console.log(error));
 });
 
