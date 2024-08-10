@@ -2,7 +2,8 @@ const categoryList = document.getElementById("categories");
 const itemGrid = document.getElementById("items");
 const ticketTable = document.getElementById("ticket-table");
 
-let order = [];
+// map of items in order stored as item id: quantity
+let order = {};
 
 function fetchItemsByCategoryId(id) {
     fetch(`/api/items?category=${id}`)
@@ -28,22 +29,31 @@ function fetchItemsByCategoryId(id) {
 }
 
 function addItemToOrder(item) {
-    const {name, price} = item;
+    const {id, name, price} = item;
 
-    order.push(item);
+    if (order.hasOwnProperty(id)) {
+        const itemRow = document.getElementById(id);
+        
+        // increment quantity (conveniently, it's stored as an int)
+        itemRow.children[0].textContent++;
+    } else {
+        // add item to order with a quantity of 1
+        order[id] = 1;
 
-    const itemRow = document.createElement("tr");
-    const itemQuantity = document.createElement("td");
-    itemQuantity.textContent = "1";
-    itemRow.append(itemQuantity);
-    const itemName = document.createElement("td");
-    itemName.textContent = name;
-    itemRow.append(itemName);
-    const itemPrice = document.createElement("td");
-    itemPrice.textContent = `$${price}`;
-    itemRow.append(itemPrice);
+        const itemRow = document.createElement("tr");
+        itemRow.id = id; // set the table row's id to the item id for later use
+        const itemQuantity = document.createElement("td");
+        itemQuantity.textContent = "1";
+        itemRow.append(itemQuantity);
+        const itemName = document.createElement("td");
+        itemName.textContent = name;
+        itemRow.append(itemName);
+        const itemPrice = document.createElement("td");
+        itemPrice.textContent = `$${price}`;
+        itemRow.append(itemPrice);
 
-    ticketTable.append(itemRow);
+        ticketTable.append(itemRow);
+    }
 }
 
 fetch("/api/item/categories")
@@ -61,7 +71,7 @@ fetch("/api/item/categories")
         }
 
         // populate item grid with first category
-        fetchItemsByCategoryId(body[0].id);
+        body.length > 0 ? fetchItemsByCategoryId(body[0].id) : alert("No Categories Found");
     })
     .catch(error => console.log(error))
 })
