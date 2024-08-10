@@ -1,5 +1,3 @@
-console.log("Hello World!");
-
 const categoryList = document.getElementById("categories");
 const itemGrid = document.getElementById("items");
 const ticketTable = document.getElementById("ticket-table");
@@ -16,7 +14,7 @@ function fetchItemsByCategoryId(id) {
             itemGrid.textContent = (body.length > 0) ? "" : "No Items Found";
 
             for (let i = 0; i < body.length; i++) {
-                let item = document.createElement("div");
+                const item = document.createElement("div");
                 item.textContent = body[i].name;
                 item.className = "item";
                 item.addEventListener("click", () => addItemToOrder(body[i]));
@@ -30,18 +28,18 @@ function fetchItemsByCategoryId(id) {
 }
 
 function addItemToOrder(item) {
-    let {name, price} = item;
+    const {name, price} = item;
 
     order.push(item);
 
-    let itemRow = document.createElement("tr");
-    let itemQuantity = document.createElement("td");
+    const itemRow = document.createElement("tr");
+    const itemQuantity = document.createElement("td");
     itemQuantity.textContent = "1";
     itemRow.append(itemQuantity);
-    let itemName = document.createElement("td");
+    const itemName = document.createElement("td");
     itemName.textContent = name;
     itemRow.append(itemName);
-    let itemPrice = document.createElement("td");
+    const itemPrice = document.createElement("td");
     itemPrice.textContent = `$${price}`;
     itemRow.append(itemPrice);
 
@@ -54,7 +52,7 @@ fetch("/api/item/categories")
 
     response.json().then(body => {
         for (let i = 0; i < body.length; i++) {
-            let category = document.createElement("div");
+            const category = document.createElement("div");
             category.className = "category-item";
             category.textContent = body[i].name;
             category.addEventListener("click", () => fetchItemsByCategoryId(body[i].id));
