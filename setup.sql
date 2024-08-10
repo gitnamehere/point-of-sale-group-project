@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS pos;
 CREATE DATABASE pos;
 \c pos;
 
@@ -29,3 +30,10 @@ CREATE TABLE cart_item (
 	quantity INT NOT NULL,
 	CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES item(id)
 );
+
+--wip
+CREATE TABLE orders (
+	id SERIAL PRIMARY KEY,
+	items JSON, -- will be changed later to something that can be an array of order_items
+	subtotal DECIMAL(10,2) -- for development use only, will be removed later
+)

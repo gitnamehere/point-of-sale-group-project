@@ -158,6 +158,32 @@ app.delete("/api/items/:id", (req, res) => {
         })
 });
 
+app.post("/api/orders/create", (req, res) => {
+    const body = req.body;
+
+    if (!body.hasOwnProperty("order")) return res.sendStatus(400);
+    // TODO: add validation
+    pool.query("INSERT INTO orders (items, subtotal) VALUES ($1, $2)", [JSON.stringify(body.order), body.subtotal])
+    .then(result => {
+        res.json(result.rows);
+    })
+    .catch(error => {
+        console.log(error);
+        res.sendStatus(500);
+    })
+});
+
+app.get("/api/orders", (req, res) => {
+    pool.query("SELECT * FROM orders")
+    .then(result => {
+        res.json(result.rows);
+    })
+    .catch(error => {
+        console.log(error);
+        res.sendStatus(500);
+    });
+});
+
 app.listen(port, hostname, () => {
     console.log(`http://${hostname}:${port}`);
 });

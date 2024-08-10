@@ -36,4 +36,6 @@ Copy `sample-env.json` into a new file `env.json`, and replace `user` and `passw
 ### Starting the Server
 **Setup server:** `npm run setup`
 
+**Alternatively, run setup server with demo items:** `npm run setup-demo`
+
 **Start server:** `npm run start`

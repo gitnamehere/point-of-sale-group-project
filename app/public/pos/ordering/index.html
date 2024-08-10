@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Ordering</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class="header">
+            <h1 id="category">POS (WIP)</h1>
+        </div>
+        <div class="container">
+            <div id="categories" class="section"></div>
+            <div id="items" class="section"></div>
+            <div id="ticket" class="section">
+                <h2>Order</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%">Qty.</th>
+                            <th style="width: 70%">Item</th>
+                            <th style="width: 25%">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ticket-table"></tbody>
+                </table>
+                <div>
+                    <span>Subtotal: $</span><span id="subtotal">0.00</span>
+                </div>
+                <button id="order">Place Order</button>
+            </div>
+        </div>
+        <div class="bottom">
+            This section will be reserved for later use
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>

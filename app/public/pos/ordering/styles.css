@@ -1,0 +1,87 @@
+* {
+    font-family: sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+    background-color: #EEE;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    /* height is set to the height of the window minus the header and bottom row size */
+    height: calc(100vh - 160px);
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 16px;
+    height: 80px;
+    background-color: #111;
+    color: #EEE;
+}
+
+.bottom {
+    height: 80px;
+    background-color: #555;
+}
+
+.section {
+    padding: 8px;
+    overflow-y: auto;
+}
+
+#categories {
+    flex: 2;
+    flex-direction: column;
+    border-right: 1px solid black;
+}
+
+.category-item {
+    display: flex;
+    margin-bottom: 8px;
+    border: 1px solid black;
+    padding: 8px;
+    height: 40px;
+    font-weight: 700;
+}
+
+#items {
+    flex: 4;
+    display: grid;
+    /* 4 items per row */
+    grid-template-columns: auto auto auto auto;
+    grid-gap: 8px;
+}
+
+.item {
+    border: 1px solid black;
+    padding: 8px;
+    /* item buttons are at least 128px tall (plus 16px padding), 
+    and can stretch to fill out space on categories with few rows up to 160px (also add 16px padding) */
+    min-height: 128px;
+    max-height: 160px;
+}
+
+.category-item:hover, .item:hover {
+    background-color: #BBB;
+}
+
+#ticket {
+    flex: 2;
+    border-left: 1px solid black;
+}
+
+table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid black;
+}
