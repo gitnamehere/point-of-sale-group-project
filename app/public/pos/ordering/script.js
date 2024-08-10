@@ -18,7 +18,15 @@ function fetchItemsByCategoryId(id) {
 
             for (let i = 0; i < body.length; i++) {
                 const item = document.createElement("div");
-                item.textContent = body[i].name;
+    
+                const itemName = document.createElement("p");
+                itemName.textContent = body[i].name;
+                item.append(itemName);
+
+                const itemPrice = document.createElement("p");
+                itemPrice.textContent = `$${body[i].price}`;
+                item.append(itemPrice);
+
                 item.className = "item";
                 item.addEventListener("click", () => addItemToOrder(body[i]));
 
@@ -47,17 +55,20 @@ function addItemToOrder(item) {
 
         const itemRow = document.createElement("tr");
         itemRow.id = id; // set the table row's id to the item id for later use
+
         const itemQuantity = document.createElement("td");
         itemQuantity.textContent = "1";
         itemRow.append(itemQuantity);
+
         const itemName = document.createElement("td");
         itemName.textContent = name;
         itemRow.append(itemName);
+
         const itemPrice = document.createElement("td");
         itemPrice.style.textAlign = "right";
         itemPrice.textContent = price;
-        itemRow.append(itemPrice);
 
+        itemRow.append(itemPrice);
         ticketTable.append(itemRow);
     }
 
