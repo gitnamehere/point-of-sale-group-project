@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Modify</title>
+	<!-- Will make a dedicated css file another time instead of integrating it as an HTML tag-->
+    <style>
+        table, tr, th, td {
+            border: 1.5px solid;
+            border-collapse: collapse;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Modify an existing item</h1>
+
+<div id="message"></div>
+
+<div class="modify">
+	<div>
+		<label for="category">Category:</label>
+		<select id="category" name="category">
+		</select>
+		<button id="submit">Apply</button>
+	</div>
+</div>
+
+<h2>Items in Selected Category</h2>
+<table id="items">
+	<tr>
+		<th>Name</th>
+		<th>Description</th>
+		<th>Price</th>
+	</tr>
+</table>
+
+<h2>Edit Item</h2>
+<div id="edit">
+	<div>
+		<label for="Name">Name:</label>
+		<input id="name" type="text" name="name" maxlength="50">
+	</div>
+	<div>
+		<label for="description">Desc:</label>
+		<textarea id="description" name="description" style="width: 300px; height: 100px;"></textarea>
+	</div>
+	<div>
+		<label for="price">Price:</label>
+		<input id="price" type="number" name="price" step="0.01">
+	</div>
+	<button id="update">Update Item</button>
+	<button id="delete">Delete Item</button>
+</div>
+
+<div id="message"></div>
+
+<script src="modify.js"></script>
+
+</body>
+</html>

@@ -1,10 +1,12 @@
-// rename the file to use across other files
-
+// item information
 const catInput = document.getElementById("category");
 const nameInput = document.getElementById("name");
 const descInput = document.getElementById("description");
 const priceInput = document.getElementById("price");
-const submit = document.getElementById("submit");
+
+// buttons
+const create = document.getElementById("submit");
+
 const message = document.getElementById("message");
 
 // display item_category
@@ -27,7 +29,7 @@ fetch("/api/item/categories")
 
 
 // handle item data sent to the backend
-submit.addEventListener("click", () => {
+create.addEventListener("click", () => {
     const item = {
         category: catInput.value,
         name: nameInput.value,
@@ -49,3 +51,4 @@ submit.addEventListener("click", () => {
         console.log(error);
     })
 });
+ 
