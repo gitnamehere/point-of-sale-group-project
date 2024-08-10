@@ -2,6 +2,7 @@ const categoryList = document.getElementById("categories");
 const itemGrid = document.getElementById("items");
 const ticketTable = document.getElementById("ticket-table");
 const subtotal = document.getElementById("subtotal");
+const orderButton = document.getElementById("order");
 
 // map of items in order stored as item id: quantity
 let order = {};
@@ -24,9 +25,9 @@ function fetchItemsByCategoryId(id) {
                 itemGrid.append(item);
             }
         })
-        .catch(error => console.log(error))
+        .catch(error => console.log(error));
     })
-    .catch(error => console.log(error))
+    .catch(error => console.log(error));
 }
 
 function addItemToOrder(item) {
@@ -75,6 +76,18 @@ function updateSubtotal() {
     subtotal.textContent = subtotalCount.toFixed(2);
 }
 
+orderButton.addEventListener("click", () => {
+    fetch("/api/order/create", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({order})
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error));
+});
+
 fetch("/api/item/categories")
 .then(response => {
     if (response.status > 200) return alert("Error while fetching items");
@@ -92,6 +105,6 @@ fetch("/api/item/categories")
         // populate item grid with first category
         body.length > 0 ? fetchItemsByCategoryId(body[0].id) : alert("No Categories Found");
     })
-    .catch(error => console.log(error))
+    .catch(error => console.log(error));
 })
-.catch(error => console.log(error))
+.catch(error => console.log(error));
