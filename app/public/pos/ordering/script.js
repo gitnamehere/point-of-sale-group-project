@@ -1,6 +1,7 @@
 const categoryList = document.getElementById("categories");
 const itemGrid = document.getElementById("items");
 const ticketTable = document.getElementById("ticket-table");
+const subtotal = document.getElementById("subtotal");
 
 // map of items in order stored as item id: quantity
 let order = {};
@@ -58,6 +59,20 @@ function addItemToOrder(item) {
 
         ticketTable.append(itemRow);
     }
+
+    updateSubtotal();
+}
+
+function updateSubtotal() {
+    let subtotalCount = 0;
+    let items = ticketTable.children;
+
+    for (let i = 0; i < items.length; i++) {
+        // have to use parseFloat or it will concatenate strings
+        subtotalCount = subtotalCount + parseFloat(items[i].children[2].textContent);
+    }
+
+    subtotal.textContent = subtotalCount.toFixed(2);
 }
 
 fetch("/api/item/categories")
