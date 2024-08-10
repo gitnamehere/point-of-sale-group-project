@@ -34,8 +34,11 @@ function addItemToOrder(item) {
     if (order.hasOwnProperty(id)) {
         const itemRow = document.getElementById(id);
         
-        // increment quantity (conveniently, it's stored as an int)
+        // increment quantity (conveniently, it works even though it's a string)
         itemRow.children[0].textContent++;
+        // also multiple price by quantity
+        // if anyone wants to know what toFixed() does https://www.w3schools.com/jsref/jsref_tofixed.asp
+        itemRow.children[2].textContent = (price * itemRow.children[0].textContent).toFixed(2);
     } else {
         // add item to order with a quantity of 1
         order[id] = 1;
@@ -49,7 +52,8 @@ function addItemToOrder(item) {
         itemName.textContent = name;
         itemRow.append(itemName);
         const itemPrice = document.createElement("td");
-        itemPrice.textContent = `$${price}`;
+        itemPrice.style.textAlign = "right";
+        itemPrice.textContent = price;
         itemRow.append(itemPrice);
 
         ticketTable.append(itemRow);
