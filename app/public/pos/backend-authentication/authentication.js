@@ -27,6 +27,7 @@ const generateRandomToken = () => {
 app.get("/api/auth/demoKey", (req, res) => {
     const token = generateRandomToken();
     tokenStorage[token] = true;
+    console.log(tokenStorage); //keep track of tokens created
     return res.json({ token });
 })
 
