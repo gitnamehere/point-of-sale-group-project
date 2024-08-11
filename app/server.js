@@ -184,6 +184,22 @@ app.get("/api/orders", (req, res) => {
     });
 });
 
+app.get("/api/orders/:id", (req, res) => {
+    const id = req.params.id;
+    if (!id) {
+        return res.sendStatus(400);
+    }
+
+    pool.query("SELECT * FROM orders WHERE id = $1", [id])
+    .then(result => {
+        res.json(result.rows[0]);
+    })
+    .catch(error => {
+        console.log(error);
+        res.sendStatus(500);
+    });
+});
+
 app.listen(port, hostname, () => {
     console.log(`http://${hostname}:${port}`);
 });
