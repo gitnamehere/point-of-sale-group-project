@@ -40,7 +40,7 @@ app.get("/api/auth/demoKey", (req, res) => {
     return res.json({ token });
 })
 
-app.get("/pos/", authentication, (req, res) => {
+app.get("/api/auth/test", authentication, (req, res) => {
     return res.status(200).json({ message: "Token valid"});
 });
 
