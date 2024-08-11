@@ -17,11 +17,6 @@ buttons.forEach(button => {
         let value = button.getAttribute("data-value");
         let currentValue = parseFloat(cashInput.value.replace('$', ''));
 
-        // handling for '.'
-        if (value === '.' && currentValue.includes('.')) {
-            return;
-        }
-
         // handling for leading '0'
         if (currentValue === '0' && value !== '.') {
             currentValue = '';
