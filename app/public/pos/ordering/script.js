@@ -9,46 +9,53 @@ let order = {};
 
 function fetchItemsByCategoryId(id) {
     fetch(`/api/items?category=${id}`)
-    .then(response => {
-        if (response.status > 200) return alert("Error while selecting category");
+        .then((response) => {
+            if (response.status > 200)
+                return alert("Error while selecting category");
 
-        return response.json()
-        .then(body => {
-            itemGrid.textContent = (body.length > 0) ? "" : "No Items Found";
+            return response
+                .json()
+                .then((body) => {
+                    itemGrid.textContent =
+                        body.length > 0 ? "" : "No Items Found";
 
-            for (let i = 0; i < body.length; i++) {
-                const item = document.createElement("div");
-    
-                const itemName = document.createElement("p");
-                itemName.textContent = body[i].name;
-                item.append(itemName);
+                    for (let i = 0; i < body.length; i++) {
+                        const item = document.createElement("div");
 
-                const itemPrice = document.createElement("p");
-                itemPrice.textContent = `$${body[i].price}`;
-                item.append(itemPrice);
+                        const itemName = document.createElement("p");
+                        itemName.textContent = body[i].name;
+                        item.append(itemName);
 
-                item.className = "item";
-                item.addEventListener("click", () => addItemToOrder(body[i]));
+                        const itemPrice = document.createElement("p");
+                        itemPrice.textContent = `$${body[i].price}`;
+                        item.append(itemPrice);
 
-                itemGrid.append(item);
-            }
+                        item.className = "item";
+                        item.addEventListener("click", () =>
+                            addItemToOrder(body[i]),
+                        );
+
+                        itemGrid.append(item);
+                    }
+                })
+                .catch((error) => console.log(error));
         })
-        .catch(error => console.log(error));
-    })
-    .catch(error => console.log(error));
+        .catch((error) => console.log(error));
 }
 
 function addItemToOrder(item) {
-    const {id, name, price} = item;
+    const { id, name, price } = item;
 
     if (order.hasOwnProperty(id)) {
         const itemRow = document.getElementById(id);
-        
+
         // increment quantity (conveniently, it works even though it's a string)
         itemRow.children[0].textContent++;
         // also multiple price by quantity
         // if anyone wants to know what toFixed() does https://www.w3schools.com/jsref/jsref_tofixed.asp
-        itemRow.children[2].textContent = (price * itemRow.children[0].textContent).toFixed(2);
+        itemRow.children[2].textContent = (
+            price * itemRow.children[0].textContent
+        ).toFixed(2);
     } else {
         // add item to order with a quantity of 1
         order[id] = 1;
@@ -81,7 +88,8 @@ function updateSubtotal() {
 
     for (let i = 0; i < items.length; i++) {
         // have to use parseFloat or it will concatenate strings
-        subtotalCount = subtotalCount + parseFloat(items[i].children[2].textContent);
+        subtotalCount =
+            subtotalCount + parseFloat(items[i].children[2].textContent);
     }
 
     subtotal.textContent = subtotalCount.toFixed(2);
@@ -97,30 +105,36 @@ orderButton.addEventListener("click", () => {
         },
         body: JSON.stringify({
             order,
-            subtotal: subtotal.textContent
-        })
+            subtotal: subtotal.textContent,
+        }),
     })
-    .then(response => alert("Order added!"))
-    .catch(error => console.log(error));
+        .then((response) => alert("Order added!"))
+        .catch((error) => console.log(error));
 });
 
 fetch("/api/item/categories")
-.then(response => {
-    if (response.status > 200) return alert("Error while fetching items");
+    .then((response) => {
+        if (response.status > 200) return alert("Error while fetching items");
 
-    response.json().then(body => {
-        for (let i = 0; i < body.length; i++) {
-            const category = document.createElement("div");
-            category.className = "category-item";
-            category.textContent = body[i].name;
-            category.addEventListener("click", () => fetchItemsByCategoryId(body[i].id));
+        response
+            .json()
+            .then((body) => {
+                for (let i = 0; i < body.length; i++) {
+                    const category = document.createElement("div");
+                    category.className = "category-item";
+                    category.textContent = body[i].name;
+                    category.addEventListener("click", () =>
+                        fetchItemsByCategoryId(body[i].id),
+                    );
 
-            categoryList.appendChild(category);
-        }
+                    categoryList.appendChild(category);
+                }
 
-        // populate item grid with first category
-        body.length > 0 ? fetchItemsByCategoryId(body[0].id) : alert("No Categories Found");
+                // populate item grid with first category
+                body.length > 0
+                    ? fetchItemsByCategoryId(body[0].id)
+                    : alert("No Categories Found");
+            })
+            .catch((error) => console.log(error));
     })
-    .catch(error => console.log(error));
-})
-.catch(error => console.log(error));
+    .catch((error) => console.log(error));

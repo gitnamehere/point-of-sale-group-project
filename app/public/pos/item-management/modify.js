@@ -17,7 +17,7 @@ function clearTable() {
     const table = document.getElementById("items");
     let length = table.children.length;
     if (length > 1) {
-        for (let i = length-1; i > 0; i--) {
+        for (let i = length - 1; i > 0; i--) {
             table.children[i].remove();
         }
     }
@@ -31,10 +31,10 @@ function resetInputs() {
 
 // display item_category
 fetch("/api/item/categories")
-    .then(response => {
+    .then((response) => {
         return response.json();
     })
-    .then(body => {
+    .then((body) => {
         for (let i = 0; i < body.length; i++) {
             const category = body[i];
             const option = document.createElement("option");
@@ -43,7 +43,7 @@ fetch("/api/item/categories")
             catInput.append(option);
         }
     })
-    .catch(error => {
+    .catch((error) => {
         console.log(error);
     });
 
@@ -52,10 +52,10 @@ apply.addEventListener("click", () => {
     const category = catInput.value;
 
     fetch(`/api/items?category=${category}`)
-        .then(response => {
-            return response.json()
+        .then((response) => {
+            return response.json();
         })
-        .then(body => {
+        .then((body) => {
             message.textContent = "";
             selectedItemId = null;
             clearTable();
@@ -76,8 +76,8 @@ apply.addEventListener("click", () => {
                 itemsTable.append(tr);
             }
         })
-        .catch(error => {
-            console.log(error)
+        .catch((error) => {
+            console.log(error);
         });
 });
 
@@ -91,22 +91,24 @@ update.addEventListener("click", () => {
     const item = {
         name: nameInput.value,
         description: descInput.value,
-        price: priceInput.value
+        price: priceInput.value,
     };
 
     fetch(`/api/items/${selectedItemId}`, {
         method: "PUT",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify(item)
+        body: JSON.stringify(item),
     })
-    .then(response => {
-        message.textContent = (response.ok ? "Item has been modified" : "Item could not be modified");
-    })
-    .catch(error => {
-        console.log(error)
-    });
+        .then((response) => {
+            message.textContent = response.ok
+                ? "Item has been modified"
+                : "Item could not be modified";
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 });
 
 // delete the selected item
@@ -119,14 +121,16 @@ del.addEventListener("click", () => {
     fetch(`/api/items/${selectedItemId}`, {
         method: "DELETE",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify()
+        body: JSON.stringify(),
     })
-    .then(response => {
-        message.textContent = (response.ok ? "Item has been deleted" : "Item could not be deleted");
-    })
-    .catch(error => {
-        console.log(error)
-    });
+        .then((response) => {
+            message.textContent = response.ok
+                ? "Item has been deleted"
+                : "Item could not be deleted";
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 });
