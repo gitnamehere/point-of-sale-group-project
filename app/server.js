@@ -143,6 +143,38 @@ app.post("/api/category/add", (req, res) => {
         });
 });
 
+app.post("/api/accounts/add", (req, res) => {
+    const body = req.body;
+
+    if (
+        !body.hasOwnProperty("username") ||
+        !body.hasOwnProperty("firstname") ||
+        !body.hasOwnProperty("lastname") ||
+        !body.hasOwnProperty("accountType") ||
+        body.username.length > 50 ||
+        body.username.length < 1 ||
+        body.firstname.length > 50 ||
+        body.firstname.length < 1 ||
+        body.lastname.length > 50 ||
+        body.lastname.length < 1 ||
+        body.accountType.length > 50 ||
+        body.accountType.length < 1 
+    ) {
+        return res.sendStatus(400);
+    }
+
+    const { username, firstname, lastname, accountType } = req.body;
+
+    pool.query("INSERT INTO account(username, first_name, last_name, account_type) VALUES($1, $2, $3, $4)", 
+        [username, firstname, lastname, accountType])
+        .then((result) => {
+            return res.sendStatus(200);
+        }).catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
+})
+
 // PUT API endpoint to update exisiting item
 app.put("/api/items/:id", (req, res) => {
     const body = req.body;
