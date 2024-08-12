@@ -1,7 +1,7 @@
 {
-	"user": "ADD USER HERE",
-	"host": "localhost",
-	"database": "pos",
-	"password": "ADD PASSWORD HERE",
-	"port": 5432
+    "user": "ADD USER HERE",
+    "host": "localhost",
+    "database": "pos",
+    "password": "ADD PASSWORD HERE",
+    "port": 5432
 }

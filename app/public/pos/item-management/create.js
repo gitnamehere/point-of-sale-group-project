@@ -11,10 +11,10 @@ const message = document.getElementById("message");
 
 // display item_category
 fetch("/api/item/categories")
-    .then(response => {
+    .then((response) => {
         return response.json();
     })
-    .then(body => {
+    .then((body) => {
         for (let i = 0; i < body.length; i++) {
             const category = body[i];
             const option = document.createElement("option");
@@ -23,10 +23,9 @@ fetch("/api/item/categories")
             catInput.append(option);
         }
     })
-    .catch(error => {
+    .catch((error) => {
         console.log(error);
     });
-
 
 // handle item data sent to the backend
 create.addEventListener("click", () => {
@@ -34,7 +33,7 @@ create.addEventListener("click", () => {
         category: catInput.value,
         name: nameInput.value,
         description: descInput.value,
-        price: priceInput.value
+        price: priceInput.value,
     };
 
     fetch("/api/item/add", {
@@ -44,11 +43,10 @@ create.addEventListener("click", () => {
         },
         body: JSON.stringify(item),
     })
-    .then(response => {
-        message.textContent = (response.ok ? "Success" : "Failure");
-    })
-    .catch(error => {
-        console.log(error);
-    })
+        .then((response) => {
+            message.textContent = response.ok ? "Success" : "Failure";
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 });
- 

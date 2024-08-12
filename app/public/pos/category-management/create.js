@@ -15,9 +15,7 @@ submit.addEventListener("click", () => {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(category),
-    })
-    .then(response => {
+    }).then((response) => {
         message.textContent = response.ok ? "Success" : "Failure";
     });
-    
 });

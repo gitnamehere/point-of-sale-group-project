@@ -6,16 +6,16 @@ In addition to the standard coding style for this class above, here are some gui
 
 ## Additional helpful guidelines
 
-* use `const` when the variable is a constant or won't be reassigned
-* Keep code indentation consistent, at 4 spaces (what we've agreed on)
-* Use guard clauses to avoid nested if statements
-  * You can also have the if statement be a one-liner like this:
+-   use `const` when the variable is a constant or won't be reassigned
+-   Keep code indentation consistent, at 4 spaces (what we've agreed on)
+-   Use guard clauses to avoid nested if statements
+    -   You can also have the if statement be a one-liner like this:
 
 ```
 if (!condition) return value;
 ```
 
-* Use ternary operators for simple if/else statements to slim down code
+-   Use ternary operators for simple if/else statements to slim down code
 
 Ex: Instead of:
 
@@ -29,14 +29,14 @@ if (variable === value) {
 
 We can write:
 
-
 ```
 variable === value ? doTrue() : doFalse();
 ```
 
-* Try to use object destructuring when getting data from objects where applicable
+-   Try to use object destructuring when getting data from objects where applicable
 
 Ex:
+
 ```
 const item = {
     name: "orange",
