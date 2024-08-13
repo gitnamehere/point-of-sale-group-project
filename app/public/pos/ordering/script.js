@@ -75,6 +75,18 @@ function addItemToOrder(item) {
         itemPrice.style.textAlign = "right";
         itemPrice.textContent = price;
 
+        itemRow.addEventListener("click", () => {
+            const selectedItem =
+                document.getElementsByClassName("item-selected");
+
+            if (selectedItem.length > 0) {
+                selectedItem[0].classList.remove("item-selected");
+                // TODO: add future code to unselect the item
+            }
+
+            itemRow.classList.add("item-selected");
+            // TODO: add future code here to do stuff with the selected item
+        });
         itemRow.append(itemPrice);
         ticketTable.append(itemRow);
     }
