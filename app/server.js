@@ -47,7 +47,7 @@ app.get("/api/auth/test", authentication, (req, res) => {
 app.get("/api/items", (req, res) => {
     if (req.query.hasOwnProperty("category")) {
         return pool
-            .query("SELECT * FROM item WHERE category = $1", [
+            .query("SELECT * FROM item WHERE category = $1 ORDER BY id ASC", [
                 req.query.category,
             ])
             .then((result) => {
@@ -59,7 +59,7 @@ app.get("/api/items", (req, res) => {
             });
     }
 
-    pool.query("SELECT * FROM item")
+    pool.query("SELECT * FROM item ORDER BY id ASC")
         .then((result) => {
             res.json(result.rows);
         })
