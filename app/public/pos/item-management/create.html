@@ -3,13 +3,24 @@
     <head>
         <meta charset="utf-8" />
         <title>Create</title>
+        <link rel="stylesheet" href="create.css">
     </head>
     <body>
-        <h1>Create Your Item Page</h1>
-
-        <h2>Add an item to the database</h2>
-
-        <p>Provide information about the item below:</p>
+        <div class="general">
+            <h1>General Information</h1>
+            <label for="name">Product Name:</label>
+            <div>
+                <input id="name" type="text" name="name" maxlength="50" />
+            </div>
+            <label for="description">Description:</label>
+            <div>
+                <textarea
+                    id="description"
+                    name="description"
+                    style="width: 300px; height: 100px"
+                ></textarea>
+            </div>
+        </div>
 
         <div class="create">
             <div>
