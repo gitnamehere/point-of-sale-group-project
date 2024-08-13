@@ -23,7 +23,7 @@ input, textarea {
 	margin-bottom: 20px;
 	font-size: 15px;
 	padding: 15px;
-	max-width: 85%;
+	width: 87%;
 	border-radius: 10px;
 	border-style: none;
 	background-color: rgb(237, 237, 237);
@@ -31,6 +31,7 @@ input, textarea {
 
 textarea {
 	resize: none;
+	padding-bottom: 100px;
 }
 
 .general {
