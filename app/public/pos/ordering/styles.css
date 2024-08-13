@@ -54,7 +54,7 @@ body {
     flex: 4;
     display: grid;
     /* 4 items per row */
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: repeat(4, 1fr);
     grid-gap: 8px;
 }
 
@@ -77,8 +77,18 @@ body {
     border-left: 1px solid black;
 }
 
-table {
+.ticket-body {
     border: 1px solid black;
+}
+
+.ticket-title {
+    margin: 0;
+    border: 1px solid black;
+    padding: 8px 4px 4px;
+    background-color: #EEA;
+}
+
+table {
     border-collapse: collapse;
     width: 100%;
 }
