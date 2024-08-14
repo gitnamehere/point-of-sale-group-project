@@ -109,15 +109,20 @@ function updateSubtotal() {
             subtotalCount + parseFloat(items[i].children[2].textContent);
     }
 
-    subtotal.textContent = subtotalCount.toFixed(2);
+    updateTotals(subtotalCount);
+}
+
+function updateTotals(price) {
+    subtotal.textContent = price.toFixed(2);
     // also update total since we aren't handling taxes yet
-    total.textContent = subtotalCount.toFixed(2);
+    total.textContent = price.toFixed(2);
 }
 
 clearOrderButton.addEventListener("click", () => {
     ticketTable.textContent = "";
     order = {};
     selectedItem = {};
+    updateTotals(0);
 });
 
 orderButton.addEventListener("click", () => {
