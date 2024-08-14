@@ -3,6 +3,7 @@ const itemGrid = document.getElementById("items");
 const ticketTable = document.getElementById("ticket-table");
 const subtotal = document.getElementById("subtotal");
 const total = document.getElementById("total");
+const deleteItemButton = document.getElementById("deleteItem");
 const clearOrderButton = document.getElementById("clear");
 const orderButton = document.getElementById("order");
 
@@ -46,7 +47,7 @@ function fetchItemsByCategoryId(id) {
         .catch((error) => console.log(error));
 }
 
-function selectItem(itemRow, itemInfo) {
+function selectItem(itemRow, id) {
     const currentSelectedItem =
         document.getElementsByClassName("item-selected");
 
@@ -54,8 +55,9 @@ function selectItem(itemRow, itemInfo) {
         currentSelectedItem[0].classList.remove("item-selected");
 
     itemRow.classList.add("item-selected");
-    selectedItem = itemInfo;
-    console.log(selectedItem);
+    selectedItem.id = id;
+    selectedItem.node = itemRow;
+    deleteItemButton.disabled = false;
     // TODO: add future code here to do stuff with the selected item
 }
 
@@ -91,15 +93,15 @@ function addItemToOrder(item) {
         itemPrice.style.textAlign = "right";
         itemPrice.textContent = price;
 
-        itemRow.addEventListener("click", () => selectItem(itemRow, item));
+        itemRow.addEventListener("click", () => selectItem(itemRow, id));
         itemRow.append(itemPrice);
         ticketTable.append(itemRow);
     }
 
-    updateSubtotal();
+    updateTotals();
 }
 
-function updateSubtotal() {
+function updateTotals() {
     const items = ticketTable.children;
     let subtotalCount = 0;
 
@@ -109,20 +111,29 @@ function updateSubtotal() {
             subtotalCount + parseFloat(items[i].children[2].textContent);
     }
 
-    updateTotals(subtotalCount);
+    subtotal.textContent = subtotalCount.toFixed(2);
+    // also update total since we aren't handling taxes yet
+    total.textContent = subtotalCount.toFixed(2);
 }
 
-function updateTotals(price) {
-    subtotal.textContent = price.toFixed(2);
-    // also update total since we aren't handling taxes yet
-    total.textContent = price.toFixed(2);
-}
+deleteItemButton.addEventListener("click", () => {
+    if (selectedItem.hasOwnProperty("id")) {
+        selectedItem.node.remove();
+        // https://www.w3schools.com/howto/howto_js_remove_property_object.asp
+        delete order[selectedItem.id];
+        selectedItem = {};
+        updateTotals();
+    }
+
+    deleteItemButton.disabled = true;
+});
 
 clearOrderButton.addEventListener("click", () => {
     ticketTable.textContent = "";
     order = {};
     selectedItem = {};
-    updateTotals(0);
+    deleteItemButton.disabled = true;
+    updateTotals();
 });
 
 orderButton.addEventListener("click", () => {
