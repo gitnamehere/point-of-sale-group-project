@@ -89,7 +89,7 @@ tr:hover {
     margin: 0;
     border: 1px solid black;
     padding: 8px 4px 4px;
-    background-color: #EEA;
+    background-color: #eea;
 }
 
 .ticket-footer {
@@ -116,12 +116,12 @@ tr:hover {
 }
 
 #delete-item {
-    background-color: #C00;
+    background-color: #c00;
 }
 
 #delete-item:disabled {
     background-color: #400;
-    color: #AAA;
+    color: #aaa;
 }
 
 /* https://developer.mozilla.org/en-US/docs/Web/CSS/:not */
@@ -130,15 +130,15 @@ tr:hover {
 }
 
 #clear {
-    background-color: #E80;
+    background-color: #e80;
 }
 
 #clear:hover {
-    background-color: #A60;
+    background-color: #a60;
 }
 
 #order {
-    background-color: #00C;
+    background-color: #00c;
 }
 
 #order:hover {
@@ -146,7 +146,7 @@ tr:hover {
 }
 
 .item-selected {
-    background-color: #DDD;
+    background-color: #ddd;
     font-weight: 700;
 }
 
