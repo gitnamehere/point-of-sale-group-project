@@ -9,6 +9,16 @@ pool.connect().then(() => {
     console.log("Connected to database");
 });
 
+// standard pool.query so we don't need to write pool.query().then().catch() for every single database query
+function query(query, values, res) {
+    pool.query(query, values)
+        .then((result) => res.json(result.rows))
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
+}
+
 // TODO: everything
 const tokenStorage = {};
 const authentication = (req, res, next) => {
@@ -39,50 +49,23 @@ router.get("/auth/test", authentication, (req, res) => {
 // request header to return all the items in the database, with optional query to return based on category
 router.get("/items", (req, res) => {
     if (req.query.hasOwnProperty("category")) {
-        return pool
-            .query("SELECT * FROM item WHERE category = $1 ORDER BY id ASC", [
-                req.query.category,
-            ])
-            .then((result) => {
-                return res.json(result.rows);
-            })
-            .catch((error) => {
-                console.log(error);
-                return res.sendStatus(500);
-            });
+        return query(
+            "SELECT * FROM item WHERE category = $1 ORDER BY id ASC",
+            [req.query.category],
+            res,
+        );
     }
 
-    pool.query("SELECT * FROM item ORDER BY id ASC")
-        .then((result) => {
-            res.json(result.rows);
-        })
-        .catch((error) => {
-            console.log(error);
-            res.sendStatus(500);
-        });
+    query("SELECT * FROM item ORDER BY id ASC", [], res);
 });
 
 router.get("/items/:id", (req, res) => {
-    pool.query("SELECT * FROM item WHERE id = $1", [req.params.id])
-        .then((result) => {
-            res.json(result.rows);
-        })
-        .catch((error) => {
-            console.log(error);
-            res.sendStatus(500);
-        });
+    query("SELECT * FROM item WHERE id = $1", [req.params.id], res);
 });
 
 // demo api endpoint that may be removed later
 router.get("/item/categories", (req, res) => {
-    pool.query("SELECT * FROM item_category")
-        .then((result) => {
-            return res.json(result.rows);
-        })
-        .catch((error) => {
-            console.log(error);
-            return res.sendStatus(500);
-        });
+    query("SELECT * FROM item_category", [], res);
 });
 
 // POST API endpoint to add items in the database
@@ -102,17 +85,11 @@ router.post("/item/add", (req, res) => {
 
     const { category, name, description, price } = body;
 
-    pool.query(
+    query(
         "INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)",
         [category, name, description, price],
-    )
-        .then((result) => {
-            return res.sendStatus(200);
-        })
-        .catch((error) => {
-            console.log(error);
-            return res.sendStatus(500);
-        });
+        res,
+    );
 });
 
 router.post("/category/add", (req, res) => {
@@ -126,14 +103,7 @@ router.post("/category/add", (req, res) => {
         return res.sendStatus(400);
     }
 
-    pool.query("INSERT INTO item_category(name) VALUES($1)", [body.name])
-        .then((result) => {
-            return res.sendStatus(200);
-        })
-        .catch((error) => {
-            console.log(error);
-            return res.sendStatus(500);
-        });
+    query("INSERT INTO item_category(name) VALUES($1)", [body.name], res);
 });
 
 router.post("/accounts/add", (req, res) => {
@@ -158,17 +128,11 @@ router.post("/accounts/add", (req, res) => {
 
     const { username, firstname, lastname, accountType } = req.body;
 
-    pool.query(
+    query(
         "INSERT INTO account(username, first_name, last_name, account_type) VALUES($1, $2, $3, $4)",
         [username, firstname, lastname, accountType],
-    )
-        .then((result) => {
-            return res.sendStatus(200);
-        })
-        .catch((error) => {
-            console.log(error);
-            return res.sendStatus(500);
-        });
+        res,
+    );
 });
 
 // PUT API endpoint to update exisiting item
@@ -188,17 +152,11 @@ router.put("/items/:id", (req, res) => {
     const { name, description, price } = req.body;
     const id = req.params.id;
 
-    pool.query(
+    query(
         "UPDATE item SET name = $1, description = $2, price = $3 WHERE id = $4",
         [name, description, price, id],
-    )
-        .then(() => {
-            return res.sendStatus(200);
-        })
-        .catch((error) => {
-            console.log(error);
-            return res.sendStatus(500);
-        });
+        res,
+    );
 });
 
 // DELETE API endpoint to delete exisiting item
@@ -211,14 +169,7 @@ router.delete("/items/:id", (req, res) => {
 
     const id = params.id;
 
-    pool.query("DELETE FROM item WHERE id = $1", [id])
-        .then(() => {
-            return res.sendStatus(200);
-        })
-        .catch((error) => {
-            console.log(error);
-            return res.sendStatus(500);
-        });
+    query("DELETE FROM item WHERE id = $1", [id], res);
 });
 
 router.post("/orders/create", (req, res) => {
@@ -226,28 +177,15 @@ router.post("/orders/create", (req, res) => {
 
     if (!body.hasOwnProperty("order")) return res.sendStatus(400);
     // TODO: add validation
-    pool.query("INSERT INTO orders (items, subtotal) VALUES ($1, $2)", [
-        JSON.stringify(body.order),
-        body.subtotal,
-    ])
-        .then((result) => {
-            res.json(result.rows);
-        })
-        .catch((error) => {
-            console.log(error);
-            res.sendStatus(500);
-        });
+    query(
+        "INSERT INTO orders (items, subtotal) VALUES ($1, $2)",
+        [JSON.stringify(body.order), body.subtotal],
+        res,
+    );
 });
 
 router.get("/orders", (req, res) => {
-    pool.query("SELECT * FROM orders")
-        .then((result) => {
-            res.json(result.rows);
-        })
-        .catch((error) => {
-            console.log(error);
-            res.sendStatus(500);
-        });
+    query("SELECT * FROM orders", [], res);
 });
 
 router.get("/orders/:id", (req, res) => {
@@ -256,14 +194,7 @@ router.get("/orders/:id", (req, res) => {
         return res.sendStatus(400);
     }
 
-    pool.query("SELECT * FROM orders WHERE id = $1", [id])
-        .then((result) => {
-            res.json(result.rows[0]);
-        })
-        .catch((error) => {
-            console.log(error);
-            res.sendStatus(500);
-        });
+    query("SELECT * FROM orders WHERE id = $1", [id], res);
 });
 
 module.exports = router;
