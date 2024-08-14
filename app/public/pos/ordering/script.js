@@ -3,7 +3,7 @@ const itemGrid = document.getElementById("items");
 const ticketTable = document.getElementById("ticket-table");
 const subtotal = document.getElementById("subtotal");
 const total = document.getElementById("total");
-const deleteItemButton = document.getElementById("deleteItem");
+const deleteItemButton = document.getElementById("delete-item");
 const clearOrderButton = document.getElementById("clear");
 const orderButton = document.getElementById("order");
 

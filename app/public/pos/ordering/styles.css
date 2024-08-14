@@ -68,7 +68,8 @@ body {
 }
 
 .category-item:hover,
-.item:hover {
+.item:hover,
+tr:hover {
     background-color: #bbb;
 }
 
@@ -109,7 +110,39 @@ body {
 
 .button {
     flex: 1;
+    border: none;
     height: 40px;
+    color: white;
+}
+
+#delete-item {
+    background-color: #C00;
+}
+
+#delete-item:disabled {
+    background-color: #400;
+    color: #AAA;
+}
+
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/:not */
+#delete-item:hover:not(:disabled) {
+    background-color: #800;
+}
+
+#clear {
+    background-color: #E80;
+}
+
+#clear:hover {
+    background-color: #A60;
+}
+
+#order {
+    background-color: #00C;
+}
+
+#order:hover {
+    background-color: #008;
 }
 
 .item-selected {
