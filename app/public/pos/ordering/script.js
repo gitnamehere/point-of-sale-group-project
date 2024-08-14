@@ -2,10 +2,13 @@ const categoryList = document.getElementById("categories");
 const itemGrid = document.getElementById("items");
 const ticketTable = document.getElementById("ticket-table");
 const subtotal = document.getElementById("subtotal");
+const total = document.getElementById("total");
+const clearOrderButton = document.getElementById("clear");
 const orderButton = document.getElementById("order");
 
 // map of items in order stored as item id: quantity
 let order = {};
+let selectedItem = {};
 
 function fetchItemsByCategoryId(id) {
     fetch(`/api/items?category=${id}`)
@@ -43,6 +46,19 @@ function fetchItemsByCategoryId(id) {
         .catch((error) => console.log(error));
 }
 
+function selectItem(itemRow, itemInfo) {
+    const currentSelectedItem =
+        document.getElementsByClassName("item-selected");
+
+    if (currentSelectedItem.length > 0)
+        currentSelectedItem[0].classList.remove("item-selected");
+
+    itemRow.classList.add("item-selected");
+    selectedItem = itemInfo;
+    console.log(selectedItem);
+    // TODO: add future code here to do stuff with the selected item
+}
+
 function addItemToOrder(item) {
     const { id, name, price } = item;
 
@@ -75,18 +91,7 @@ function addItemToOrder(item) {
         itemPrice.style.textAlign = "right";
         itemPrice.textContent = price;
 
-        itemRow.addEventListener("click", () => {
-            const selectedItem =
-                document.getElementsByClassName("item-selected");
-
-            if (selectedItem.length > 0) {
-                selectedItem[0].classList.remove("item-selected");
-                // TODO: add future code to unselect the item
-            }
-
-            itemRow.classList.add("item-selected");
-            // TODO: add future code here to do stuff with the selected item
-        });
+        itemRow.addEventListener("click", () => selectItem(itemRow, item));
         itemRow.append(itemPrice);
         ticketTable.append(itemRow);
     }
@@ -105,7 +110,15 @@ function updateSubtotal() {
     }
 
     subtotal.textContent = subtotalCount.toFixed(2);
+    // also update total since we aren't handling taxes yet
+    total.textContent = subtotalCount.toFixed(2);
 }
+
+clearOrderButton.addEventListener("click", () => {
+    ticketTable.textContent = "";
+    order = {};
+    selectedItem = {};
+});
 
 orderButton.addEventListener("click", () => {
     if (Object.keys(order).length === 0) return;

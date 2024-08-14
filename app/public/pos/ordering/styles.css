@@ -103,7 +103,13 @@ body {
 }
 
 .buttons {
+    display: flex;
     margin-top: 8px;
+}
+
+.button {
+    flex: 1;
+    height: 40px;
 }
 
 .item-selected {
