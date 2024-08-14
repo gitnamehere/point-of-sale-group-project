@@ -6,43 +6,54 @@
         <link rel="stylesheet" href="create.css">
     </head>
     <body>
-        <div class="general">
-            <h1>General Information</h1>
-            <label for="name">Product Name:</label>
-            <div>
-                <input id="name" type="text" name="name" maxlength="50" />
+        <div class="first">
+            <div class="general">
+                <h1>General Information</h1>
+                <label for="name">Product Name:</label>
+                <div>
+                    <input id="name" type="text" name="name" maxlength="50" />
+                </div>
+                <label for="description">Description:</label>
+                <div>
+                    <textarea
+                        id="description"
+                        name="description"
+                    ></textarea>
+                </div>
             </div>
-            <label for="description">Description:</label>
-            <div>
-                <textarea
-                    id="description"
-                    name="description"
-                ></textarea>
+            <div class="gallery">
+                <h1>Photo Product</h1>
+                <label for="image">Insert Image:</label>
+                <div class="michael">Michael</div>
             </div>
         </div>
 
-        <div class="create">
-            <div>
-                <label for="category">Category:</label>
-                <select id="category" name="category"></select>
+        <div class="second">
+            <div class="price">
+                <h1>Pricing</h1>
+                <label for="price">Base Price:</label>
+                <div>
+                    <input id="price" type="number" name="price" step="0.01" min="0.00" placeholder="0.00"/>
+                </div>
+                <label for="discount">Discount Percentage:</label>
+                <div>
+                    <input id="discount" type="number" name="discount" min="0" placeholder="0"/>
+                </div>
             </div>
-            <div>
-                <label for="name">Name:</label>
-                <input id="name" type="text" name="name" maxlength="50" />
+            <div class="stack">
+                <div class="category">
+                    <h1>Category</h1>
+                    <label for="category">Product Category:</label>
+                    <div>
+                        <select id="category" name="category"></select>
+                    </div>
+                </div>
+                <div class="create">
+                    <button id="submit">Create Item</button>
+                </div>
             </div>
-            <div>
-                <label for="description">Desc:</label>
-                <textarea
-                    id="description"
-                    name="description"
-                ></textarea>
-            </div>
-            <div>
-                <label for="price">Price:</label>
-                <input id="price" type="number" name="price" step="0.01" />
-            </div>
-            <button id="submit">Create Item</button>
         </div>
+
 
         <div id="message"></div>
 
