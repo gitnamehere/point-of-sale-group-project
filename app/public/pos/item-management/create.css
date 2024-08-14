@@ -17,7 +17,7 @@ label {
 	font-weight: bold;
 }
 
-input, textarea {
+input, textarea, select {
 	margin: 10px;
 	margin-left: 30px;
 	margin-bottom: 20px;
@@ -29,14 +29,55 @@ input, textarea {
 	background-color: rgb(237, 237, 237);
 }
 
+select {
+	width: 91%;
+}
+
 textarea {
 	resize: none;
 	padding-bottom: 100px;
 }
 
-.general {
+button {
+	border-radius: 10px;
+	border-style: none;
+	margin: 10px;
+	padding: 15px;
+	width: 100%;
+	font-size: 17px;
+	font-family: sans-serif;
+	font-weight: bold;
+	background-color: white;
+}
+
+.first, .second {
+	display: flex;
+}
+
+.general, .gallery, .price, .category {
 	background-color: rgb(255, 255, 255);
-	max-width: 55%;
 	border-radius: 10px;
 	margin: 10px;
+}
+
+.general, .price {
+	flex: 1;
+	max-width: 52%;
+}
+
+.gallery, .stack {
+	flex: 2;
+	max-width: 45%;
+}
+
+.category {
+	height: 55%;
+	width: 100%;	
+}
+
+.michael {
+	background-color: rgb(237, 237, 237);
+	margin: 10px 30px;
+	padding: 115px;
+	border-radius: 10px;
 }
