@@ -1,3 +1,5 @@
+// need to implement image adding and discount percentage
+
 // item information
 const catInput = document.getElementById("category");
 const nameInput = document.getElementById("name");
