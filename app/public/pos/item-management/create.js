@@ -9,8 +9,6 @@ const priceInput = document.getElementById("price");
 // buttons
 const create = document.getElementById("submit");
 
-const message = document.getElementById("message");
-
 // display item_category
 fetch("/api/item/categories")
     .then((response) => {
@@ -46,7 +44,7 @@ create.addEventListener("click", () => {
         body: JSON.stringify(item),
     })
         .then((response) => {
-            message.textContent = response.ok ? "Success" : "Failure";
+            response.ok ? alert("Success") : alert("Failure");
         })
         .catch((error) => {
             console.log(error);
