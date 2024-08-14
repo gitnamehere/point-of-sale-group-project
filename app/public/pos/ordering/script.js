@@ -51,6 +51,7 @@ function addItemToOrder(item) {
 
         // increment quantity (conveniently, it works even though it's a string)
         itemRow.children[0].textContent++;
+        order[id] = parseInt(itemRow.children[0].textContent);
         // also multiple price by quantity
         // if anyone wants to know what toFixed() does https://www.w3schools.com/jsref/jsref_tofixed.asp
         itemRow.children[2].textContent = (
