@@ -36,4 +36,12 @@ CREATE TABLE orders (
 	id SERIAL PRIMARY KEY,
 	items JSON, -- will be changed later to something that can be an array of order_items
 	subtotal DECIMAL(10,2) -- for development use only, will be removed later
+);
+
+CREATE TABLE account (
+	id SERIAL PRIMARY KEY,
+	username TEXT NOT NULL,
+	first_name TEXT NOT NULL,
+	last_name TEXT NOT NULL,
+	account_type TEXT NOT NULL
 )
