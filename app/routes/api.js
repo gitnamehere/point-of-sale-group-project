@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+const apiRouter = express.Router();
 const { Pool } = require("pg");
 const env = require("../../env.json");
 const crypto = require("crypto");
@@ -35,19 +35,19 @@ const generateRandomToken = () => {
     return crypto.randomBytes(32).toString("hex");
 };
 
-router.get("/auth/demoKey", (req, res) => {
+apiRouter.get("/auth/demoKey", (req, res) => {
     const token = generateRandomToken();
     tokenStorage[token] = true;
     console.log(tokenStorage); //keep track of tokens created
     return res.json({ token });
 });
 
-router.get("/auth/test", authentication, (req, res) => {
+apiRouter.get("/auth/test", authentication, (req, res) => {
     return res.status(200).json({ message: "Token valid" });
 });
 
 // request header to return all the items in the database, with optional query to return based on category
-router.get("/items", (req, res) => {
+apiRouter.get("/items", (req, res) => {
     if (req.query.hasOwnProperty("category")) {
         return query(
             "SELECT * FROM item WHERE category = $1 ORDER BY id ASC",
@@ -59,17 +59,17 @@ router.get("/items", (req, res) => {
     query("SELECT * FROM item ORDER BY id ASC", [], res);
 });
 
-router.get("/items/:id", (req, res) => {
+apiRouter.get("/items/:id", (req, res) => {
     query("SELECT * FROM item WHERE id = $1", [req.params.id], res);
 });
 
 // demo api endpoint that may be removed later
-router.get("/item/categories", (req, res) => {
+apiRouter.get("/item/categories", (req, res) => {
     query("SELECT * FROM item_category", [], res);
 });
 
 // POST API endpoint to add items in the database
-router.post("/item/add", (req, res) => {
+apiRouter.post("/item/add", (req, res) => {
     const body = req.body;
 
     if (
@@ -92,7 +92,7 @@ router.post("/item/add", (req, res) => {
     );
 });
 
-router.post("/category/add", (req, res) => {
+apiRouter.post("/category/add", (req, res) => {
     const body = req.body;
 
     if (
@@ -106,7 +106,7 @@ router.post("/category/add", (req, res) => {
     query("INSERT INTO item_category(name) VALUES($1)", [body.name], res);
 });
 
-router.post("/accounts/add", (req, res) => {
+apiRouter.post("/accounts/add", (req, res) => {
     const body = req.body;
 
     if (
@@ -136,7 +136,7 @@ router.post("/accounts/add", (req, res) => {
 });
 
 // PUT API endpoint to update exisiting item
-router.put("/items/:id", (req, res) => {
+apiRouter.put("/items/:id", (req, res) => {
     const body = req.body;
 
     if (
@@ -160,7 +160,7 @@ router.put("/items/:id", (req, res) => {
 });
 
 // DELETE API endpoint to delete exisiting item
-router.delete("/items/:id", (req, res) => {
+apiRouter.delete("/items/:id", (req, res) => {
     const params = req.params;
 
     if (!params.hasOwnProperty("id")) {
@@ -172,7 +172,7 @@ router.delete("/items/:id", (req, res) => {
     query("DELETE FROM item WHERE id = $1", [id], res);
 });
 
-router.post("/orders/create", (req, res) => {
+apiRouter.post("/orders/create", (req, res) => {
     const body = req.body;
 
     if (!body.hasOwnProperty("order")) return res.sendStatus(400);
@@ -184,11 +184,11 @@ router.post("/orders/create", (req, res) => {
     );
 });
 
-router.get("/orders", (req, res) => {
+apiRouter.get("/orders", (req, res) => {
     query("SELECT * FROM orders", [], res);
 });
 
-router.get("/orders/:id", (req, res) => {
+apiRouter.get("/orders/:id", (req, res) => {
     const id = req.params.id;
     if (!id) {
         return res.sendStatus(400);
@@ -197,4 +197,4 @@ router.get("/orders/:id", (req, res) => {
     query("SELECT * FROM orders WHERE id = $1", [id], res);
 });
 
-module.exports = router;
+module.exports = { apiRouter };
