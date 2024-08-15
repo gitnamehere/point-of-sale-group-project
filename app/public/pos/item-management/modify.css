@@ -1,0 +1,9 @@
+body {
+	background-color: rgb(237, 237, 237);
+}
+
+table, tr, th, td {
+	border: 1.5px solid;
+	border-collapse: collapse;
+	padding: 10px;
+}
