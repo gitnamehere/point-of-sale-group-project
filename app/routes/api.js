@@ -10,9 +10,13 @@ pool.connect().then(() => {
 });
 
 // standard pool.query so we don't need to write pool.query().then().catch() for every single database query
-function query(query, values, res) {
+function query(query, values, res, sendStatus = false) {
     pool.query(query, values)
-        .then((result) => res.json(result.rows))
+        .then((result) => {
+            if (sendStatus) return res.sendStatus(200);
+
+            return res.json(result.rows);
+        })
         .catch((error) => {
             console.log(error);
             return res.sendStatus(500);
@@ -89,6 +93,7 @@ apiRouter.post("/item/add", (req, res) => {
         "INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)",
         [category, name, description, price],
         res,
+        true,
     );
 });
 
@@ -103,7 +108,7 @@ apiRouter.post("/category/add", (req, res) => {
         return res.sendStatus(400);
     }
 
-    query("INSERT INTO item_category(name) VALUES($1)", [body.name], res);
+    query("INSERT INTO item_category(name) VALUES($1)", [body.name], res, true);
 });
 
 apiRouter.post("/accounts/add", (req, res) => {
@@ -132,6 +137,7 @@ apiRouter.post("/accounts/add", (req, res) => {
         "INSERT INTO account(username, first_name, last_name, account_type) VALUES($1, $2, $3, $4)",
         [username, firstname, lastname, accountType],
         res,
+        true,
     );
 });
 
@@ -156,6 +162,7 @@ apiRouter.put("/items/:id", (req, res) => {
         "UPDATE item SET name = $1, description = $2, price = $3 WHERE id = $4",
         [name, description, price, id],
         res,
+        true,
     );
 });
 
@@ -181,6 +188,7 @@ apiRouter.post("/orders/create", (req, res) => {
         "INSERT INTO orders (items, subtotal) VALUES ($1, $2)",
         [JSON.stringify(body.order), body.subtotal],
         res,
+        true,
     );
 });
 
