@@ -1,6 +1,6 @@
 // item information
 const catInput = document.getElementById("category");
-const itemsTable = document.getElementById("items");
+const itemTable = document.querySelector('.second');
 const nameInput = document.getElementById("name");
 const descInput = document.getElementById("description");
 const priceInput = document.getElementById("price");
@@ -56,24 +56,22 @@ apply.addEventListener("click", () => {
             return response.json();
         })
         .then((body) => {
-            message.textContent = "";
-            selectedItemId = null;
-            clearTable();
+            itemTable.innerHTML = '';
             resetInputs();
+            
             for (let item of body) {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${item.name}</td>
-                    <td>${item.description}</td>
-                    <td>$${item.price}</td>
-                `;
-                tr.addEventListener("click", () => {
+                const itemDiv = document.createElement("div");
+                itemDiv.classList.add("item");
+                itemDiv.textContent = item.name;
+                
+                itemDiv.addEventListener("click", () => {
                     selectedItemId = item.id;
                     nameInput.value = item.name;
                     descInput.value = item.description;
                     priceInput.value = item.price;
                 });
-                itemsTable.append(tr);
+                
+                itemTable.append(itemDiv);
             }
         })
         .catch((error) => {
@@ -102,9 +100,7 @@ update.addEventListener("click", () => {
         body: JSON.stringify(item),
     })
         .then((response) => {
-            message.textContent = response.ok
-                ? "Item has been modified"
-                : "Item could not be modified";
+            response.ok ? alert("Item has been modified") : alert("Item could not be modified");
         })
         .catch((error) => {
             console.log(error);
