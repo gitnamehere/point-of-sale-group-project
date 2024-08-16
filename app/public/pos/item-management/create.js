@@ -1,3 +1,5 @@
+// need to implement image adding and discount percentage
+
 // item information
 const catInput = document.getElementById("category");
 const nameInput = document.getElementById("name");
@@ -6,8 +8,6 @@ const priceInput = document.getElementById("price");
 
 // buttons
 const create = document.getElementById("submit");
-
-const message = document.getElementById("message");
 
 // display item_category
 fetch("/api/item/categories")
@@ -44,7 +44,7 @@ create.addEventListener("click", () => {
         body: JSON.stringify(item),
     })
         .then((response) => {
-            message.textContent = response.ok ? "Success" : "Failure";
+            response.ok ? alert("Success") : alert("Failure");
         })
         .catch((error) => {
             console.log(error);
