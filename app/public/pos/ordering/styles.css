@@ -53,8 +53,8 @@ body {
 #items {
     flex: 4;
     display: grid;
-    /* 4 items per row */
-    grid-template-columns: auto auto auto auto;
+    /* repeat(4, 1fr) = 1fr 1fr 1fr 1fr, so 4 (equal width) items per row */
+    grid-template-columns: repeat(4, 1fr);
     grid-gap: 8px;
 }
 
@@ -68,17 +68,89 @@ body {
 }
 
 .category-item:hover,
-.item:hover {
+.item:hover,
+tr:hover {
     background-color: #bbb;
 }
 
 #ticket {
     flex: 2;
+    display: flex;
+    flex-direction: column;
     border-left: 1px solid black;
 }
 
-table {
+.ticket-body {
     border: 1px solid black;
+    overflow-y: auto;
+}
+
+.ticket-title {
+    margin: 0;
+    border: 1px solid black;
+    padding: 8px 4px 4px;
+    background-color: #eea;
+}
+
+.ticket-footer {
+    margin-bottom: auto;
+    border: 2px solid black;
+    border-top: unset;
+}
+
+.footer-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttons {
+    display: flex;
+    margin-top: 8px;
+}
+
+.button {
+    flex: 1;
+    border: none;
+    height: 40px;
+    color: white;
+}
+
+#delete-item {
+    background-color: #c00;
+}
+
+#delete-item:disabled {
+    background-color: #400;
+    color: #aaa;
+}
+
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/:not */
+#delete-item:hover:not(:disabled) {
+    background-color: #800;
+}
+
+#clear {
+    background-color: #e80;
+}
+
+#clear:hover {
+    background-color: #a60;
+}
+
+#order {
+    background-color: #00c;
+}
+
+#order:hover {
+    background-color: #008;
+}
+
+.item-selected {
+    background-color: #ddd;
+    font-weight: 700;
+}
+
+table {
     border-collapse: collapse;
     width: 100%;
 }
@@ -86,4 +158,10 @@ table {
 th,
 td {
     border: 1px solid black;
+}
+
+td {
+    box-sizing: border-box;
+    height: 40px;
+    padding: 4px;
 }

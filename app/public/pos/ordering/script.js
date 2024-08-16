@@ -2,10 +2,14 @@ const categoryList = document.getElementById("categories");
 const itemGrid = document.getElementById("items");
 const ticketTable = document.getElementById("ticket-table");
 const subtotal = document.getElementById("subtotal");
+const total = document.getElementById("total");
+const deleteItemButton = document.getElementById("delete-item");
+const clearOrderButton = document.getElementById("clear");
 const orderButton = document.getElementById("order");
 
 // map of items in order stored as item id: quantity
 let order = {};
+let selectedItem = {};
 
 function fetchItemsByCategoryId(id) {
     fetch(`/api/items?category=${id}`)
@@ -43,6 +47,20 @@ function fetchItemsByCategoryId(id) {
         .catch((error) => console.log(error));
 }
 
+function selectItem(itemRow, id) {
+    const currentSelectedItem =
+        document.getElementsByClassName("item-selected");
+
+    if (currentSelectedItem.length > 0)
+        currentSelectedItem[0].classList.remove("item-selected");
+
+    itemRow.classList.add("item-selected");
+    selectedItem.id = id;
+    selectedItem.node = itemRow;
+    deleteItemButton.disabled = false;
+    // TODO: add future code here to do stuff with the selected item
+}
+
 function addItemToOrder(item) {
     const { id, name, price } = item;
 
@@ -76,14 +94,15 @@ function addItemToOrder(item) {
         itemPrice.style.textAlign = "right";
         itemPrice.textContent = price;
 
+        itemRow.addEventListener("click", () => selectItem(itemRow, id));
         itemRow.append(itemPrice);
         ticketTable.append(itemRow);
     }
 
-    updateSubtotal();
+    updateTotals();
 }
 
-function updateSubtotal() {
+function updateTotals() {
     const items = ticketTable.children;
     let subtotalCount = 0;
 
@@ -94,7 +113,29 @@ function updateSubtotal() {
     }
 
     subtotal.textContent = subtotalCount.toFixed(2);
+    // also update total since we aren't handling taxes yet
+    total.textContent = subtotalCount.toFixed(2);
 }
+
+deleteItemButton.addEventListener("click", () => {
+    if (selectedItem.hasOwnProperty("id")) {
+        selectedItem.node.remove();
+        // https://www.w3schools.com/howto/howto_js_remove_property_object.asp
+        delete order[selectedItem.id];
+        selectedItem = {};
+        updateTotals();
+    }
+
+    deleteItemButton.disabled = true;
+});
+
+clearOrderButton.addEventListener("click", () => {
+    ticketTable.textContent = "";
+    order = {};
+    selectedItem = {};
+    deleteItemButton.disabled = true;
+    updateTotals();
+});
 
 orderButton.addEventListener("click", () => {
     if (Object.keys(order).length === 0) return;
