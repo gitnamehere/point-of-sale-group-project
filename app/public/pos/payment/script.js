@@ -43,8 +43,8 @@ fetch(`/api/orders/${orderId}`, {
     })
     .then((data) => {
         // subtotal calculation
-        const subtotal = parseFloat(data.subtotal);
-        subtotalElement.textContent = "$" + " " + data.subtotal;
+        const subtotal = parseFloat(data[0].subtotal);
+        subtotalElement.textContent = "$" + " " + data[0].subtotal;
 
         // total calculation
         const total = (subtotal - discount) * (1 + tax);
