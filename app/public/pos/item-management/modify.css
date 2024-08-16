@@ -2,8 +2,73 @@ body {
 	background-color: rgb(237, 237, 237);
 }
 
-table, tr, th, td {
-	border: 1.5px solid;
-	border-collapse: collapse;
-	padding: 10px;
+h1 {
+	padding: 15px;
+	padding-left: 25px;
+	font-size: 20px;
+	font-family: sans-serif;
+}
+
+label {
+	color: rgb(101, 101, 101);
+	padding-left: 25px;
+	font-size: 17px;
+	font-family: sans-serif;
+	font-weight: bold;
+}
+
+select {
+	margin: 10px;
+	margin-left: 30px;
+	margin-bottom: 20px;
+	font-size: 15px;
+	padding: 15px;
+	width: 80%;
+	border-radius: 10px;
+	border-style: none;
+	background-color: rgb(237, 237, 237);
+}
+
+button {
+	border-radius: 10px;
+	border-style: none;
+	margin: 10px;
+	padding: 15px;
+	width: 15%;
+	font-size: 17px;
+	font-family: sans-serif;
+	font-weight: bold;
+	background-color: rgb(237, 237, 237);
+}
+
+button:hover, .item:hover {
+	background-color: rgb(206, 206, 206);
+}
+
+.first {
+	display: flex;
+}
+
+.category {
+	flex: 1;
+	background-color: rgb(255, 255, 255);
+	border-radius: 10px;
+	margin: 10px;
+}
+
+.second {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 10px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+}
+
+.item {
+    margin: 10px;
+	padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: rgb(237, 237, 237);
+	font-family: sans-serif;
 }
