@@ -21,16 +21,63 @@ fetch("/api/orders")
 				<td></td>
 				<td>Michael</td>
 				<td>${totalQuantity(order.items)}</td>
-				<td>${order.subtotal}</td>
+				<td>$${order.subtotal}</td>
 				<td></td>
             `;
+
+			const detailTr = document.createElement("tr");
+			detailTr.classList.add("collapse");
+			detailTr.innerHTML = `
+                <td colspan="6">
+                    <table class="table" id="${order.id}">
+						<thead>
+							<tr>
+								<th scope="col">Item ID</th>
+								<th scope="col">Product Name</th>
+								<th scope="col">Quantity</th>
+								<th scope="col">Price</th>
+							</tr>
+						</thead>
+						<tbody>
+
+						</tbody>
+					</table>
+                </td>
+			`;
+
 			tr.addEventListener("click", () => {
-				selectedItemId = item.id;
-				nameInput.value = item.name;
-				descInput.value = item.description;
-				priceInput.value = item.price;
+				detailTr.classList.toggle("show");
+
+				const tbody = detailTr.querySelector("tbody");
+				if (tbody.children.length === 0) {
+					const itemIds = Object.keys(order.items);
+
+					for (let i = 0; i < itemIds.length; i++) {
+						let id = itemIds[i];
+
+						fetch(`/api/items/${id}`)
+							.then((response) => {
+								return response.json();
+							})
+							.then((body) => {
+								const itemRow = document.createElement("tr");
+								itemRow.innerHTML = `
+									<td>${body[0].id}</td>
+									<td>${body[0].name}</td>
+									<td>${order.items[id]}</td>
+									<td>$${(body[0].price*order.items[id]).toFixed(2)}</td>
+								`;
+								tbody.appendChild(itemRow);
+							})
+							.catch((error) => {
+								console.log(error);
+							}) 
+					}
+				}
 			});
+
 			orders.append(tr);
+			orders.appendChild(detailTr);
 		}
 	})
 	.catch((error) => {
