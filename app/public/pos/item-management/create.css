@@ -50,19 +50,27 @@ button {
 	background-color: white;
 }
 
-.first, .second {
+.first, .second, .third {
 	display: flex;
 }
 
-.general, .gallery, .price, .category {
+.general, .gallery, .price, .category, .upload {
 	background-color: rgb(255, 255, 255);
 	border-radius: 10px;
 	margin: 10px;
 }
 
-.general, .price {
+.items {
+	text-align: center;
+}
+
+.general, .price, .upload {
 	flex: 1;
 	max-width: 52%;
+}
+
+input[type="file"] {
+	display: none;
 }
 
 .gallery, .stack {
