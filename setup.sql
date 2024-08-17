@@ -38,6 +38,7 @@ CREATE TABLE orders (
 	subtotal DECIMAL(10,2),
 	discount DECIMAL(10,2)
 	total DECIMAL(10,2),
+	payment_status BOOLEAN,
 	date_ordered DATE NOT NULL,
 );
 
