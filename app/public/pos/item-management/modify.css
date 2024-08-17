@@ -1,0 +1,116 @@
+body {
+	background-color: rgb(237, 237, 237);
+}
+
+h1 {
+	padding: 15px;
+	padding-left: 25px;
+	font-size: 20px;
+	font-family: sans-serif;
+}
+
+label {
+	color: rgb(101, 101, 101);
+	padding-left: 25px;
+	font-size: 17px;
+	font-family: sans-serif;
+	font-weight: bold;
+}
+
+select {
+	margin: 10px;
+	margin-left: 30px;
+	font-size: 15px;
+	padding: 15px;
+	width: 80%;
+	border-radius: 10px;
+	border-style: none;
+	background-color: rgb(237, 237, 237);
+}
+
+input, textarea {
+	margin: 10px;
+	margin-left: 30px;
+	font-size: 15px;
+	padding: 15px;
+	width: 60%;
+	border-radius: 10px;
+	border-style: none;
+	background-color: rgb(237, 237, 237);
+}
+
+textarea {
+	resize: none;
+	padding-bottom: 100px;
+}
+
+button {
+	border-radius: 10px;
+	border-style: none;
+	margin: 10px;
+	padding: 15px;
+	font-size: 17px;
+	font-family: sans-serif;
+	font-weight: bold;
+	background-color: rgb(237, 237, 237);
+}
+
+button:hover, .item:hover {
+	background-color: rgb(206, 206, 206);
+}
+
+#submit {
+	width: 15%;
+}
+
+#price-label {
+	padding-left: 56.5%;
+}
+
+#price {
+	width: 29%;
+}
+
+.category {
+	flex: 1;
+	background-color: rgb(255, 255, 255);
+	border-radius: 10px;
+	margin: 10px;
+}
+
+.items {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 10px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+}
+
+.edit {
+	background-color: rgb(255, 255, 255);
+	border-radius: 10px;
+	margin: 10px;
+}
+
+.item {
+    margin: 10px;
+	padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: rgb(237, 237, 237);
+	font-family: sans-serif;
+}
+
+.desc {
+	display: flex;
+}
+
+.desc div {
+	display: flex;
+	flex-direction: column;
+	padding-left: 20px;
+}
+
+.desc button {
+	width: 450px;
+}

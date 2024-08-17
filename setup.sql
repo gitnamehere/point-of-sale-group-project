@@ -34,8 +34,12 @@ CREATE TABLE cart_item (
 --wip
 CREATE TABLE orders (
 	id SERIAL PRIMARY KEY,
-	items JSON, -- will be changed later to something that can be an array of order_items
-	subtotal DECIMAL(10,2) -- for development use only, will be removed later
+	items JSON, -- revisit for possible junction table implementation
+	subtotal DECIMAL(10,2),
+	discount DECIMAL(10,2),
+	total DECIMAL(10,2),
+	payment_status BOOLEAN,
+	date_ordered DATE
 );
 
 CREATE TABLE account (
