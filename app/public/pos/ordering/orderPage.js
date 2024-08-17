@@ -29,7 +29,7 @@ fetch("/api/orders")
 			detailTr.classList.add("collapse");
 			detailTr.innerHTML = `
                 <td colspan="6">
-                    <table class="table" id="${order.id}">
+                    <table class="table table-striped" id="${order.id}">
 						<thead>
 							<tr>
 								<th scope="col">Item ID</th>
