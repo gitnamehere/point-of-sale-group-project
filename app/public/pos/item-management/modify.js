@@ -1,6 +1,6 @@
 // item information
 const catInput = document.getElementById("category");
-const itemsTable = document.getElementById("items");
+const itemTable = document.querySelector(".items");
 const nameInput = document.getElementById("name");
 const descInput = document.getElementById("description");
 const priceInput = document.getElementById("price");
@@ -10,18 +10,6 @@ let selectedItemId = null;
 const apply = document.getElementById("submit");
 const update = document.getElementById("update");
 const del = document.getElementById("delete");
-
-let message = document.getElementById("message");
-
-function clearTable() {
-    const table = document.getElementById("items");
-    let length = table.children.length;
-    if (length > 1) {
-        for (let i = length - 1; i > 0; i--) {
-            table.children[i].remove();
-        }
-    }
-}
 
 function resetInputs() {
     nameInput.value = "";
@@ -56,24 +44,23 @@ apply.addEventListener("click", () => {
             return response.json();
         })
         .then((body) => {
-            message.textContent = "";
+            itemTable.innerHTML = "";
             selectedItemId = null;
-            clearTable();
             resetInputs();
+            
             for (let item of body) {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${item.name}</td>
-                    <td>${item.description}</td>
-                    <td>$${item.price}</td>
-                `;
-                tr.addEventListener("click", () => {
+                const itemDiv = document.createElement("div");
+                itemDiv.classList.add("item");
+                itemDiv.textContent = item.name;
+                
+                itemDiv.addEventListener("click", () => {
                     selectedItemId = item.id;
                     nameInput.value = item.name;
                     descInput.value = item.description;
                     priceInput.value = item.price;
                 });
-                itemsTable.append(tr);
+                
+                itemTable.append(itemDiv);
             }
         })
         .catch((error) => {
@@ -84,7 +71,7 @@ apply.addEventListener("click", () => {
 // update the selected item
 update.addEventListener("click", () => {
     if (!selectedItemId) {
-        message.textContent = "No item selected for editing";
+        alert("No item selected for editing");
         return;
     }
 
@@ -102,9 +89,15 @@ update.addEventListener("click", () => {
         body: JSON.stringify(item),
     })
         .then((response) => {
-            message.textContent = response.ok
-                ? "Item has been modified"
-                : "Item could not be modified";
+            if (response.ok) {
+                alert("Item has been modified");
+                selectedItemId = null;
+                apply.click();
+                resetInputs();
+            }
+            else {
+                alert("Item could not be modified");
+            }
         })
         .catch((error) => {
             console.log(error);
@@ -114,7 +107,7 @@ update.addEventListener("click", () => {
 // delete the selected item
 del.addEventListener("click", () => {
     if (!selectedItemId) {
-        message.textContent = "No item selected for editing";
+        alert("No item selected for editing");
         return;
     }
 
@@ -126,9 +119,15 @@ del.addEventListener("click", () => {
         body: JSON.stringify(),
     })
         .then((response) => {
-            message.textContent = response.ok
-                ? "Item has been deleted"
-                : "Item could not be deleted";
+            if (response.ok) {
+                alert("Item has been deleted");
+                selectedItemId = null;
+                apply.click();
+                resetInputs();
+            } 
+            else {
+                alert("Item could not be deleted");
+            }
         })
         .catch((error) => {
             console.log(error);
