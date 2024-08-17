@@ -1,4 +1,4 @@
-
+// Item example
 const salesData = [
     { orderId: 1, name: 'red trinket', quantity: 2, dateOrdered: '2024-08-15', totalPrice: '$3.98' },
     { orderId: 2, name: 'blue trinket', quantity: 1, dateOrdered: '2024-08-16', totalPrice: '$2.99' },
