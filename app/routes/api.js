@@ -3,7 +3,11 @@ const apiRouter = express.Router();
 const { Pool } = require("pg");
 const env = require("../../env.json");
 const crypto = require("crypto");
+const cookieParser = require("cookie-parser");
 
+apiRouter.use(cookieParser());
+
+// TODO: put database query into a seperate file
 const pool = new Pool(env);
 pool.connect().then(() => {
     console.log("Connected to database");
@@ -23,15 +27,14 @@ function query(query, values, res, sendStatus = false) {
         });
 }
 
-// TODO: everything
+// TODO: put auth functions and other stuff into a seperate file
 const tokenStorage = {};
 const authentication = (req, res, next) => {
-    const authHeader = req.headers["authorization"];
-    let token = authHeader && authHeader.split(" ")[1];
+    const { posAuth } = req.cookies;
 
-    if (!token || !tokenStorage[token]) {
-        return res.status(401).json({ error: "Token required." });
-    }
+    if (!tokenStorage.hasOwnProperty(posAuth) || !tokenStorage[posAuth])
+        return res.sendStatus(401);
+
     next();
 };
 
@@ -39,15 +42,28 @@ const generateRandomToken = () => {
     return crypto.randomBytes(32).toString("hex");
 };
 
-apiRouter.get("/auth/demoKey", (req, res) => {
-    const token = generateRandomToken();
-    tokenStorage[token] = true;
-    console.log(tokenStorage); //keep track of tokens created
-    return res.json({ token });
+// cookieOptions from the demo
+const cookieOptions = {
+    httpOnly: true, // JS can't access it
+    secure: true, // only sent over HTTPS connections
+    sameSite: "strict", // only sent to this domain
+};
+
+apiRouter.get("/auth/pos", (req, res) => {
+    const { posAuth } = req.cookies;
+
+    if (posAuth === undefined || tokenStorage[posAuth] === undefined) {
+        const token = generateRandomToken();
+        tokenStorage[token] = true;
+        console.log(tokenStorage); //keep track of tokens created
+        return res.cookie("posAuth", token, cookieOptions).sendStatus(200);
+    }
+
+    return res.send("Already Authenticated");
 });
 
-apiRouter.get("/auth/test", authentication, (req, res) => {
-    return res.status(200).json({ message: "Token valid" });
+apiRouter.get("/auth/pos/test", authentication, (req, res) => {
+    res.sendStatus(200);
 });
 
 // request header to return all the items in the database, with optional query to return based on category
@@ -205,4 +221,4 @@ apiRouter.get("/orders/:id", (req, res) => {
     query("SELECT * FROM orders WHERE id = $1", [id], res);
 });
 
-module.exports = { apiRouter };
+module.exports = { apiRouter, authentication };
