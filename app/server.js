@@ -1,5 +1,4 @@
 const express = require("express");
-
 const app = express();
 const hostname = "localhost";
 const port = 3000;
@@ -8,8 +7,9 @@ const { apiRouter } = require("./routes/api");
 const { posRouter } = require("./routes/pos");
 const { storeRouter } = require("./routes/store");
 
-app.use(express.json());
+// TODO: Everything
 
+app.use(express.json());
 app.use("/api", apiRouter);
 app.use("/pos", posRouter);
 app.use("/store", storeRouter);
