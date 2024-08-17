@@ -39,7 +39,7 @@ CREATE TABLE orders (
 	discount DECIMAL(10,2),
 	total DECIMAL(10,2),
 	payment_status BOOLEAN,
-	date_ordered DATE NOT NULL,
+	date_ordered DATE
 );
 
 CREATE TABLE account (
