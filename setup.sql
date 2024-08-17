@@ -49,7 +49,7 @@ CREATE TABLE account (
 CREATE TABLE business_information (
 	id SERIAL PRIMARY KEY,
 	business_name VARCHAR(50) NOT NULL,
-	owner_id INT NOT NULL,
+	phone_number VARCHAR(15) NOT NULL, --Phone example: 1-800-123-456
+	address TEXT NOT NULL,
 	description TEXT NOT NULL,
-	CONSTRAINT fk_owner FOREIGN KEY (owner_id) REFERENCES account(id)
 );
