@@ -47,19 +47,19 @@ apply.addEventListener("click", () => {
             itemTable.innerHTML = "";
             selectedItemId = null;
             resetInputs();
-            
+
             for (let item of body) {
                 const itemDiv = document.createElement("div");
                 itemDiv.classList.add("item");
                 itemDiv.textContent = item.name;
-                
+
                 itemDiv.addEventListener("click", () => {
                     selectedItemId = item.id;
                     nameInput.value = item.name;
                     descInput.value = item.description;
                     priceInput.value = item.price;
                 });
-                
+
                 itemTable.append(itemDiv);
             }
         })
@@ -94,8 +94,7 @@ update.addEventListener("click", () => {
                 selectedItemId = null;
                 apply.click();
                 resetInputs();
-            }
-            else {
+            } else {
                 alert("Item could not be modified");
             }
         })
@@ -124,8 +123,7 @@ del.addEventListener("click", () => {
                 selectedItemId = null;
                 apply.click();
                 resetInputs();
-            } 
-            else {
+            } else {
                 alert("Item could not be deleted");
             }
         })

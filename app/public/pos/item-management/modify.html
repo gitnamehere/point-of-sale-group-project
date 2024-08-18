@@ -3,12 +3,12 @@
     <head>
         <meta charset="utf-8" />
         <title>Modify</title>
-        <link rel="stylesheet" href="modify.css">
+        <link rel="stylesheet" href="modify.css" />
     </head>
     <body>
         <div class="first">
             <div class="category">
-                <br>
+                <br />
                 <label for="category">Choose a category:</label>
                 <div>
                     <select id="category" name="category"></select>
@@ -17,28 +17,30 @@
             </div>
         </div>
         <div class="second">
-            <div class="items">
-
-            </div>
+            <div class="items"></div>
         </div>
         <div class="third">
             <div class="edit">
-                <br>
+                <br />
                 <div>
                     <label for="name">Product Name:</label>
                     <label id="price-label" for="price">Price:</label>
                 </div>
                 <div>
                     <input id="name" type="text" name="name" maxlength="50" />
-                    <input id="price" type="number" name="price" step="0.01" min="0.00" placeholder="0.00"/>
+                    <input
+                        id="price"
+                        type="number"
+                        name="price"
+                        step="0.01"
+                        min="0.00"
+                        placeholder="0.00"
+                    />
                 </div>
-                <br>
+                <br />
                 <label for="description">Description:</label>
                 <div class="desc">
-                    <textarea
-                        id="description"
-                        name="description"
-                    ></textarea>
+                    <textarea id="description" name="description"></textarea>
                     <div>
                         <button id="update">Update</button>
                         <button id="delete">Delete</button>
