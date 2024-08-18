@@ -25,3 +25,7 @@ INSERT INTO item (category, name, description, price) VALUES (2, 'Blue Sticker',
 
 --food
 INSERT INTO item (category, name, description, price) VALUES (4, 'Burger', 'yummy', '4.99');
+
+--discounts
+INSERT INTO discounts (code, discount) VALUES ('jotchua', '0.99');
+INSERT INTO discounts (code, discount) VALUES ('michael', '0.50');

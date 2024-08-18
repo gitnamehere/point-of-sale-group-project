@@ -10,6 +10,10 @@
         <div class="container">
             <div class="orderSummary">
                 <h2>Order Summary</h2>
+                <div id="discountContainer">
+                    <input type="text" id="discountInput" value=""/>
+                    <button id="discountButton">Enter</button>
+                </div>
                 <div id="calculations">
                     <div>
                         <span>Subtotal:</span><span id="subtotal">$0.00</span>
@@ -25,7 +29,7 @@
 
             <div id="payment">
                 <span>Amount due:</span><span id="amountDue">$0.00</span>
-                <input type="text" id="cashInput" value="$0.00" readonly />
+                <input type="text" id="cashInput" value="$0.00" readonly/>
                 <div class="numPad">
                     <button class="num-btn" data-value="1">1</button>
                     <button class="num-btn" data-value="2">2</button>
