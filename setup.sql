@@ -42,6 +42,12 @@ CREATE TABLE orders (
 	date_ordered DATE
 );
 
+CREATE TABLE discounts (
+	id SERIAL PRIMARY KEY,
+	code VARCHAR(10) NOT NULL,
+	discount DECIMAL(10,2)
+);
+
 CREATE TABLE account (
 	id SERIAL PRIMARY KEY,
 	username TEXT NOT NULL,

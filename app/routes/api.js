@@ -205,4 +205,13 @@ apiRouter.get("/orders/:id", (req, res) => {
     query("SELECT * FROM orders WHERE id = $1", [id], res);
 });
 
+apiRouter.get("/discounts/:code", (req, res) => {
+    const code = req.params.code;
+    if (!code) {
+        return res.sendStatus(400);
+    }
+
+    query("SELECT discount FROM discounts WHERE code = $1", [code], res);
+});
+
 module.exports = { apiRouter };
