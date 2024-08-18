@@ -54,4 +54,12 @@ CREATE TABLE account (
 	first_name TEXT NOT NULL,
 	last_name TEXT NOT NULL,
 	account_type TEXT NOT NULL
-)
+);
+
+CREATE TABLE business_information (
+	id SERIAL PRIMARY KEY,
+	business_name VARCHAR(50) NOT NULL,
+	phone_number VARCHAR(15) NOT NULL, --Phone example: 1-800-123-456
+	address TEXT NOT NULL,
+	description TEXT NOT NULL
+);
