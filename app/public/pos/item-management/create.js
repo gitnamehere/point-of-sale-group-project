@@ -28,6 +28,11 @@ fetch("/api/item/categories")
     });
 
 // handle item data sent to the backend
+
+function test () {
+    console.log('test');
+}
+
 create.addEventListener("click", () => {
     const item = {
         category: catInput.value,
@@ -50,3 +55,4 @@ create.addEventListener("click", () => {
             console.log(error);
         });
 });
+
