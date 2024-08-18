@@ -39,7 +39,7 @@ clearButton.addEventListener("click", function () {
 function updateCalculations(subtotal, discount) {
     const discountAmount = subtotal * discount;
     const discountedSubtotal = subtotal - discountAmount;
-    const taxAmount = discountedSubtotal * Math.ceil(tax);
+    const taxAmount = discountedSubtotal * tax;
     const total = discountedSubtotal * (1 + tax);
 
     discountElement.textContent = "$ " + discountAmount.toFixed(2);
