@@ -53,4 +53,4 @@ Copy `sample-env.json` into a new file `env.json`, and replace `user` and `passw
 
 ### Development Authentication for POS
 
-**Visit this link before testing:** `http://localhost:3000/api/auth/pos
+**Visit this link before testing:** http://localhost:3000/api/auth/pos
