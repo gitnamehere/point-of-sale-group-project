@@ -19,10 +19,35 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0 16px;
+    justify-content: space-between;
+    padding: 16px;
     height: 80px;
     background-color: #111;
     color: #eee;
+    
+    box-sizing: border-box;
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: auto;
+}
+
+.header-button {
+    display: flex;
+    align-items: center;
+    margin-left: 16px;
+    padding: 8px 16px;
+    width: auto;
+    height: 100%;
+    background-color: #EEE;
+    font-size: 24px;
+    font-weight: 700;
+    box-sizing: border-box;
+    text-decoration: none;
+    color: black;
 }
 
 .bottom {
