@@ -50,3 +50,7 @@ Copy `sample-env.json` into a new file `env.json`, and replace `user` and `passw
 **Alternatively, run setup server with demo items:** `npm run setup-demo`
 
 **Start server:** `npm run start`
+
+### Development Authentication for POS
+
+**Visit this link before testing:** `http://localhost:3000/api/auth/pos
