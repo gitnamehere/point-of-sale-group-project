@@ -11,8 +11,8 @@ body {
 .container {
     display: flex;
     flex-direction: row;
-    /* height is set to the height of the window minus the header and bottom row size */
-    height: calc(100vh - 160px);
+    /* height is set to the height of the window minus the header */
+    height: calc(100vh - 80px);
 }
 
 .header {
