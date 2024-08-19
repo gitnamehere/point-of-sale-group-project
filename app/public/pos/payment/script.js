@@ -5,18 +5,21 @@ const subtotalElement = document.getElementById("subtotal");
 const discountInput = document.getElementById("discountInput");
 const discountBtn = document.getElementById("discountButton");
 const discountElement = document.getElementById("discount");
+const tipBtns = document.querySelectorAll(".tip-btn");
+const tipElement = document.getElementById("tips");
 const taxElement = document.getElementById("tax");
-const tax = 0.08; // holding for dev us - will need to implement business owner customization
+const tax = 0.08; // holding for dev use - will need to implement business owner customization
 const totalElement = document.getElementById("total");
 const amountDue = document.getElementById("amountDue");
 const cashInput = document.getElementById("cashInput");
-const buttons = document.querySelectorAll(".num-btn");
-const clearButton = document.getElementById("clear");
+const numPadBtns = document.querySelectorAll(".num-btn");
+const clearBtn= document.getElementById("clear");
 const changeElement = document.getElementById("change");
-const payButton = document.getElementById("pay");
+const payBtn = document.getElementById("pay");
 let discount = 0;
+let tips = 0;
 
-buttons.forEach((button) => {
+numPadBtns.forEach((button) => {
     button.addEventListener("click", function () {
         let value = button.getAttribute("data-value");
         let currentValue = parseFloat(cashInput.value.replace("$", ""));
@@ -32,17 +35,19 @@ buttons.forEach((button) => {
     });
 });
 
-clearButton.addEventListener("click", function () {
+clearBtn.addEventListener("click", function () {
     cashInput.value = "$0.00";
 });
 
-function updateCalculations(subtotal, discount) {
+function updateCalculations(subtotal, discount, tip) {
     const discountAmount = subtotal * discount;
     const discountedSubtotal = subtotal - discountAmount;
+    const tipAmount = subtotal * tip;
     const taxAmount = discountedSubtotal * tax;
-    const total = discountedSubtotal * (1 + tax);
+    const total = discountedSubtotal * (1 + tax) + tipAmount;
 
     discountElement.textContent = "$ " + discountAmount.toFixed(2);
+    tipElement.textContent = "$ " + tipAmount.toFixed(2);
     taxElement.textContent = "$ " + taxAmount.toFixed(2);
     totalElement.textContent = "$ " + total.toFixed(2);
     amountDue.textContent = "$ " + total.toFixed(2);
@@ -62,8 +67,8 @@ fetch(`/api/orders/${orderId}`, {
         const subtotal = parseFloat(data[0].subtotal);
         subtotalElement.textContent = `$ ${subtotal.toFixed(2)}`;
 
-        // initial calculation
-        updateCalculations(subtotal.toFixed(2), 0);
+        // initial calculation before discount and tip
+        updateCalculations(subtotal, 0, 0);
 
         discountButton.addEventListener("click", () => {
             const code = discountInput.value.trim();
@@ -91,6 +96,15 @@ fetch(`/api/orders/${orderId}`, {
                 updateCalculations(subtotal, discount);
             }
         });
+
+        // tip calculation
+        tipBtns.forEach((button) => {
+            button.addEventListener("click", function () {
+                let tip = button.getAttribute("data-value");
+                updateCalculations(subtotal, discount, tip)
+            });
+        });
+
         cashInput.addEventListener("input", () => {
             let cash = parseFloat(cashInput.value.replace("$", ""));
             if (isNaN(cash)) cash = 0;
