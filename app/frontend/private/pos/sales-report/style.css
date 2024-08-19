@@ -12,10 +12,32 @@ body {
 }
 
 .header {
-    background: #333;
-    color: #fff;
-    padding: 10px 0;
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    height: 80px;
+    background-color: #333;
+}
+
+.header-title {
+    color: #eee;
+    margin: auto 0;
+    font-weight: 700 !important;
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: auto;
+}
+
+.header-button {
+    margin-left: 16px;
+    font-size: 24px;
+    font-weight: 700;
 }
 
 .main-content {
