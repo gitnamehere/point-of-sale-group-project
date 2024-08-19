@@ -8,7 +8,7 @@ body {
     background-color: #eee;
 }
 
-.container {
+.ordering-container {
     display: flex;
     flex-direction: row;
     /* height is set to the height of the window minus the header */
@@ -20,12 +20,15 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 16px;
+    padding: 12px;
     height: 80px;
     background-color: #111;
+}
+
+.title {
     color: #eee;
-    
-    box-sizing: border-box;
+    margin: auto 0;
+    font-weight: 700 !important;
 }
 
 .header-buttons {
@@ -36,18 +39,9 @@ body {
 }
 
 .header-button {
-    display: flex;
-    align-items: center;
     margin-left: 16px;
-    padding: 8px 16px;
-    width: auto;
-    height: 100%;
-    background-color: #EEE;
     font-size: 24px;
     font-weight: 700;
-    box-sizing: border-box;
-    text-decoration: none;
-    color: black;
 }
 
 .bottom {
@@ -64,6 +58,7 @@ body {
     flex: 2;
     flex-direction: column;
     border-right: 1px solid black;
+    padding-left: 0;
 }
 
 .category-item {
@@ -103,6 +98,7 @@ tr:hover {
     display: flex;
     flex-direction: column;
     border-left: 1px solid black;
+    padding-right: 0;
 }
 
 .ticket-body {
@@ -136,38 +132,8 @@ tr:hover {
 .button {
     flex: 1;
     border: none;
-    height: 40px;
+    height: 48px;
     color: white;
-}
-
-#delete-item {
-    background-color: #c00;
-}
-
-#delete-item:disabled {
-    background-color: #400;
-    color: #aaa;
-}
-
-/* https://developer.mozilla.org/en-US/docs/Web/CSS/:not */
-#delete-item:hover:not(:disabled) {
-    background-color: #800;
-}
-
-#clear {
-    background-color: #e80;
-}
-
-#clear:hover {
-    background-color: #a60;
-}
-
-#order {
-    background-color: #00c;
-}
-
-#order:hover {
-    background-color: #008;
 }
 
 .item-selected {
