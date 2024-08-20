@@ -54,7 +54,7 @@ CREATE TYPE permissions AS ENUM ('user', 'admin', 'boss');
 CREATE TABLE accounts (
 	id SERIAL PRIMARY KEY,
 	username TEXT NOT NULL,
-	password VARCHAR(100),
+	password TEXT NOT NULL,
 	first_name TEXT NOT NULL,
 	last_name TEXT NOT NULL,
 	account_type permissions
