@@ -15,15 +15,15 @@ app.use("/pos", posRouter);
 app.use("/store", storeRouter);
 
 app.get("/", (req, res) => {
-    res.sendFile("/public/index.html", { root: __dirname });
+    res.sendFile("/frontend/public/index.html", { root: __dirname });
 });
 
 app.get("/style.css", (req, res) => {
-    res.sendFile("/public/style.css", { root: __dirname });
+    res.sendFile("frontend/public/style.css", { root: __dirname });
 });
 
 app.get("/index.js", (req, res) => {
-    res.sendFile("/public/index.js", { root: __dirname });
+    res.sendFile("frontend/public/index.js", { root: __dirname });
 });
 
 app.listen(port, hostname, () => {
