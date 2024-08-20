@@ -7,6 +7,7 @@ const orderHistory = document.getElementById("orderHistory");
 const itemManagement = document.getElementById("itemManagement");
 const salesReporting = document.getElementById("salesReporting");
 const storeSettings = document.getElementById("storeSettings");
+const logout = document.getElementById("logout");
 
 newOrder.addEventListener("click", () => {
     newOrder.style.backgroundColor = "blue";
@@ -36,4 +37,14 @@ salesReporting.addEventListener("click", () => {
 storeSettings.addEventListener("click", () => {
     storeSettings.style.backgroundColor = "blue";
     location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+});
+
+logout.addEventListener("click", () => {
+    fetch("/api/auth/pos/logout")
+        .then((response) => {
+            response.status === 200
+                ? (window.location = "/pos/login")
+                : alert("Error logging out");
+        })
+        .catch((error) => console.log(error));
 });

@@ -10,7 +10,7 @@ button.addEventListener("click", () => {
     console.log(username);
     console.log(password);
 
-    fetch("/api/auth/pos", {
+    fetch("/api/auth/pos/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

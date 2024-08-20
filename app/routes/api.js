@@ -89,7 +89,7 @@ const cookieOptions = {
 };
 
 // this was pain
-apiRouter.post("/auth/pos", async (req, res) => {
+apiRouter.post("/auth/pos/login", async (req, res) => {
     const body = req.body;
 
     if (!body.hasOwnProperty("username") || !body.hasOwnProperty("password")) {
@@ -122,7 +122,7 @@ apiRouter.post("/auth/pos", async (req, res) => {
             id,
         ])
         .then(() => {
-            return res.cookie("posAuth", token, cookieOptions).send();
+            return res.cookie("posAuth", token, cookieOptions).sendStatus(200);
         })
         .catch((error) => {
             console.log(error);
@@ -130,8 +130,19 @@ apiRouter.post("/auth/pos", async (req, res) => {
         });
 });
 
-apiRouter.get("/auth/pos/test", authentication, (req, res) => {
-    res.sendStatus(200);
+apiRouter.get("/auth/pos/logout", (req, res) => {
+    const { posAuth } = req.cookies;
+
+    if (posAuth === undefined) return res.sendStatus(400);
+
+    pool.query("DELETE FROM tokens WHERE token = $1", [posAuth])
+        .then(() => {
+            return res.redirect("/pos/login");
+        })
+        .catch((error) => {
+            console.log(error);
+            res.sendStatus(500);
+        });
 });
 
 // request header to return all the items in the database, with optional query to return based on category
