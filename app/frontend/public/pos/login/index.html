@@ -14,16 +14,20 @@
     <body>
         <div class="container">
             <div class="card">
-            <h1 class="mb-3">POS Login</h1>
-            <div class="mb-3">
-                <input id="username" placeholder="Username" />
+                <h1 class="mb-3">POS Login</h1>
+                <div class="mb-3">
+                    <input id="username" placeholder="Username" />
+                </div>
+                <div class="mb-3">
+                    <!-- https://www.w3schools.com/tags/tag_input.asp -->
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Password"
+                    />
+                </div>
+                <button id="submit" class="btn btn-primary">Login</button>
             </div>
-            <div class="mb-3">
-                <!-- https://www.w3schools.com/tags/tag_input.asp -->
-                <input type="password" id="password" placeholder="Password" />
-            </div>
-            <button id="submit" class="btn btn-primary">Login</button>
-        </div>
         </div>
         <script src="script.js"></script>
     </body>

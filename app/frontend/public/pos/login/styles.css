@@ -13,6 +13,7 @@ body {
     padding: 32px;
 }
 
-input, button {
+input,
+button {
     width: 400px;
 }
