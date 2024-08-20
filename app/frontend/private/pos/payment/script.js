@@ -80,17 +80,17 @@ fetch(`/api/orders/${orderId}`, {
                         "Content-Type": "application/json",
                     },
                 })
-                .then((response) => response.json())
-                .then((data) => {
-                    discount = data[0].discount;
-                    discountElement.textContent = `$ ${discount.toFixed(2)}`;
-                    updateCalculations(subtotal, discount);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    discountElement.textContent = "$0.00";
-                    updateCalculations(subtotal, discount);
-                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        discount = data[0].discount;
+                        discountElement.textContent = `$ ${discount.toFixed(2)}`;
+                        updateCalculations(subtotal, discount);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        discountElement.textContent = "$0.00";
+                        updateCalculations(subtotal, discount);
+                    });
             } else {
                 discountElement.textContent = "$0.00";
                 updateCalculations(subtotal, discount);

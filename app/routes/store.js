@@ -3,6 +3,6 @@ const storeRouter = express.Router();
 
 // for future use
 
-storeRouter.use(express.static("public/store"));
+storeRouter.use(express.static("frontend/public/store"));
 
 module.exports = { storeRouter };

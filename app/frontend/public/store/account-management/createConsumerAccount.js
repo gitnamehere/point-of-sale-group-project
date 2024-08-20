@@ -6,14 +6,13 @@ const lastnameInput = document.getElementById("lastname");
 
 const submit = document.getElementById("submit");
 
-
 // handle item data sent to the backend
 submit.addEventListener("click", () => {
     const account = {
         username: usernameInput.value,
         firstname: firstnameInput.value,
         lastname: lastnameInput.value,
-        accountType: "consumer"
+        accountType: "consumer",
     };
 
     fetch("/api/accounts/add", {
