@@ -41,7 +41,11 @@ The project involves developing a POS system user interface and an ECommerce web
 
 #### Setting up env.json
 
-Copy `sample-env.json` into a new file `env.json`, and replace `user` and `password` with your postgres username and password
+Copy `sample-env.json` into a new file `env.json`
+
+Replace `user` and `password` with your Postgres username and password, this is for the Postgres Database
+
+Replace `boss_user` and `boss_password` with your POS username and password, this will be the first account you will log in to the POS
 
 ### Starting the Server
 
@@ -50,7 +54,3 @@ Copy `sample-env.json` into a new file `env.json`, and replace `user` and `passw
 **Alternatively, run setup server with demo items:** `npm run setup-demo`
 
 **Start server:** `npm run start`
-
-### Development Authentication for POS
-
-**Visit this link before testing:** http://localhost:3000/api/auth/pos
