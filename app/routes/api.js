@@ -89,7 +89,7 @@ const cookieOptions = {
 };
 
 // this was pain
-apiRouter.post("/auth/pos/login", async (req, res) => {
+apiRouter.post("/auth/pos", async (req, res) => {
     const body = req.body;
 
     if (!body.hasOwnProperty("username") || !body.hasOwnProperty("password")) {
@@ -122,25 +122,12 @@ apiRouter.post("/auth/pos/login", async (req, res) => {
             id,
         ])
         .then(() => {
-            return res.cookie("posAuth", token, cookieOptions);
+            return res.cookie("posAuth", token, cookieOptions).send();
         })
         .catch((error) => {
             console.log(error);
             return res.sendStatus(500);
         });
-});
-
-apiRouter.get("/auth/pos", (req, res) => {
-    const { posAuth } = req.cookies;
-
-    if (posAuth === undefined || tokenStorage[posAuth] === undefined) {
-        const token = generateRandomToken();
-        tokenStorage[token] = true;
-        console.log(tokenStorage); //keep track of tokens created
-        return res.cookie("posAuth", token, cookieOptions).sendStatus(200);
-    }
-
-    return res.send("Already Authenticated");
 });
 
 apiRouter.get("/auth/pos/test", authentication, (req, res) => {
