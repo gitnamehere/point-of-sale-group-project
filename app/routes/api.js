@@ -65,7 +65,7 @@ const authentication = (req, res, next) => {
             if (result.rows.length === 0) {
                 // redirect to login page
                 // https://expressjs.com/en/4x/api.html#res.redirect
-                return res.redirect(401, "/pos/login");
+                return res.redirect("/pos/login");
             }
 
             // not putting next() in here caused me an hour of pain
