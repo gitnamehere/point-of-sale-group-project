@@ -48,12 +48,31 @@ CREATE TABLE discounts (
 	discount DECIMAL(10,2)
 );
 
-CREATE TABLE account (
+CREATE TYPE permissions AS ENUM ('user', 'admin', 'boss');
+
+-- pos accounts
+CREATE TABLE accounts (
 	id SERIAL PRIMARY KEY,
 	username TEXT NOT NULL,
+	password VARCHAR(100),
 	first_name TEXT NOT NULL,
 	last_name TEXT NOT NULL,
-	account_type TEXT NOT NULL
+	account_type permissions
+);
+
+-- customer account
+CREATE TABLE customer (
+	first_name TEXT,
+	last_name TEXT,
+	phone_number VARCHAR(15) NOT NULL,
+	email VARCHAR
+);
+
+CREATE TABLE tokens (
+	id SERIAL PRIMARY KEY,
+	token VARCHAR(256) NOT NULL,
+	user_id INT NOT NULL,
+	CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES accounts(id)
 );
 
 CREATE TABLE business_information (
