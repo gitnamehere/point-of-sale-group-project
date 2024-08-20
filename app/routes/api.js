@@ -32,7 +32,7 @@ pool.connect().then(async (client) => {
                     "INSERT INTO accounts (username, password, first_name, last_name, account_type) VALUES ($1, $2, $3, $4, $5)",
                     [boss_user, hash, "boss", "boss", "boss"],
                 )
-                .then(() => console.log("inserted!"))
+                .then(() => console.log("Boss account created!"))
                 .catch((error) => console.log(error));
         } catch (error) {
             console.log(error);
