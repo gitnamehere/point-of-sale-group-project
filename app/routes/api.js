@@ -1,4 +1,5 @@
 const express = require("express");
+const argon2 = require("argon2");
 const apiRouter = express.Router();
 const { Pool } = require("pg");
 const env = require("../../env.json");
@@ -9,7 +10,36 @@ apiRouter.use(cookieParser());
 
 // TODO: put database query into a seperate file
 const pool = new Pool(env);
-pool.connect().then(() => {
+// query and hashing code adapted from the password demo
+// https://gitlab.cci.drexel.edu/nkl43/cs375_demos/-/blob/main/demo_password_cookies/dummy.js
+pool.connect().then(async (client) => {
+    // first time setup
+    let accounts = await client
+        .query("SELECT * FROM accounts")
+        .then((results) => results.rows)
+        .catch((error) => console.log(error));
+
+    // if the POS has been newly set up (there are no accounts)
+    if (accounts.length === 0) {
+        const { boss_user, boss_password } = env;
+
+        let hash = "";
+        try {
+            hash = await argon2.hash(boss_password);
+
+            await client
+                .query(
+                    "INSERT INTO accounts (username, password, first_name, last_name, account_type) VALUES ($1, $2, $3, $4, $5)",
+                    [boss_user, hash, "boss", "boss", "boss"],
+                )
+                .then(() => console.log("inserted!"))
+                .catch((error) => console.log(error));
+        } catch (error) {
+            console.log(error);
+            console.log("Error during POS setup.");
+        }
+    }
+
     console.log("Connected to database");
 });
 
@@ -27,15 +57,24 @@ function query(query, values, res, sendStatus = false) {
         });
 }
 
-// TODO: put auth functions and other stuff into a seperate file
-const tokenStorage = {};
 const authentication = (req, res, next) => {
     const { posAuth } = req.cookies;
 
-    if (!tokenStorage.hasOwnProperty(posAuth) || !tokenStorage[posAuth])
-        return res.sendStatus(401);
+    pool.query("SELECT * FROM tokens WHERE token = $1", [posAuth])
+        .then((result) => {
+            if (result.rows.length === 0) {
+                // redirect to login page
+                // https://expressjs.com/en/4x/api.html#res.redirect
+                return res.redirect(401, "/pos/login");
+            }
 
-    next();
+            // not putting next() in here caused me an hour of pain
+            next();
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
 };
 
 const generateRandomToken = () => {
@@ -48,6 +87,48 @@ const cookieOptions = {
     secure: true, // only sent over HTTPS connections
     sameSite: "strict", // only sent to this domain
 };
+
+// this was pain
+apiRouter.post("/auth/pos/login", async (req, res) => {
+    const body = req.body;
+
+    if (!body.hasOwnProperty("username") || !body.hasOwnProperty("password")) {
+        return res.sendStatus(400);
+    }
+
+    //login process adapted from the demos
+    //https://gitlab.cci.drexel.edu/nkl43/cs375_demos/-/blob/main/demo_password_cookies/app/server.js
+    const result = await pool
+        .query("SELECT * FROM accounts WHERE username = $1", [body.username])
+        .then((result) => {
+            if (result.rows.length === 0) return res.sendStatus(400);
+
+            return result.rows[0];
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
+
+    const { id, password } = result;
+    const verified = await argon2.verify(password, body.password);
+
+    if (!verified) return res.sendStatus(400);
+
+    const token = generateRandomToken();
+    return pool
+        .query("INSERT INTO tokens (token, user_id) VALUES ($1, $2)", [
+            token,
+            id,
+        ])
+        .then(() => {
+            return res.cookie("posAuth", token, cookieOptions);
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
+});
 
 apiRouter.get("/auth/pos", (req, res) => {
     const { posAuth } = req.cookies;
