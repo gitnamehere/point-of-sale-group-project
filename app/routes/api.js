@@ -92,7 +92,12 @@ const cookieOptions = {
 apiRouter.post("/auth/pos/login", async (req, res) => {
     const body = req.body;
 
-    if (!body.hasOwnProperty("username") || !body.hasOwnProperty("password")) {
+    if (
+        !body.hasOwnProperty("username") ||
+        !body.hasOwnProperty("password") ||
+        body.username.length < 1 ||
+        body.password.length < 1
+    ) {
         return res.sendStatus(400);
     }
 
