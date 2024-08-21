@@ -38,7 +38,7 @@ CREATE TABLE cart_item (
 --wip
 CREATE TABLE orders (
 	id SERIAL PRIMARY KEY,
-	items JSON, -- revisit for possible junction table implementation (order-item)
+	items JSON, -- revisit for possible junction table implementation (order_item)
 	subtotal DECIMAL(10,2),
 	discount DECIMAL(10,2),
 	tips DECIMAL(10, 2),
