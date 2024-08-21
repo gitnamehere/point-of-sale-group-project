@@ -2,13 +2,6 @@ body {
     background-color: rgb(237, 237, 237);
 }
 
-h1 {
-    padding: 15px;
-    padding-left: 25px;
-    font-size: 20px;
-    font-family: sans-serif;
-}
-
 label {
     color: rgb(101, 101, 101);
     padding-left: 25px;
@@ -59,6 +52,35 @@ button {
 button:hover,
 .item:hover {
     background-color: rgb(206, 206, 206);
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    height: 80px;
+    background-color: #111;
+}
+
+.header-title {
+    color: #eee;
+    margin: auto 0;
+    font-weight: 700 !important;
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: auto;
+}
+
+.header-button {
+    margin-left: 16px;
+    font-size: 24px;
+    font-weight: 700;
 }
 
 #submit {
