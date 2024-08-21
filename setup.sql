@@ -16,6 +16,10 @@ CREATE TABLE item (
 	CONSTRAINT fk_item_category FOREIGN KEY (category) REFERENCES item_category(id)
 );
 
+-- if we are going to use order_item, we should remove the foreign key, and add in
+-- a name and price column in case the user want to delete an item and you won't have to
+-- delete the corresponding order_item
+-- otherwise we could add an is_deleted boolean in the item table so the item is soft deleted
 CREATE TABLE order_item (
 	id SERIAL PRIMARY KEY,
 	item_id INT NOT NULL,
@@ -34,12 +38,14 @@ CREATE TABLE cart_item (
 --wip
 CREATE TABLE orders (
 	id SERIAL PRIMARY KEY,
-	items JSON, -- revisit for possible junction table implementation
+	items JSON, -- revisit for possible junction table implementation (order-item)
 	subtotal DECIMAL(10,2),
 	discount DECIMAL(10,2),
+	tips DECIMAL(10, 2),
 	total DECIMAL(10,2),
-	payment_status BOOLEAN,
-	date_ordered DATE
+	is_paid BOOLEAN,
+	is_void BOOLEAN,
+	date_ordered DATE, -- TODO: change this to NOT NULL
 );
 
 CREATE TABLE discounts (
