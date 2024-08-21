@@ -45,7 +45,7 @@ CREATE TABLE orders (
 	total DECIMAL(10,2),
 	is_paid BOOLEAN,
 	is_void BOOLEAN,
-	date_ordered DATE, -- TODO: change this to NOT NULL
+	date_ordered DATE -- TODO: change this to NOT NULL
 );
 
 CREATE TABLE discounts (
