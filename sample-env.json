@@ -3,5 +3,7 @@
     "host": "localhost",
     "database": "pos",
     "password": "ADD PASSWORD HERE",
+    "boss_user": "ADD BOSS USERNAME HERE",
+    "boss_password": "ADD BOSS PASSWORD HERE",
     "port": 5432
 }
