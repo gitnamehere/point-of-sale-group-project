@@ -314,4 +314,16 @@ apiRouter.get("/discounts/:code", (req, res) => {
     query("SELECT discount FROM discounts WHERE code = $1", [code], res);
 });
 
+apiRouter.put("/orders/process/:id", (req, res) => {
+    const id = req.params.id;
+    const {discountAmount, tipAmount, total, isPaid} = req.body;
+
+    query(
+        "UPDATE orders SET discount = $1, tips = $2, total = $3, is_paid = $4 WHERE id = $5",
+        [discountAmount, tipAmount, total, isPaid, id],
+        res,
+        true,
+    );
+});
+
 module.exports = { apiRouter, authentication };

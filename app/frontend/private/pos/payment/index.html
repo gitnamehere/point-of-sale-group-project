@@ -11,7 +11,8 @@
             <div class="orderSummary">
                 <h2>Order Summary</h2>
                 <div id="discountContainer">
-                    <input type="text" id="discountInput" value="" />
+                    <h3>Discount Code</h3>
+                    <input type="text" id="discountInput" placeholder="Enter code here" />
                     <button id="discountButton">Enter</button>
                 </div>
                 <div id="tipsContainer">
@@ -35,8 +36,8 @@
             </div>
 
             <div id="payment">
-                <span>Amount due:</span><span id="amountDue">$0.00</span>
-                <input type="text" id="cashInput" value="$0.00" readonly />
+                <span>Amount due:</span><span id="amountDue">$ 0.00</span>
+                <input type="text" id="cashInput" value="$ 0.00" readonly />
                 <div class="numPad">
                     <button class="num-btn" data-value="1">1</button>
                     <button class="num-btn" data-value="2">2</button>
@@ -48,9 +49,10 @@
                     <button class="num-btn" data-value="8">8</button>
                     <button class="num-btn" data-value="9">9</button>
                     <button class="num-btn" data-value="0">0</button>
-                    <button class="num-btn" data-value=".">.</button>
+                    <button id="delete"></button>
                     <button id="clear">C</button>
                 </div>
+                <button id="payButton">Pay</button>
             </div>
         </div>
         <script src="script.js"></script>
