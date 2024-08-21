@@ -21,15 +21,15 @@ html {
 }
 
 #home {
-	height: 100vh;
+    height: 100vh;
     position: relative;
     overflow: hidden;
 }
 
 #home img {
-	width: 100%;
+    width: 100%;
     height: 100%;
-	object-fit: cover;
+    object-fit: cover;
     object-position: center;
 }
 
@@ -56,16 +56,18 @@ html {
 }
 
 .bond img {
-	width: 100%;
+    width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
 }
 
-#about, #contact {
+#about,
+#contact {
     height: 60vh;
 }
 
-#about h1, #contact h1 {
+#about h1,
+#contact h1 {
     margin-bottom: 4rem;
 }
