@@ -117,6 +117,14 @@ function updateTotals() {
     total.textContent = subtotalCount.toFixed(2);
 }
 
+function clearOrder() {
+    ticketTable.textContent = "";
+    order = {};
+    selectedItem = {};
+    deleteItemButton.disabled = true;
+    updateTotals();
+}
+
 deleteItemButton.addEventListener("click", () => {
     if (selectedItem.hasOwnProperty("id")) {
         selectedItem.node.remove();
@@ -129,13 +137,7 @@ deleteItemButton.addEventListener("click", () => {
     deleteItemButton.disabled = true;
 });
 
-clearOrderButton.addEventListener("click", () => {
-    ticketTable.textContent = "";
-    order = {};
-    selectedItem = {};
-    deleteItemButton.disabled = true;
-    updateTotals();
-});
+clearOrderButton.addEventListener("click", () => clearOrder());
 
 orderButton.addEventListener("click", () => {
     if (Object.keys(order).length === 0) return;
@@ -150,7 +152,15 @@ orderButton.addEventListener("click", () => {
             subtotal: subtotal.textContent,
         }),
     })
-        .then((response) => alert("Order added!"))
+        .then((response) => {
+            if (response.status === 200) {
+                alert("Order placed!");
+                clearOrder(); // in case the user presses the back button
+                window.location = "/pos/orders";
+            } else {
+                alert("An error occured");
+            }
+        })
         .catch((error) => console.log(error));
 });
 

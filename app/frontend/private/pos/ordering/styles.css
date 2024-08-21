@@ -8,21 +8,40 @@ body {
     background-color: #eee;
 }
 
-.container {
+.ordering-container {
     display: flex;
     flex-direction: row;
-    /* height is set to the height of the window minus the header and bottom row size */
-    height: calc(100vh - 160px);
+    /* height is set to the height of the window minus the header */
+    height: calc(100vh - 80px);
 }
 
 .header {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0 16px;
+    justify-content: space-between;
+    padding: 12px;
     height: 80px;
     background-color: #111;
+}
+
+.header-title {
     color: #eee;
+    margin: auto 0;
+    font-weight: 700 !important;
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: auto;
+}
+
+.header-button {
+    margin-left: 16px;
+    font-size: 24px;
+    font-weight: 700;
 }
 
 .bottom {
@@ -39,6 +58,7 @@ body {
     flex: 2;
     flex-direction: column;
     border-right: 1px solid black;
+    padding-left: 0;
 }
 
 .category-item {
@@ -46,7 +66,7 @@ body {
     margin-bottom: 8px;
     border: 1px solid black;
     padding: 8px;
-    height: 40px;
+    height: 56px;
     font-weight: 700;
 }
 
@@ -69,8 +89,9 @@ body {
 
 .category-item:hover,
 .item:hover,
-tr:hover {
-    background-color: #bbb;
+#ticket-table tr:hover {
+    background-color: #ccc;
+    transition: background-color 0.25s ease;
 }
 
 #ticket {
@@ -78,6 +99,7 @@ tr:hover {
     display: flex;
     flex-direction: column;
     border-left: 1px solid black;
+    padding-right: 0;
 }
 
 .ticket-body {
@@ -111,38 +133,8 @@ tr:hover {
 .button {
     flex: 1;
     border: none;
-    height: 40px;
+    height: 48px;
     color: white;
-}
-
-#delete-item {
-    background-color: #c00;
-}
-
-#delete-item:disabled {
-    background-color: #400;
-    color: #aaa;
-}
-
-/* https://developer.mozilla.org/en-US/docs/Web/CSS/:not */
-#delete-item:hover:not(:disabled) {
-    background-color: #800;
-}
-
-#clear {
-    background-color: #e80;
-}
-
-#clear:hover {
-    background-color: #a60;
-}
-
-#order {
-    background-color: #00c;
-}
-
-#order:hover {
-    background-color: #008;
 }
 
 .item-selected {
@@ -161,7 +153,6 @@ td {
 }
 
 td {
-    box-sizing: border-box;
     height: 40px;
     padding: 4px;
 }
