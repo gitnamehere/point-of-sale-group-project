@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS pos;
-CREATE DATABASE pos;
-\c pos;
+DROP DATABASE IF EXISTS atspos;
+CREATE DATABASE atspos;
+\c atspos;
 
 CREATE TABLE item_category (
 	id SERIAL PRIMARY KEY,
