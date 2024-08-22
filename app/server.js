@@ -20,6 +20,7 @@ hostname = process.env.NODE_ENV == "production" ? "0.0.0.0" : "localhost";
 // TODO: Everything
 
 app.use(express.json());
+app.use(express.static("frontend/public"));
 app.use("/api", apiRouter);
 app.use("/pos", posRouter);
 app.use("/store", storeRouter);
