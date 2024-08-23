@@ -1,8 +1,8 @@
 {
     "scripts": {
         "start": "node app/server.js",
-        "setup": "fly postgres connect -a FLYPOSTGRESAPPNAME < setup.sql",
-        "setup-demo": "fly postgres connect -a FLYPOSTGRESAPPNAME < setup.sql < demo-data.sql",
+        "fly-setup": "fly postgres connect -a atspos-db < setup.sql",
+        "fly-add-demo": "fly postgres connect -a atspos-db < demo-data.sql",
         "start:dev": "env-cmd node app/server.js",
         "setup:dev": "env-cmd psql -d postgres -f setup.sql",
         "setup-demo:dev": "env-cmd psql -d postgres -f setup.sql -f demo-data.sql",

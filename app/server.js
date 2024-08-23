@@ -1,10 +1,6 @@
 const express = require("express");
 const app = express();
 
-const { apiRouter } = require("./routes/api");
-const { posRouter } = require("./routes/pos");
-const { storeRouter } = require("./routes/store");
-
 // code adapted from the fly deployment demo
 
 // make this script's dir the cwd
@@ -17,10 +13,13 @@ let hostname;
 // fly.io sets NODE_ENV to production automatically, otherwise it's unset when running locally
 hostname = process.env.NODE_ENV == "production" ? "0.0.0.0" : "localhost";
 
+const { apiRouter } = require("./routes/api");
+const { posRouter } = require("./routes/pos");
+const { storeRouter } = require("./routes/store");
+
 // TODO: Everything
 
 app.use(express.json());
-app.use(express.static("frontend/public"));
 app.use("/api", apiRouter);
 app.use("/pos", posRouter);
 app.use("/store", storeRouter);
