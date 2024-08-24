@@ -154,17 +154,17 @@ apiRouter.get("/auth/pos/logout", (req, res) => {
 apiRouter.get("/items", (req, res) => {
     if (req.query.hasOwnProperty("category")) {
         return query(
-            "SELECT * FROM item WHERE category = $1 ORDER BY id ASC",
+            "SELECT * FROM item WHERE category = $1 AND is_deleted = false ORDER BY id ASC",
             [req.query.category],
             res,
         );
     }
 
-    query("SELECT * FROM item ORDER BY id ASC", [], res);
+    query("SELECT * FROM item AND is_deleted = false ORDER BY id ASC", [], res);
 });
 
 apiRouter.get("/items/:id", (req, res) => {
-    query("SELECT * FROM item WHERE id = $1", [req.params.id], res);
+    query("SELECT * FROM item WHERE id = $1 AND is_deleted = false", [req.params.id], res);
 });
 
 // demo api endpoint that may be removed later
@@ -259,7 +259,7 @@ apiRouter.put("/items/:id", (req, res) => {
     const id = req.params.id;
 
     query(
-        "UPDATE item SET name = $1, description = $2, price = $3 WHERE id = $4",
+        "UPDATE item SET name = $1, description = $2, price = $3 WHERE id = $4 AND is_deleted = false",
         [name, description, price, id],
         res,
         true,
@@ -276,7 +276,7 @@ apiRouter.delete("/items/:id", (req, res) => {
 
     const id = params.id;
 
-    query("DELETE FROM item WHERE id = $1", [id], res);
+    query("UPDATE item SET is_deleted = true WHERE id = $1", [id], res, true);
 });
 
 apiRouter.post("/orders/create", (req, res) => {
