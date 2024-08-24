@@ -332,8 +332,10 @@ apiRouter.post("/orders/create", async (req, res) => {
     }
 
     // create the order and the corresponding order_items;
+    // conveniently, postgres has a CURRENT_DATE function
+    //https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-CURRENT
     pool.query(
-        "INSERT INTO orders (items, subtotal) VALUES ($1, $2) RETURNING id",
+        "INSERT INTO orders (items, subtotal, date_ordered) VALUES ($1, $2, CURRENT_DATE) RETURNING id",
         [JSON.stringify(body.order), body.subtotal],
     )
         .then((result) => {

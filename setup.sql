@@ -34,7 +34,7 @@ CREATE TABLE orders (
 	total DECIMAL(10,2),
 	is_paid BOOLEAN DEFAULT false,
 	is_void BOOLEAN DEFAULT false,
-	date_ordered DATE -- TODO: change this to NOT NULL
+	date_ordered DATE NOT NULL -- TODO: change this to NOT NULL
 );
 
 CREATE TABLE order_item (
