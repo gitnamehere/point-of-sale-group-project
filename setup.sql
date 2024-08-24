@@ -24,7 +24,6 @@ CREATE TABLE cart_item (
 	CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES item(id)
 );
 
---wip
 CREATE TABLE orders (
 	id SERIAL PRIMARY KEY,
 	items JSON, -- TODO: remove this once this isn't used anymore (deprecated)
@@ -34,7 +33,7 @@ CREATE TABLE orders (
 	total DECIMAL(10,2),
 	is_paid BOOLEAN DEFAULT false,
 	is_void BOOLEAN DEFAULT false,
-	date_ordered DATE NOT NULL -- TODO: change this to NOT NULL
+	date_ordered DATE NOT NULL
 );
 
 CREATE TABLE order_item (
