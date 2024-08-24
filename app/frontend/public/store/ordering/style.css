@@ -85,7 +85,8 @@ body {
 }
 
 .ticket-body {
-    background-color: #dfe9a8;
+    color: #ffffff;
+    background-color: #6d6c6c;
     border: 1px solid #86888b;
     overflow-y: auto;
     padding: 10px;
