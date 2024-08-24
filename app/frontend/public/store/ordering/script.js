@@ -34,7 +34,9 @@ function fetchItemsByCategoryId(id) {
                 itemPrice.textContent = `$${parseFloat(item.price).toFixed(2)}`;
                 itemElement.appendChild(itemPrice);
 
-                itemElement.addEventListener("click", () => addItemToCart(item));
+                itemElement.addEventListener("click", () =>
+                    addItemToCart(item),
+                );
                 itemGrid.appendChild(itemElement);
             });
         })
@@ -62,7 +64,9 @@ function addItemToCart(item) {
         const itemRow = document.getElementById(id);
         itemRow.children[0].textContent++;
         cart[id].quantity++;
-        itemRow.children[2].textContent = (numericPrice * cart[id].quantity).toFixed(2);
+        itemRow.children[2].textContent = (
+            numericPrice * cart[id].quantity
+        ).toFixed(2);
     } else {
         cart[id] = { quantity: 1, name, price: numericPrice };
 
@@ -102,7 +106,7 @@ function updateCartTotals() {
     const total = subtotal + tax;
 
     cartSubtotal.textContent = subtotal.toFixed(2);
-    document.getElementById('taxes').textContent = tax.toFixed(2);
+    document.getElementById("taxes").textContent = tax.toFixed(2);
     cartTotal.textContent = total.toFixed(2);
 }
 
