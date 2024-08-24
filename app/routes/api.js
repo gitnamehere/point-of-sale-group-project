@@ -215,7 +215,11 @@ apiRouter.get("/items", (req, res) => {
 });
 
 apiRouter.get("/items/:id", (req, res) => {
-    query("SELECT * FROM item WHERE id = $1 AND is_deleted = false", [req.params.id], res);
+    query(
+        "SELECT * FROM item WHERE id = $1 AND is_deleted = false",
+        [req.params.id],
+        res,
+    );
 });
 
 // demo api endpoint that may be removed later
@@ -288,17 +292,71 @@ apiRouter.delete("/items/:id", (req, res) => {
 
 // orders
 
-apiRouter.post("/orders/create", (req, res) => {
+// O(n) time complexity :)
+// (there has to be a better way of doing this)
+apiRouter.post("/orders/create", async (req, res) => {
     const body = req.body;
 
     if (!body.hasOwnProperty("order")) return res.sendStatus(400);
-    // TODO: add validation
-    query(
-        "INSERT INTO orders (items, subtotal) VALUES ($1, $2)",
+
+    const orderItems = Object.entries(body.order);
+
+    // get the list of (non deleted) item ids from the db
+    let validItems = [];
+    // use await here otherwise items would be undefined
+    await pool
+        .query("SELECT id FROM item WHERE is_deleted = false")
+        .then((result) => {
+            // there has to be a better way of doing this
+            for (let i = 0; i < result.rows.length; i++) {
+                validItems.push(result.rows[i].id);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
+
+    // validation (I haven't tested this with bad data yet)
+    for (let i = 0; i < orderItems.length; i++) {
+        // parse and update orderItems for later use
+        orderItems[i][0] = parseInt(orderItems[i][0]); // id
+        orderItems[i][1] = parseInt(orderItems[i][1]); // quantity
+
+        if (
+            isNaN(orderItems[i][0]) ||
+            isNaN(orderItems[i][1]) ||
+            !validItems.includes(orderItems[i][0])
+        )
+            return res.sendStatus(400);
+    }
+
+    // create the order and the corresponding order_items;
+    pool.query(
+        "INSERT INTO orders (items, subtotal) VALUES ($1, $2) RETURNING id",
         [JSON.stringify(body.order), body.subtotal],
-        res,
-        true,
-    );
+    )
+        .then((result) => {
+            for (let i = 0; i < orderItems.length; i++) {
+                const itemId = orderItems[i][0];
+                const quantity = orderItems[i][1];
+                const orderId = result.rows[0].id;
+
+                pool.query(
+                    "INSERT INTO order_item (item_id, quantity, order_id) VALUES ($1, $2, $3)",
+                    [itemId, quantity, orderId],
+                ).catch((error) => {
+                    console.log(error);
+                    return res.sendStatus(500);
+                });
+            }
+
+            return res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
 });
 
 apiRouter.get("/orders", (req, res) => {
@@ -312,6 +370,15 @@ apiRouter.get("/orders/:id", (req, res) => {
     }
 
     query("SELECT * FROM orders WHERE id = $1", [id], res);
+});
+
+apiRouter.get("/orders/items/:id", (req, res) => {
+    const id = req.params.id;
+    if (!id) {
+        return res.sendStatus(400);
+    }
+
+    query("SELECT * FROM order_item WHERE order_id = $1", [id], res);
 });
 
 apiRouter.get("/discounts/:code", (req, res) => {
