@@ -88,6 +88,8 @@ const cookieOptions = {
     sameSite: "strict", // only sent to this domain
 };
 
+// accounts and authtication
+
 // this was pain
 apiRouter.post("/auth/pos/login", async (req, res) => {
     const body = req.body;
@@ -150,6 +152,55 @@ apiRouter.get("/auth/pos/logout", (req, res) => {
         });
 });
 
+// TODO: update this to new schema
+apiRouter.post("/accounts/add", (req, res) => {
+    const body = req.body;
+
+    if (
+        !body.hasOwnProperty("username") ||
+        !body.hasOwnProperty("firstname") ||
+        !body.hasOwnProperty("lastname") ||
+        !body.hasOwnProperty("accountType") ||
+        body.username.length > 50 ||
+        body.username.length < 1 ||
+        body.firstname.length > 50 ||
+        body.firstname.length < 1 ||
+        body.lastname.length > 50 ||
+        body.lastname.length < 1 ||
+        body.accountType.length > 50 ||
+        body.accountType.length < 1
+    ) {
+        return res.sendStatus(400);
+    }
+
+    const { username, firstname, lastname, accountType } = req.body;
+
+    query(
+        "INSERT INTO account(username, first_name, last_name, account_type) VALUES($1, $2, $3, $4)",
+        [username, firstname, lastname, accountType],
+        res,
+        true,
+    );
+});
+
+// item categories
+
+apiRouter.post("/category/add", (req, res) => {
+    const body = req.body;
+
+    if (
+        !body.hasOwnProperty("name") ||
+        body.name.length > 50 ||
+        body.name.length < 1
+    ) {
+        return res.sendStatus(400);
+    }
+
+    query("INSERT INTO item_category(name) VALUES($1)", [body.name], res, true);
+});
+
+// items
+
 // request header to return all the items in the database, with optional query to return based on category
 apiRouter.get("/items", (req, res) => {
     if (req.query.hasOwnProperty("category")) {
@@ -197,50 +248,6 @@ apiRouter.post("/item/add", (req, res) => {
     );
 });
 
-apiRouter.post("/category/add", (req, res) => {
-    const body = req.body;
-
-    if (
-        !body.hasOwnProperty("name") ||
-        body.name.length > 50 ||
-        body.name.length < 1
-    ) {
-        return res.sendStatus(400);
-    }
-
-    query("INSERT INTO item_category(name) VALUES($1)", [body.name], res, true);
-});
-
-apiRouter.post("/accounts/add", (req, res) => {
-    const body = req.body;
-
-    if (
-        !body.hasOwnProperty("username") ||
-        !body.hasOwnProperty("firstname") ||
-        !body.hasOwnProperty("lastname") ||
-        !body.hasOwnProperty("accountType") ||
-        body.username.length > 50 ||
-        body.username.length < 1 ||
-        body.firstname.length > 50 ||
-        body.firstname.length < 1 ||
-        body.lastname.length > 50 ||
-        body.lastname.length < 1 ||
-        body.accountType.length > 50 ||
-        body.accountType.length < 1
-    ) {
-        return res.sendStatus(400);
-    }
-
-    const { username, firstname, lastname, accountType } = req.body;
-
-    query(
-        "INSERT INTO account(username, first_name, last_name, account_type) VALUES($1, $2, $3, $4)",
-        [username, firstname, lastname, accountType],
-        res,
-        true,
-    );
-});
-
 // PUT API endpoint to update exisiting item
 apiRouter.put("/items/:id", (req, res) => {
     const body = req.body;
@@ -278,6 +285,8 @@ apiRouter.delete("/items/:id", (req, res) => {
 
     query("UPDATE item SET is_deleted = true WHERE id = $1", [id], res, true);
 });
+
+// orders
 
 apiRouter.post("/orders/create", (req, res) => {
     const body = req.body;
