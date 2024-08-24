@@ -13,6 +13,7 @@ CREATE TABLE item (
 	category INT NOT NULL,
 	description TEXT NOT NULL,
 	price DECIMAL(10,2),
+	is_deleted BOOLEAN DEFAULT false,
 	CONSTRAINT fk_item_category FOREIGN KEY (category) REFERENCES item_category(id)
 );
 
@@ -43,8 +44,8 @@ CREATE TABLE orders (
 	discount DECIMAL(10,2),
 	tips DECIMAL(10, 2),
 	total DECIMAL(10,2),
-	is_paid BOOLEAN,
-	is_void BOOLEAN,
+	is_paid BOOLEAN DEFAULT false,
+	is_void BOOLEAN DEFAULT false,
 	date_ordered DATE -- TODO: change this to NOT NULL
 );
 
