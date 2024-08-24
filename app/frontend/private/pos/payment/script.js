@@ -107,15 +107,14 @@ fetch(`/api/orders/${orderId}`, {
 
         payBtn.addEventListener("click", () => {
             let cash = parseFloat(cashInput.value.replace("$", ""));
-            const change = cash - total;
-            changeElement = "$ " + change.toFixed(2);
-    
-            if (cash < total) {
+            const change = cash - total.toFixed(2);
+            changeElement = "$ " + change.toFixed(2); 
+
+            if (cash < total.toFixed(2)) {
                 alert("Error: Payment was not fulfilled")
                 return;
             } else {
-                isPaid = true;
-                const orderDetails = {discountAmount, tipAmount, total, isPaid};
+                const orderDetails = {discountAmount, tipAmount, total};
                 console.log(orderDetails);
                 fetch(`/api/orders/process/${orderId}`, {
                     method: "PUT",
@@ -125,11 +124,7 @@ fetch(`/api/orders/${orderId}`, {
                     body: JSON.stringify(orderDetails),
                 })
                     .then((response) => {
-                        if (response.ok) {
-                            alert(`Your change is $${change.toFixed(2)}`);
-                        } else {
-                            alert("Error: Payment could not be processed");
-                        }
+                        response.ok ? alert(`Your change is $${change.toFixed(2)}`) : alert("Error: Payment could not be processed");
                     })
                     .catch((error) => console.log(error));
             }
