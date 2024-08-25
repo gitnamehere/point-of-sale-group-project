@@ -5,9 +5,12 @@ const catInput = document.getElementById("category");
 const nameInput = document.getElementById("name");
 const descInput = document.getElementById("description");
 const priceInput = document.getElementById("price");
+const fileInput = document.getElementById("csv");
+const file = new FormData();
 
 // buttons
 const create = document.getElementById("submit");
+const upload = document.getElementById("upload");
 
 // display item_category
 fetch("/api/item/categories")
@@ -49,4 +52,15 @@ create.addEventListener("click", () => {
         .catch((error) => {
             console.log(error);
         });
+});
+
+upload.addEventListener("click", () => {
+    console.log(fileInput.files[0]);
+
+    file.append("file", fileInput.files[0]);
+
+    fetch("/api/item/upload", {
+        method: "POST",
+        body: file,
+    });
 });

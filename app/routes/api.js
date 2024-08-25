@@ -5,6 +5,8 @@ const { Pool } = require("pg");
 const env = require("../../env.json");
 const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
+const multer = require("multer");
+const Papa = require("papaparse");
 
 apiRouter.use(cookieParser());
 
@@ -197,6 +199,50 @@ apiRouter.post("/item/add", (req, res) => {
     );
 });
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+apiRouter.post("/item/upload", upload.single("file"), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded." });
+    }
+    const csvData = req.file.buffer.toString("utf-8");
+
+    Papa.parse(csvData, {
+        header: true,
+        complete: (results) => {
+            console.log("Parsed CSV data:", results.data);
+
+            const rows = results.data;
+
+            for (let i = 0; i < rows.length; i++) {
+                fetch("/api/item/add", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(rows[i]),
+                })
+                    .then((response) => {
+                        response.ok ? alert("Success") : alert("Failure");
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+
+            res.json({
+                message: "File uploaded and parsed successfully",
+                data: results.data,
+            });
+        },
+        error: (error) => {
+            res.status(500).json({ error: "Error parsing CSV file." });
+            console.error("Error parsing CSV file:", error);
+        },
+    });
+});
+
 apiRouter.post("/category/add", (req, res) => {
     const body = req.body;
 
@@ -316,7 +362,7 @@ apiRouter.get("/discounts/:code", (req, res) => {
 
 apiRouter.put("/orders/process/:id", (req, res) => {
     const id = req.params.id;
-    const {discountAmount, tipAmount, total} = req.body;
+    const { discountAmount, tipAmount, total } = req.body;
 
     query(
         "UPDATE orders SET discount = $1, tips = $2, total = $3, is_paid = true WHERE id = $4",
