@@ -212,8 +212,6 @@ apiRouter.post("/item/upload", upload.single("file"), (req, res) => {
     Papa.parse(csvData, {
         header: true,
         complete: (results) => {
-            console.log("Parsed CSV data:", results.data);
-
             res.json({
                 message: "File uploaded and parsed successfully",
                 data: results.data,

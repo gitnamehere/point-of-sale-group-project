@@ -1,5 +1,6 @@
 // need to implement image adding and discount percentage
 
+
 // item information
 const catInput = document.getElementById("category");
 const nameInput = document.getElementById("name");
@@ -55,12 +56,40 @@ create.addEventListener("click", () => {
 });
 
 upload.addEventListener("click", () => {
-    console.log(fileInput.files[0]);
-
     file.append("file", fileInput.files[0]);
 
     fetch("/api/item/upload", {
         method: "POST",
         body: file,
+    })
+    .then(async (response) => {
+        const result = await response.json();
+        console.log(result.data);
+
+
+        // TODO
+        const item = {
+            category: result[0].category,
+            name: result[0].name,
+            description: result[0].description,
+            price: result[0].price,
+        };
+    
+        fetch("/api/item/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(item),
+        })
+            .then((response) => {
+                response.ok ? alert("Success") : alert("Failure");
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    })
+    .catch((error) => {
+        console.log(error);
     });
 });
