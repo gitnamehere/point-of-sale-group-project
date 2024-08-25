@@ -2,14 +2,25 @@ const express = require("express");
 const argon2 = require("argon2");
 const apiRouter = express.Router();
 const { Pool } = require("pg");
-const env = require("../../env.json");
 const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
 
 apiRouter.use(cookieParser());
 
+// code adapted from the fly deployment demo
+
+let databaseConfig;
+// fly.io sets NODE_ENV to production automatically, otherwise it's unset when running locally
+if (process.env.NODE_ENV == "production") {
+    databaseConfig = { connectionString: process.env.DATABASE_URL };
+} else {
+    let { PGUSER, PGPASSWORD, PGDATABASE, PGHOST, PGPORT } = process.env;
+    databaseConfig = { PGUSER, PGPASSWORD, PGDATABASE, PGHOST, PGPORT };
+}
+
 // TODO: put database query into a seperate file
-const pool = new Pool(env);
+const pool = new Pool(databaseConfig);
+
 // query and hashing code adapted from the password demo
 // https://gitlab.cci.drexel.edu/nkl43/cs375_demos/-/blob/main/demo_password_cookies/dummy.js
 pool.connect().then(async (client) => {
@@ -21,16 +32,16 @@ pool.connect().then(async (client) => {
 
     // if the POS has been newly set up (there are no accounts)
     if (accounts.length === 0) {
-        const { boss_user, boss_password } = env;
+        const { BOSS_USER, BOSS_PASSWORD } = process.env;
 
         let hash = "";
         try {
-            hash = await argon2.hash(boss_password);
+            hash = await argon2.hash(BOSS_PASSWORD);
 
             await client
                 .query(
                     "INSERT INTO accounts (username, password, first_name, last_name, account_type) VALUES ($1, $2, $3, $4, $5)",
-                    [boss_user, hash, "boss", "boss", "boss"],
+                    [BOSS_USER, hash, "boss", "boss", "boss"],
                 )
                 .then(() => console.log("Boss account created!"))
                 .catch((error) => console.log(error));

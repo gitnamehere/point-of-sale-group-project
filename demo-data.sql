@@ -1,4 +1,4 @@
-\c pos
+\c atspos
 INSERT INTO item_category (name) VALUES ('Trinkets');
 INSERT INTO item_category (name) VALUES ('Stickers');
 INSERT INTO item_category (name) VALUES ('Aspirations');

@@ -1,7 +1,17 @@
 const express = require("express");
 const app = express();
-const hostname = "localhost";
+
+// code adapted from the fly deployment demo
+
+// make this script's dir the cwd
+// b/c npm run start doesn't cd into src/ to run this
+// and if we aren't in its cwd, all relative paths will break
+process.chdir(__dirname);
+
 const port = 3000;
+let hostname;
+// fly.io sets NODE_ENV to production automatically, otherwise it's unset when running locally
+hostname = process.env.NODE_ENV == "production" ? "0.0.0.0" : "localhost";
 
 const { apiRouter } = require("./routes/api");
 const { posRouter } = require("./routes/pos");

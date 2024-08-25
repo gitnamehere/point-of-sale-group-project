@@ -26,11 +26,12 @@ The project involves developing a POS system user interface and an ECommerce web
 
 **- Stripe Integration:** The feature allows the use of credit/debit cards transaction on the POS system and website
 
-## Running the Project
+## Running the Project Locally
 
 #### Requirements:
 
 -   Node.js
+
 -   PostgreSQL
 
 -   psql (CLI tool for Postgres)
@@ -39,18 +40,20 @@ The project involves developing a POS system user interface and an ECommerce web
 
 -   `npm i`
 
-#### Setting up env.json
+#### Setting up .env
 
-Copy `sample-env.json` into a new file `env.json`
+Copy `sample.env` into a new file `.env`
 
-Replace `user` and `password` with your Postgres username and password, this is for the Postgres Database
+Replace `PGUSER` and `PGPASSWORD` values with your Postgres username and password, this is for the Postgres Database
 
-Replace `boss_user` and `boss_password` with your POS username and password, this will be the first account you will log in to the POS
+Replace `BOSS_USER` and `BOSS_PASSWORD` values with your POS username and password, this will be the first account you will log in to the POS
+
+Replace `DBNAME` value with your DB name, or keep it as `atspos` for default
 
 ### Starting the Server
 
-**Setup server:** `npm run setup`
+**Setup server:** `npm run setup:dev`
 
-**Alternatively, run setup server with demo items:** `npm run setup-demo`
+**Alternatively, run setup server with demo items:** `npm run setup-demo:dev`
 
-**Start server:** `npm run start`
+**Start server:** `npm run start:dev`

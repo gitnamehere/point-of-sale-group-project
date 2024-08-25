@@ -1,17 +1,22 @@
 {
     "scripts": {
-        "start": "cd app && node server.js",
-        "setup": "psql -U postgres -f setup.sql",
-        "setup-demo": "psql -U postgres -f setup.sql -f demo-data.sql",
+        "start": "node app/server.js",
+        "fly-setup": "fly postgres connect -a atspos-db < setup.sql",
+        "fly-add-demo": "fly postgres connect -a atspos-db < demo-data.sql",
+        "start:dev": "env-cmd node app/server.js",
+        "setup:dev": "env-cmd psql -d postgres -f setup.sql",
+        "setup-demo:dev": "env-cmd psql -d postgres -f setup.sql -f demo-data.sql",
         "prettier": "npx prettier . --write"
     },
     "dependencies": {
         "argon2": "^0.40.3",
         "cookie-parser": "^1.4.6",
+        "env-cmd": "^10.1.0",
         "express": "^4.19.2",
         "pg": "^8.12.0"
     },
     "devDependencies": {
+        "@flydotio/dockerfile": "^0.5.8",
         "prettier": "3.3.3"
     }
 }
