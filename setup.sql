@@ -13,19 +13,8 @@ CREATE TABLE item (
 	category INT NOT NULL,
 	description TEXT NOT NULL,
 	price DECIMAL(10,2),
+	is_deleted BOOLEAN DEFAULT false,
 	CONSTRAINT fk_item_category FOREIGN KEY (category) REFERENCES item_category(id)
-);
-
--- if we are going to use order_item, we should remove the foreign key, and add in
--- a name and price column in case the user want to delete an item and you won't have to
--- delete the corresponding order_item
--- otherwise we could add an is_deleted boolean in the item table so the item is soft deleted
-CREATE TABLE order_item (
-	id SERIAL PRIMARY KEY,
-	item_id INT NOT NULL,
-	quantity INT NOT NULL,
-	date_ordered DATE NOT NULL,
-	CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES item(id)
 );
 
 CREATE TABLE cart_item (
@@ -35,17 +24,25 @@ CREATE TABLE cart_item (
 	CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES item(id)
 );
 
---wip
 CREATE TABLE orders (
 	id SERIAL PRIMARY KEY,
-	items JSON, -- revisit for possible junction table implementation (order_item)
+	items JSON, -- TODO: remove this once this isn't used anymore (deprecated)
 	subtotal DECIMAL(10,2),
 	discount DECIMAL(10,2),
 	tips DECIMAL(10, 2),
 	total DECIMAL(10,2),
-	is_paid BOOLEAN,
-	is_void BOOLEAN,
-	date_ordered DATE -- TODO: change this to NOT NULL
+	is_paid BOOLEAN DEFAULT false,
+	is_void BOOLEAN DEFAULT false,
+	date_ordered DATE NOT NULL
+);
+
+CREATE TABLE order_item (
+	id SERIAL PRIMARY KEY,
+	item_id INT NOT NULL,
+	quantity INT NOT NULL,
+	order_id INT NOT NULL,
+	CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES item(id),
+	CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES orders(id)
 );
 
 CREATE TABLE discounts (
