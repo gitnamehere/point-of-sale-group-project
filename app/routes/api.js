@@ -7,6 +7,7 @@ const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
 const Papa = require("papaparse");
+const { log } = require("console");
 
 apiRouter.use(cookieParser());
 
@@ -212,24 +213,6 @@ apiRouter.post("/item/upload", upload.single("file"), (req, res) => {
         header: true,
         complete: (results) => {
             console.log("Parsed CSV data:", results.data);
-
-            const rows = results.data;
-
-            for (let i = 0; i < rows.length; i++) {
-                fetch("/api/item/add", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(rows[i]),
-                })
-                    .then((response) => {
-                        response.ok ? alert("Success") : alert("Failure");
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            }
 
             res.json({
                 message: "File uploaded and parsed successfully",
