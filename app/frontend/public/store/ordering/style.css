@@ -1,0 +1,120 @@
+* {
+    font-family: "Arial", sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #f8f9fa;
+}
+
+.ordering-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #343a40;
+    color: #fff;
+}
+
+.header-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.header-buttons .header-button {
+    margin-left: 15px;
+}
+
+.section {
+    padding: 10px;
+}
+
+#categories {
+    display: flex;
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.category-item {
+    background-color: #ffffff;
+    font-weight: bold;
+    border: 1px solid #454647;
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    flex: 1;
+    margin: 0;
+    border-spacing: 1000;
+}
+
+.category-item:hover {
+    background-color: #e2e6ea;
+}
+
+.item-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+#items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.item {
+    border: 1px solid black;
+    padding: 8px;
+    width: calc(50% - 10px);
+    box-sizing: border-box;
+}
+
+.item:hover {
+    background-color: #e2e6ea;
+}
+
+.item img {
+    width: 100%;
+    height: auto;
+}
+
+.ticket-body {
+    color: #ffffff;
+    background-color: #6d6c6c;
+    border: 1px solid #86888b;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.ticket-footer {
+    background-color: #ffffff;
+    border: 1px solid #86888b;
+    padding: 10px;
+}
+
+.footer-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    padding-bottom: 10px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.button {
+    width: 30%;
+}
