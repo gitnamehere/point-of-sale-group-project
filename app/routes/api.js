@@ -405,13 +405,48 @@ apiRouter.get("/discounts/:code", (req, res) => {
 
 apiRouter.put("/orders/process/:id", (req, res) => {
     const id = req.params.id;
-    const {discountAmount, tipAmount, total} = req.body;
+    const { discountAmount, tipAmount, total } = req.body;
 
     query(
         "UPDATE orders SET discount = $1, tips = $2, total = $3, is_paid = true WHERE id = $4",
         [discountAmount, tipAmount, total, id],
         res,
         true,
+    );
+});
+
+// TODO: should be a public API route (get)
+apiRouter.get("/business-information", (req, res) => {
+    query("SELECT * FROM business_information", [], res);
+});
+
+apiRouter.put("/business-information", (req, res) => {
+    const body = req.body;
+
+    // honestly we should write a function for this
+    if (
+        !body.hasOwnProperty("name") ||
+        !body.hasOwnProperty("description") ||
+        !body.hasOwnProperty("address_one") ||
+        !body.hasOwnProperty("address_two") ||
+        !body.hasOwnProperty("phone") ||
+        body.name.length < 1 ||
+        body.description.length < 1 ||
+        body.phone.length > 13 ||
+        body.phone.length < 1 ||
+        body.address_one.length < 1 ||
+        body.address_two.length < 1
+    ) {
+        return res.sendStatus(400);
+    }
+
+    const { name, description, address_one, address_two, phone } = body;
+
+    query(
+        "UPDATE business_information SET business_name = $1, description = $2, address_one = $3, address_two = $4, phone_number = $5 WHERE id = 1",
+        [name, description, address_one, address_two, phone],
+        res,
+        true
     );
 });
 
