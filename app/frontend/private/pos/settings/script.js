@@ -3,6 +3,7 @@ const descriptionInput = document.getElementById("description");
 const phoneInput = document.getElementById("phone");
 const addressOneInput = document.getElementById("address-one");
 const addressTwoInput = document.getElementById("address-two");
+const emailInput = document.getElementById("email");
 const submit = document.getElementById("submit");
 
 fetch("/api/business-information")
@@ -17,6 +18,7 @@ fetch("/api/business-information")
                 address_one,
                 address_two,
                 phone_number,
+                email,
             } = body[0];
 
             nameInput.value = business_name;
@@ -24,6 +26,7 @@ fetch("/api/business-information")
             addressOneInput.value = address_one;
             addressTwoInput.value = address_two;
             phoneInput.value = phone_number;
+            emailInput.value = email;
         });
     })
     .catch((error) => {
@@ -43,6 +46,7 @@ submit.addEventListener("click", () => {
             address_one: addressOneInput.value,
             address_two: addressTwoInput.value,
             phone: phoneInput.value,
+            email: emailInput.value,
         }),
     })
         .then((response) => {

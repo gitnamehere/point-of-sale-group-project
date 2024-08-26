@@ -9,6 +9,7 @@ const descriptionElement = document.getElementById("description");
 const addressOneElement = document.getElementById("address-one");
 const addressTwoElement = document.getElementById("address-two");
 const phoneElement = document.getElementById("phone");
+const emailElement = document.getElementById("email");
 
 fetch("/api/business-information")
     .then((response) => {
@@ -22,6 +23,7 @@ fetch("/api/business-information")
                 address_one,
                 address_two,
                 phone_number,
+                email,
             } = body[0];
 
             if (businessNameElement !== null)
@@ -32,7 +34,8 @@ fetch("/api/business-information")
                 addressOneElement.textContent = address_one;
             if (addressTwoElement !== null)
                 addressTwoElement.textContent = address_two;
-            if (phoneElement !== null) phoneElement.value = phone_number;
+            if (phoneElement !== null) phoneElement.textContent = phone_number;
+            if (emailElement !== null) emailElement.textContent = email;
         });
     })
     .catch((error) => {

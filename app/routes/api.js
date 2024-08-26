@@ -430,21 +430,23 @@ apiRouter.put("/business-information", (req, res) => {
         !body.hasOwnProperty("address_one") ||
         !body.hasOwnProperty("address_two") ||
         !body.hasOwnProperty("phone") ||
+        !body.hasOwnProperty("email") ||
         body.name.length < 1 ||
         body.description.length < 1 ||
         body.phone.length > 12 ||
         body.phone.length < 1 ||
         body.address_one.length < 1 ||
-        body.address_two.length < 1
+        body.address_two.length < 1 ||
+        body.email.length < 1
     ) {
         return res.sendStatus(400);
     }
 
-    const { name, description, address_one, address_two, phone } = body;
+    const { name, description, address_one, address_two, phone, email } = body;
 
     query(
-        "UPDATE business_information SET business_name = $1, description = $2, address_one = $3, address_two = $4, phone_number = $5 WHERE id = 1",
-        [name, description, address_one, address_two, phone],
+        "UPDATE business_information SET business_name = $1, description = $2, address_one = $3, address_two = $4, phone_number = $5, email = $6 WHERE id = 1",
+        [name, description, address_one, address_two, phone, email],
         res,
         true,
     );
