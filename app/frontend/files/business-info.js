@@ -3,8 +3,7 @@
 // change to getElementsByClassName instead of getElementById
 // if there are a multiple of each element in a page
 // (make sure to update every page that uses this)
-const businessNameElement =
-    document.getElementById("business-name");
+const businessNameElement = document.getElementById("business-name");
 const descriptionElement = document.getElementById("description");
 const addressOneElement = document.getElementById("address-one");
 const addressTwoElement = document.getElementById("address-two");
