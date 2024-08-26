@@ -432,7 +432,7 @@ apiRouter.put("/business-information", (req, res) => {
         !body.hasOwnProperty("phone") ||
         body.name.length < 1 ||
         body.description.length < 1 ||
-        body.phone.length > 13 ||
+        body.phone.length > 12 ||
         body.phone.length < 1 ||
         body.address_one.length < 1 ||
         body.address_two.length < 1
