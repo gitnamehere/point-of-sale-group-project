@@ -11,8 +11,13 @@ fetch("/api/business-information")
             return alert("Error fetching business information");
 
         return response.json().then((body) => {
-            const { business_name, description, address_one, address_two, phone_number } =
-                body[0];
+            const {
+                business_name,
+                description,
+                address_one,
+                address_two,
+                phone_number,
+            } = body[0];
 
             nameInput.value = business_name;
             descriptionInput.value = description;
@@ -42,7 +47,7 @@ submit.addEventListener("click", () => {
     })
         .then((response) => {
             response.status !== 200
-                ? alert("Error fetching business information")
+                ? alert("Error changing business information")
                 : alert("Successfully changed business settings!");
         })
         .catch((error) => {

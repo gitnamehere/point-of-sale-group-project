@@ -446,7 +446,7 @@ apiRouter.put("/business-information", (req, res) => {
         "UPDATE business_information SET business_name = $1, description = $2, address_one = $3, address_two = $4, phone_number = $5 WHERE id = 1",
         [name, description, address_one, address_two, phone],
         res,
-        true
+        true,
     );
 });
 
