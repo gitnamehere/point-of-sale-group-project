@@ -36,7 +36,7 @@ salesReporting.addEventListener("click", () => {
 
 storeSettings.addEventListener("click", () => {
     storeSettings.style.backgroundColor = "blue";
-    location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+    location.href = "/pos/settings";
 });
 
 logout.addEventListener("click", () => {
