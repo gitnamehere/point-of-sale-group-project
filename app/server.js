@@ -36,6 +36,10 @@ app.get("/index.js", (req, res) => {
     res.sendFile("frontend/public/index.js", { root: __dirname });
 });
 
+app.get("/business-info.js", (req, res) => {
+    res.sendFile("frontend/files/business-info.js", { root: __dirname });
+});
+
 app.listen(port, hostname, () => {
     console.log(`http://${hostname}:${port}`);
 });

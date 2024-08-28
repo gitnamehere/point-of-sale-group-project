@@ -80,8 +80,12 @@ CREATE TABLE tokens (
 
 CREATE TABLE business_information (
 	id SERIAL PRIMARY KEY,
-	business_name VARCHAR(50) NOT NULL,
-	phone_number VARCHAR(15) NOT NULL, --Phone example: 1-800-123-456
-	address TEXT NOT NULL,
+	business_name TEXT NOT NULL,
+	email TEXT NOT NULL,
+	phone_number VARCHAR(12) NOT NULL, --Phone example: 800-123-4567
+	address_one TEXT NOT NULL,
+	address_two TEXT NOT NULL,
 	description TEXT NOT NULL
 );
+
+INSERT INTO business_information (business_name, email, phone_number, address_one, address_two, description) VALUES ('Business', 'test@example.com', '000-000-0000', '1 Placeholder St', 'A, TX 00000', 'Insert business description here');
