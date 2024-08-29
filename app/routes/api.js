@@ -452,4 +452,24 @@ apiRouter.put("/business-information", (req, res) => {
     );
 });
 
+apiRouter.get("/cart/add", (req, res) => {
+    const body = req.body;
+
+    if (
+        !body.hasOwnProperty("item_id") ||
+        !body.hasOwnProperty("quantity")
+    ) {
+        return res.sendStatus(400);
+    }
+
+    const { item_id, quantity } = body;
+
+    query(
+        "INSERT INTO cart_item (item_id, quantity) VALUES ($1, $2)",
+        [item_id, quantity],
+        res,
+        true
+    );
+})
+
 module.exports = { apiRouter, authentication };
