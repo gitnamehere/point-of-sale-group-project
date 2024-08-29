@@ -33,7 +33,7 @@ html {
     object-position: center;
 }
 
-#home button {
+.order {
     position: absolute;
     top: 75%;
     left: 50%;

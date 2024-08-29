@@ -2,7 +2,6 @@ const express = require("express");
 const argon2 = require("argon2");
 const apiRouter = express.Router();
 const { Pool } = require("pg");
-const env = require("../../env.json");
 const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
@@ -11,8 +10,20 @@ const { log } = require("console");
 
 apiRouter.use(cookieParser());
 
+// code adapted from the fly deployment demo
+
+let databaseConfig;
+// fly.io sets NODE_ENV to production automatically, otherwise it's unset when running locally
+if (process.env.NODE_ENV == "production") {
+    databaseConfig = { connectionString: process.env.DATABASE_URL };
+} else {
+    let { PGUSER, PGPASSWORD, PGDATABASE, PGHOST, PGPORT } = process.env;
+    databaseConfig = { PGUSER, PGPASSWORD, PGDATABASE, PGHOST, PGPORT };
+}
+
 // TODO: put database query into a seperate file
-const pool = new Pool(env);
+const pool = new Pool(databaseConfig);
+
 // query and hashing code adapted from the password demo
 // https://gitlab.cci.drexel.edu/nkl43/cs375_demos/-/blob/main/demo_password_cookies/dummy.js
 pool.connect().then(async (client) => {
@@ -24,16 +35,16 @@ pool.connect().then(async (client) => {
 
     // if the POS has been newly set up (there are no accounts)
     if (accounts.length === 0) {
-        const { boss_user, boss_password } = env;
+        const { BOSS_USER, BOSS_PASSWORD } = process.env;
 
         let hash = "";
         try {
-            hash = await argon2.hash(boss_password);
+            hash = await argon2.hash(BOSS_PASSWORD);
 
             await client
                 .query(
                     "INSERT INTO accounts (username, password, first_name, last_name, account_type) VALUES ($1, $2, $3, $4, $5)",
-                    [boss_user, hash, "boss", "boss", "boss"],
+                    [BOSS_USER, hash, "boss", "boss", "boss"],
                 )
                 .then(() => console.log("Boss account created!"))
                 .catch((error) => console.log(error));
@@ -90,6 +101,8 @@ const cookieOptions = {
     secure: true, // only sent over HTTPS connections
     sameSite: "strict", // only sent to this domain
 };
+
+// accounts and authtication
 
 // this was pain
 apiRouter.post("/auth/pos/login", async (req, res) => {
@@ -153,21 +166,74 @@ apiRouter.get("/auth/pos/logout", (req, res) => {
         });
 });
 
+// TODO: update this to new schema
+apiRouter.post("/accounts/add", (req, res) => {
+    const body = req.body;
+
+    if (
+        !body.hasOwnProperty("username") ||
+        !body.hasOwnProperty("firstname") ||
+        !body.hasOwnProperty("lastname") ||
+        !body.hasOwnProperty("accountType") ||
+        body.username.length > 50 ||
+        body.username.length < 1 ||
+        body.firstname.length > 50 ||
+        body.firstname.length < 1 ||
+        body.lastname.length > 50 ||
+        body.lastname.length < 1 ||
+        body.accountType.length > 50 ||
+        body.accountType.length < 1
+    ) {
+        return res.sendStatus(400);
+    }
+
+    const { username, firstname, lastname, accountType } = req.body;
+
+    query(
+        "INSERT INTO account(username, first_name, last_name, account_type) VALUES($1, $2, $3, $4)",
+        [username, firstname, lastname, accountType],
+        res,
+        true,
+    );
+});
+
+// item categories
+
+apiRouter.post("/category/add", (req, res) => {
+    const body = req.body;
+
+    if (
+        !body.hasOwnProperty("name") ||
+        body.name.length > 50 ||
+        body.name.length < 1
+    ) {
+        return res.sendStatus(400);
+    }
+
+    query("INSERT INTO item_category(name) VALUES($1)", [body.name], res, true);
+});
+
+// items
+
 // request header to return all the items in the database, with optional query to return based on category
 apiRouter.get("/items", (req, res) => {
     if (req.query.hasOwnProperty("category")) {
         return query(
-            "SELECT * FROM item WHERE category = $1 ORDER BY id ASC",
+            "SELECT * FROM item WHERE category = $1 AND is_deleted = false ORDER BY id ASC",
             [req.query.category],
             res,
         );
     }
 
-    query("SELECT * FROM item ORDER BY id ASC", [], res);
+    query("SELECT * FROM item AND is_deleted = false ORDER BY id ASC", [], res);
 });
 
 apiRouter.get("/items/:id", (req, res) => {
-    query("SELECT * FROM item WHERE id = $1", [req.params.id], res);
+    query(
+        "SELECT * FROM item WHERE id = $1 AND is_deleted = false",
+        [req.params.id],
+        res,
+    );
 });
 
 // demo api endpoint that may be removed later
@@ -224,50 +290,6 @@ apiRouter.post("/item/upload", upload.single("file"), (req, res) => {
     });
 });
 
-apiRouter.post("/category/add", (req, res) => {
-    const body = req.body;
-
-    if (
-        !body.hasOwnProperty("name") ||
-        body.name.length > 50 ||
-        body.name.length < 1
-    ) {
-        return res.sendStatus(400);
-    }
-
-    query("INSERT INTO item_category(name) VALUES($1)", [body.name], res, true);
-});
-
-apiRouter.post("/accounts/add", (req, res) => {
-    const body = req.body;
-
-    if (
-        !body.hasOwnProperty("username") ||
-        !body.hasOwnProperty("firstname") ||
-        !body.hasOwnProperty("lastname") ||
-        !body.hasOwnProperty("accountType") ||
-        body.username.length > 50 ||
-        body.username.length < 1 ||
-        body.firstname.length > 50 ||
-        body.firstname.length < 1 ||
-        body.lastname.length > 50 ||
-        body.lastname.length < 1 ||
-        body.accountType.length > 50 ||
-        body.accountType.length < 1
-    ) {
-        return res.sendStatus(400);
-    }
-
-    const { username, firstname, lastname, accountType } = req.body;
-
-    query(
-        "INSERT INTO account(username, first_name, last_name, account_type) VALUES($1, $2, $3, $4)",
-        [username, firstname, lastname, accountType],
-        res,
-        true,
-    );
-});
-
 // PUT API endpoint to update exisiting item
 apiRouter.put("/items/:id", (req, res) => {
     const body = req.body;
@@ -286,7 +308,7 @@ apiRouter.put("/items/:id", (req, res) => {
     const id = req.params.id;
 
     query(
-        "UPDATE item SET name = $1, description = $2, price = $3 WHERE id = $4",
+        "UPDATE item SET name = $1, description = $2, price = $3 WHERE id = $4 AND is_deleted = false",
         [name, description, price, id],
         res,
         true,
@@ -303,20 +325,78 @@ apiRouter.delete("/items/:id", (req, res) => {
 
     const id = params.id;
 
-    query("DELETE FROM item WHERE id = $1", [id], res);
+    query("UPDATE item SET is_deleted = true WHERE id = $1", [id], res, true);
 });
 
-apiRouter.post("/orders/create", (req, res) => {
+// orders
+
+// O(n) time complexity :)
+// (there has to be a better way of doing this)
+apiRouter.post("/orders/create", async (req, res) => {
     const body = req.body;
 
     if (!body.hasOwnProperty("order")) return res.sendStatus(400);
-    // TODO: add validation
-    query(
-        "INSERT INTO orders (items, subtotal) VALUES ($1, $2)",
+
+    const orderItems = Object.entries(body.order);
+
+    // get the list of (non deleted) item ids from the db
+    let validItems = [];
+    // use await here otherwise items would be undefined
+    await pool
+        .query("SELECT id FROM item WHERE is_deleted = false")
+        .then((result) => {
+            // there has to be a better way of doing this
+            for (let i = 0; i < result.rows.length; i++) {
+                validItems.push(result.rows[i].id);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
+
+    // validation (I haven't tested this with bad data yet)
+    for (let i = 0; i < orderItems.length; i++) {
+        // parse and update orderItems for later use
+        orderItems[i][0] = parseInt(orderItems[i][0]); // id
+        orderItems[i][1] = parseInt(orderItems[i][1]); // quantity
+
+        if (
+            isNaN(orderItems[i][0]) ||
+            isNaN(orderItems[i][1]) ||
+            !validItems.includes(orderItems[i][0])
+        )
+            return res.sendStatus(400);
+    }
+
+    // create the order and the corresponding order_items;
+    // conveniently, postgres has a CURRENT_DATE function
+    //https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-CURRENT
+    pool.query(
+        "INSERT INTO orders (items, subtotal, date_ordered) VALUES ($1, $2, CURRENT_DATE) RETURNING id",
         [JSON.stringify(body.order), body.subtotal],
-        res,
-        true,
-    );
+    )
+        .then((result) => {
+            for (let i = 0; i < orderItems.length; i++) {
+                const itemId = orderItems[i][0];
+                const quantity = orderItems[i][1];
+                const orderId = result.rows[0].id;
+
+                pool.query(
+                    "INSERT INTO order_item (item_id, quantity, order_id) VALUES ($1, $2, $3)",
+                    [itemId, quantity, orderId],
+                ).catch((error) => {
+                    console.log(error);
+                    return res.sendStatus(500);
+                });
+            }
+
+            return res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
 });
 
 apiRouter.get("/orders", (req, res) => {
@@ -330,6 +410,15 @@ apiRouter.get("/orders/:id", (req, res) => {
     }
 
     query("SELECT * FROM orders WHERE id = $1", [id], res);
+});
+
+apiRouter.get("/orders/items/:id", (req, res) => {
+    const id = req.params.id;
+    if (!id) {
+        return res.sendStatus(400);
+    }
+
+    query("SELECT * FROM order_item WHERE order_id = $1", [id], res);
 });
 
 apiRouter.get("/discounts/:code", (req, res) => {
@@ -348,6 +437,43 @@ apiRouter.put("/orders/process/:id", (req, res) => {
     query(
         "UPDATE orders SET discount = $1, tips = $2, total = $3, is_paid = true WHERE id = $4",
         [discountAmount, tipAmount, total, id],
+        res,
+        true,
+    );
+});
+
+// TODO: should be a public API route (get)
+apiRouter.get("/business-information", (req, res) => {
+    query("SELECT * FROM business_information", [], res);
+});
+
+apiRouter.put("/business-information", (req, res) => {
+    const body = req.body;
+
+    // honestly we should write a function for this
+    if (
+        !body.hasOwnProperty("name") ||
+        !body.hasOwnProperty("description") ||
+        !body.hasOwnProperty("address_one") ||
+        !body.hasOwnProperty("address_two") ||
+        !body.hasOwnProperty("phone") ||
+        !body.hasOwnProperty("email") ||
+        body.name.length < 1 ||
+        body.description.length < 1 ||
+        body.phone.length > 12 ||
+        body.phone.length < 1 ||
+        body.address_one.length < 1 ||
+        body.address_two.length < 1 ||
+        body.email.length < 1
+    ) {
+        return res.sendStatus(400);
+    }
+
+    const { name, description, address_one, address_two, phone, email } = body;
+
+    query(
+        "UPDATE business_information SET business_name = $1, description = $2, address_one = $3, address_two = $4, phone_number = $5, email = $6 WHERE id = 1",
+        [name, description, address_one, address_two, phone, email],
         res,
         true,
     );
