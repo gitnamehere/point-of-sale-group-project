@@ -488,7 +488,6 @@ apiRouter.put("/cart/update/:id", (req, res) => {
     }
 
     const { quantity } = body;
-    console.log(quantity);
     
     query(
         "UPDATE cart_item SET quantity = $1 WHERE item_id = $2",
