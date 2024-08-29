@@ -278,7 +278,6 @@ function insertItem(body, response) {
         body.name.length < 1
     ) {
         console.log("shitty item:", body);
-        return response.sendStatus(400);
     }
 
     const { category, name, description, price } = body;
@@ -286,8 +285,6 @@ function insertItem(body, response) {
     query(
         "INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)",
         [category, name, description, price],
-        response,
-        true,
     );
 }
 
@@ -309,7 +306,7 @@ apiRouter.post("/item/upload", upload.single("file"), (req, res) => {
                 .query("SELECT * FROM item_category")
                 .then((result) => {
                     for (let i = 0; i < result.rows.length; i++) {
-                        validCats.push(result.rows[i].name.toLowerCase());
+                        validCats.push(result.rows[i].name);
                     }
                 })
                 .catch((error) => {
@@ -317,16 +314,12 @@ apiRouter.post("/item/upload", upload.single("file"), (req, res) => {
                     return res.sendStatus(500);
                 });
 
-            console.log("cats:", validCats);
             for (let i = 0; i < results.data.length; i++) {
                 let itemCat = results.data[i].category;
-                let hi = itemCat.toLowerCase();
                 if (validCats.includes(itemCat)) {
-                    console.log("valid cat:", itemCat)
+                    results.data[i].category = validCats.indexOf(itemCat) + 1;
+                    insertItem(results.data[i], res);
                 }
-
-                //console.log("itemcat:", results.data[i].category)
-                //insertItem(results.data[i], res);
             }
         },
         error: (error) => {
