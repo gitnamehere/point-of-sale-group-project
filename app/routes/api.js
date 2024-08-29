@@ -452,6 +452,7 @@ apiRouter.put("/business-information", (req, res) => {
     );
 });
 
+// POST API endpoint to add items to cart_item
 apiRouter.post("/cart/add", (req, res) => {
     const body = req.body;
 
@@ -470,6 +471,31 @@ apiRouter.post("/cart/add", (req, res) => {
         res,
         true
     );
+})
+
+// GET API endpoint to retrieve all items in the cart
+apiRouter.get("/cart/items", (req, res) => {
+    query("SELECT * FROM cart_item ORDER BY id ASC", [], res);
+})
+
+// PUT API endpoint to update the quantity of the item
+apiRouter.put("/cart/update/:id", (req, res) => {
+    const id = req.params.id;
+    const body = req.body;
+
+    if (!body.hasOwnProperty("quantity")) {
+        return res.sendStatus(400);
+    }
+
+    const { quantity } = body;
+    console.log(quantity);
+    
+    query(
+        "UPDATE cart_item SET quantity = $1 WHERE item_id = $2",
+        [quantity, id],
+        res,
+        true
+    )
 })
 
 module.exports = { apiRouter, authentication };
