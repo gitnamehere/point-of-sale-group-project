@@ -452,7 +452,7 @@ apiRouter.put("/business-information", (req, res) => {
     );
 });
 
-apiRouter.get("/cart/add", (req, res) => {
+apiRouter.post("/cart/add", (req, res) => {
     const body = req.body;
 
     if (
