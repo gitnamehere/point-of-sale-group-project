@@ -89,3 +89,11 @@ CREATE TABLE business_information (
 );
 
 INSERT INTO business_information (business_name, email, phone_number, address_one, address_two, description) VALUES ('Business', 'test@example.com', '000-000-0000', '1 Placeholder St', 'A, TX 00000', 'Insert business description here');
+
+CREATE TABLE themes (
+	id SERIAL PRIMARY KEY,
+	background_color TEXT,
+	header_color TEXT
+);
+
+INSERT INTO themes (background_color, header_color) VALUES ('#EEE', '#111');
