@@ -245,6 +245,30 @@ apiRouter.get("/item/categories", (req, res) => {
 apiRouter.post("/item/add", (req, res) => {
     const body = req.body;
 
+    insertItem(body, res);
+
+    // if (
+    //     !body.hasOwnProperty("category") ||
+    //     !body.hasOwnProperty("name") ||
+    //     !body.hasOwnProperty("description") ||
+    //     !body.hasOwnProperty("price") ||
+    //     body.name.length > 50 ||
+    //     body.name.length < 1
+    // ) {
+    //     return res.sendStatus(400);
+    // }
+
+    // const { category, name, description, price } = body;
+
+    // query(
+    //     "INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)",
+    //     [category, name, description, price],
+    //     res,
+    //     true,
+    // );
+});
+
+function insertItem(body, response) {
     if (
         !body.hasOwnProperty("category") ||
         !body.hasOwnProperty("name") ||
@@ -253,7 +277,8 @@ apiRouter.post("/item/add", (req, res) => {
         body.name.length > 50 ||
         body.name.length < 1
     ) {
-        return res.sendStatus(400);
+        console.log("shitty item:", body);
+        return response.sendStatus(400);
     }
 
     const { category, name, description, price } = body;
@@ -261,10 +286,10 @@ apiRouter.post("/item/add", (req, res) => {
     query(
         "INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)",
         [category, name, description, price],
-        res,
+        response,
         true,
     );
-});
+}
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -277,11 +302,32 @@ apiRouter.post("/item/upload", upload.single("file"), (req, res) => {
 
     Papa.parse(csvData, {
         header: true,
-        complete: (results) => {
-            res.json({
-                message: "File uploaded and parsed successfully",
-                data: results.data,
-            });
+        complete: async (results) => {
+
+            let validCats = [];
+            await pool
+                .query("SELECT * FROM item_category")
+                .then((result) => {
+                    for (let i = 0; i < result.rows.length; i++) {
+                        validCats.push(result.rows[i].name.toLowerCase());
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    return res.sendStatus(500);
+                });
+
+            console.log("cats:", validCats);
+            for (let i = 0; i < results.data.length; i++) {
+                let itemCat = results.data[i].category;
+                let hi = itemCat.toLowerCase();
+                if (validCats.includes(itemCat)) {
+                    console.log("valid cat:", itemCat)
+                }
+
+                //console.log("itemcat:", results.data[i].category)
+                //insertItem(results.data[i], res);
+            }
         },
         error: (error) => {
             res.status(500).json({ error: "Error parsing CSV file." });
