@@ -70,7 +70,7 @@ function updateCart(id) {
                     body: JSON.stringify({item_id: id, quantity: 1}),
                 })
                 .then((response) => {
-                    response.ok ? console.log("Item added") : console.log("Item was not added");
+                    response.ok ? showToast("Added to the cart!") : console.log("Item was not added");
                 })
                 .catch((error) => {
                     console.log(error);
@@ -87,7 +87,7 @@ function updateCart(id) {
                     body: JSON.stringify({quantity: newQuantity}),
                 })
                 .then((response) => {
-                    response.ok ? console.log("Updated") : console.log("Failed");
+                    response.ok ? showToast("Added to the cart!") : console.log("Item was not added");
                 })
                 .catch((error) => {
                     console.log(error);
@@ -114,6 +114,18 @@ function returnQuantity(cart, item_id) {
             return item.quantity;
         }
     }
+}
+
+function showToast(message) {
+    const toastEl = document.getElementById("cartToast");
+    const toastBody = toastEl.querySelector(".toast-body");
+    toastBody.textContent = message;
+
+    const toast = new bootstrap.Toast(toastEl, {
+        autohide: true,
+        delay: 1500
+    });
+    toast.show();
 }
 
 fetch("/api/item/categories")
