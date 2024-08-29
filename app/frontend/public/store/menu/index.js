@@ -39,6 +39,11 @@ function displayItemsFromCategory(id) {
                 card.appendChild(cardBody);
                 col.appendChild(card);
                 row.appendChild(col);
+
+                const addToCartButton = cardBody.querySelector(".btn.btn-primary");
+                addToCartButton.addEventListener("click", () => {
+                    updateCart(item.id);
+                });
             }
 
             itemTable.appendChild(row);
@@ -46,6 +51,69 @@ function displayItemsFromCategory(id) {
         .catch((error) => {
             console.log(error);
         });
+}
+
+function updateCart(id) {
+    fetch("/api/cart/items")
+        .then((response) => {
+            return response.json();
+        })
+        .then((body) => {
+            console.log(body);
+
+            if (!checkItemId(body, id)) {
+                fetch("/api/cart/add", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({item_id: id, quantity: 1}),
+                })
+                .then((response) => {
+                    response.ok ? console.log("Item added") : console.log("Item was not added");
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+            }
+            else {
+                const newQuantity = returnQuantity(body, id) + 1;
+
+                fetch(`/api/cart/update/${id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({quantity: newQuantity}),
+                })
+                .then((response) => {
+                    response.ok ? console.log("Updated") : console.log("Failed");
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+}
+
+function checkItemId(cart, item_id) {
+    for (item of cart) {
+        if (item.item_id === item_id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function returnQuantity(cart, item_id) {
+    for (item of cart) {
+        if (item.item_id === item_id) {
+            return item.quantity;
+        }
+    }
 }
 
 fetch("/api/item/categories")
