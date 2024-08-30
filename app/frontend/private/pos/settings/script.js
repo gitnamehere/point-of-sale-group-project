@@ -67,11 +67,11 @@ submit.addEventListener("click", () => {
 
 fetch("/api/themes")
     .then((response) => {
-        if (response.status !== 200)
-            return alert("Error fetching themes");
+        if (response.status !== 200) return alert("Error fetching themes");
 
         return response.json().then((body) => {
-            const { background_color, primary_color, secondary_color } = body[0];
+            const { background_color, primary_color, secondary_color } =
+                body[0];
 
             backgroundColorInput.value = background_color;
             primaryColorInput.value = primary_color;
