@@ -96,4 +96,4 @@ CREATE TABLE themes (
 	header_color TEXT
 );
 
-INSERT INTO themes (background_color, header_color) VALUES ('#EEE', '#111');
+INSERT INTO themes (background_color, header_color) VALUES ('#EEEEEE', '#111111');

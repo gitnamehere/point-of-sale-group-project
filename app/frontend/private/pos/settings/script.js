@@ -6,6 +6,10 @@ const addressTwoInput = document.getElementById("address-two");
 const emailInput = document.getElementById("email");
 const submit = document.getElementById("submit");
 
+const backgroundColorInput = document.getElementById("background-color");
+const headerColorInput = document.getElementById("header-color");
+const submitTheme = document.getElementById("submit-theme");
+
 fetch("/api/business-information")
     .then((response) => {
         if (response.status !== 200)
@@ -53,6 +57,47 @@ submit.addEventListener("click", () => {
             response.status !== 200
                 ? alert("Error changing business information")
                 : alert("Successfully changed business settings!");
+        })
+        .catch((error) => {
+            console.log(error);
+            alert("An error occured");
+        });
+});
+
+fetch("/api/themes")
+    .then((response) => {
+        if (response.status !== 200)
+            return alert("Error fetching themes");
+
+        return response.json().then((body) => {
+            const { background_color, header_color } = body[0];
+            console.log(background_color);
+            console.log(header_color);
+
+            backgroundColorInput.value = background_color;
+            headerColorInput.value = header_color;
+        });
+    })
+    .catch((error) => {
+        console.log(error);
+        alert("An error occured");
+    });
+
+submitTheme.addEventListener("click", () => {
+    fetch("/api/themes", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            background_color: backgroundColorInput.value,
+            header_color: headerColorInput.value,
+        }),
+    })
+        .then((response) => {
+            response.status !== 200
+                ? alert("Error setting theme")
+                : alert("Successfully changed theme!");
         })
         .catch((error) => {
             console.log(error);
