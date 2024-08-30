@@ -462,20 +462,20 @@ apiRouter.put("/themes", (req, res) => {
 
     if (
         !body.hasOwnProperty("background_color") ||
-        !body.hasOwnProperty("header_primary_color") ||
-        !body.hasOwnProperty("header_secondary_color") ||
+        !body.hasOwnProperty("primary_color") ||
+        !body.hasOwnProperty("secondary_color") ||
         body.background_color.length < 1 ||
-        body.header_primary_color.length < 1 ||
-        body.header_secondary_color.length < 1
+        body.primary_color.length < 1 ||
+        body.secondary_color.length < 1
     ) {
         return res.sendStatus(400);
     }
 
-    const { background_color, header_primary_color, header_secondary_color } = body;
+    const { background_color, primary_color, secondary_color } = body;
 
     query(
-        "UPDATE themes SET background_color = $1, header_primary_color = $2, header_secondary_color = $3 WHERE id = 1",
-        [background_color, header_primary_color, header_secondary_color],
+        "UPDATE themes SET background_color = $1, primary_color = $2, secondary_color = $3 WHERE id = 1",
+        [background_color, primary_color, secondary_color],
         res,
         true,
     );

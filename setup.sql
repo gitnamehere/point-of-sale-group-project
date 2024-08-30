@@ -93,8 +93,8 @@ INSERT INTO business_information (business_name, email, phone_number, address_on
 CREATE TABLE themes (
 	id SERIAL PRIMARY KEY,
 	background_color TEXT,
-	header_primary_color TEXT,
-	header_secondary_color TEXT
+	primary_color TEXT,
+	secondary_color TEXT
 );
 
-INSERT INTO themes (background_color, header_primary_color, header_secondary_color) VALUES ('#EEEEEE', '#111111', '#FFFFFF');
+INSERT INTO themes (background_color, primary_color, secondary_color) VALUES ('#EEEEEE', '#111111', '#FFFFFF');

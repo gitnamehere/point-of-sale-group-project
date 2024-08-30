@@ -7,8 +7,8 @@ const emailInput = document.getElementById("email");
 const submit = document.getElementById("submit");
 
 const backgroundColorInput = document.getElementById("background-color");
-const headerPrimaryColorInput = document.getElementById("header-primary");
-const headerSecondaryColorInput = document.getElementById("header-secondary");
+const primaryColorInput = document.getElementById("primary-color");
+const secondaryColorInput = document.getElementById("secondary-color");
 const submitTheme = document.getElementById("submit-theme");
 
 fetch("/api/business-information")
@@ -71,11 +71,11 @@ fetch("/api/themes")
             return alert("Error fetching themes");
 
         return response.json().then((body) => {
-            const { background_color, header_primary_color, header_secondary_color } = body[0];
+            const { background_color, primary_color, secondary_color } = body[0];
 
             backgroundColorInput.value = background_color;
-            headerPrimaryColorInput.value = header_primary_color;
-            headerSecondaryColorInput.value = header_secondary_color;
+            primaryColorInput.value = primary_color;
+            secondaryColorInput.value = secondary_color;
         });
     })
     .catch((error) => {
@@ -91,8 +91,8 @@ submitTheme.addEventListener("click", () => {
         },
         body: JSON.stringify({
             background_color: backgroundColorInput.value,
-            header_primary_color: headerPrimaryColorInput.value,
-            header_secondary_color: headerSecondaryColorInput.value,
+            primary_color: primaryColorInput.value,
+            secondary_color: secondaryColorInput.value,
         }),
     })
         .then((response) => {
