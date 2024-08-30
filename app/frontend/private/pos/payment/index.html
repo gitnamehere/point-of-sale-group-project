@@ -1,64 +1,73 @@
 <!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Order Payment</title>
-        <link rel="stylesheet" href="styles.css" />
-    </head>
 
-    <body>
-        <div class="container">
-            <div class="orderSummary">
-                <h2>Order Summary</h2>
-                <div id="discountContainer">
-                    <h3>Discount Code</h3>
-                    <input
-                        type="text"
-                        id="discountInput"
-                        placeholder="Enter code here"
-                    />
-                    <button id="discountButton">Enter</button>
-                </div>
-                <div id="tipsContainer">
-                    <h3>Tips</h3>
-                    <button class="tip-btn" data-value="0.10">10%</button>
-                    <button class="tip-btn" data-value="0.15">15%</button>
-                    <button class="tip-btn" data-value="0.20">20%</button>
-                    <button class="tip-btn" data-value="0.00">No tip</button>
-                </div>
-                <div id="calculations">
-                    <div>
-                        <span>Subtotal:</span><span id="subtotal">$ 0.00</span>
-                    </div>
-                    <div>
-                        <span>Discount:</span><span id="discount">$ 0.00</span>
-                    </div>
-                    <div><span>Tips:</span><span id="tips">$ 0.00</span></div>
-                    <div><span>Tax:</span><span id="tax">$ 0.00</span></div>
-                    <div><span>Total:</span><span id="total">$ 0.00</span></div>
-                </div>
+<head>
+    <meta charset="utf-8" />
+    <title>Order Payment</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="orderSummary">
+            <h2>Order Summary</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Items</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody id="orders"></tbody>
+            </table>
+            <div id="discountContainer">
+                <h3>Discount Code</h3>
+                <input type="text" id="discountInput" placeholder="Enter code here" />
+                <button id="discountButton">Enter</button>
             </div>
-
-            <div id="payment">
-                <span>Amount due:</span><span id="amountDue">$ 0.00</span>
-                <input type="text" id="cashInput" value="$ 0.00" readonly />
-                <div class="numPad">
-                    <button class="num-btn" data-value="1">1</button>
-                    <button class="num-btn" data-value="2">2</button>
-                    <button class="num-btn" data-value="3">3</button>
-                    <button class="num-btn" data-value="4">4</button>
-                    <button class="num-btn" data-value="5">5</button>
-                    <button class="num-btn" data-value="6">6</button>
-                    <button class="num-btn" data-value="7">7</button>
-                    <button class="num-btn" data-value="8">8</button>
-                    <button class="num-btn" data-value="9">9</button>
-                    <button class="num-btn" data-value="0">0</button>
-                    <button class="num-btn" data-value="00">00</button>
-                    <button id="clear">C</button>
+            <div id="tipsContainer">
+                <h3>Tips</h3>
+                <button class="tip-btn" data-value="0.10">10%</button>
+                <button class="tip-btn" data-value="0.15">15%</button>
+                <button class="tip-btn" data-value="0.20">20%</button>
+                <button class="tip-btn" data-value="0.00">No tip</button>
+            </div>
+            <div id="calculations">
+                <div>
+                    <span>Subtotal:</span><span id="subtotal">$ 0.00</span>
                 </div>
-                <button id="payButton">Pay</button>
+                <div>
+                    <span>Discount:</span><span id="discount">$ 0.00</span>
+                </div>
+                <div><span>Tips:</span><span id="tips">$ 0.00</span></div>
+                <div><span>Tax:</span><span id="tax">$ 0.00</span></div>
+                <div><span>Total:</span><span id="total">$ 0.00</span></div>
             </div>
         </div>
-        <script src="script.js"></script>
-    </body>
+
+        <div id="payment">
+            <span>Amount due:</span><span id="amountDue">$ 0.00</span>
+            <input type="text" id="cashInput" value="$ 0.00" readonly />
+            <div class="numPad">
+                <button class="num-btn" data-value="1">1</button>
+                <button class="num-btn" data-value="2">2</button>
+                <button class="num-btn" data-value="3">3</button>
+                <button class="num-btn" data-value="4">4</button>
+                <button class="num-btn" data-value="5">5</button>
+                <button class="num-btn" data-value="6">6</button>
+                <button class="num-btn" data-value="7">7</button>
+                <button class="num-btn" data-value="8">8</button>
+                <button class="num-btn" data-value="9">9</button>
+                <button class="num-btn" data-value="0">0</button>
+                <button class="num-btn" data-value="00">00</button>
+                <button id="clear">C</button>
+            </div>
+            <button id="payButton">Pay</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
 </html>
