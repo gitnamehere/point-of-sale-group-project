@@ -7,7 +7,8 @@ const emailInput = document.getElementById("email");
 const submit = document.getElementById("submit");
 
 const backgroundColorInput = document.getElementById("background-color");
-const headerColorInput = document.getElementById("header-color");
+const headerPrimaryColorInput = document.getElementById("header-primary");
+const headerSecondaryColorInput = document.getElementById("header-secondary");
 const submitTheme = document.getElementById("submit-theme");
 
 fetch("/api/business-information")
@@ -70,12 +71,11 @@ fetch("/api/themes")
             return alert("Error fetching themes");
 
         return response.json().then((body) => {
-            const { background_color, header_color } = body[0];
-            console.log(background_color);
-            console.log(header_color);
+            const { background_color, header_primary_color, header_secondary_color } = body[0];
 
             backgroundColorInput.value = background_color;
-            headerColorInput.value = header_color;
+            headerPrimaryColorInput.value = header_primary_color;
+            headerSecondaryColorInput.value = header_secondary_color;
         });
     })
     .catch((error) => {
@@ -91,7 +91,8 @@ submitTheme.addEventListener("click", () => {
         },
         body: JSON.stringify({
             background_color: backgroundColorInput.value,
-            header_color: headerColorInput.value,
+            header_primary_color: headerPrimaryColorInput.value,
+            header_secondary_color: headerSecondaryColorInput.value,
         }),
     })
         .then((response) => {
