@@ -90,7 +90,6 @@ td {
 .numPad {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-
 }
 
 .num-btn,
