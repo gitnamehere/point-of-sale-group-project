@@ -2,6 +2,8 @@ const categoryList = document.getElementById("categoryList");
 const itemTable = document.getElementById("items");
 const filterSelect = document.getElementById("filterSelect");
 
+let currentToast = null;
+
 function displayItemsFromCategory(id) {
     fetch(`/api/items?category=${id}`)
         .then((response) => {
@@ -70,7 +72,7 @@ function updateCart(id) {
                     body: JSON.stringify({item_id: id, quantity: 1}),
                 })
                 .then((response) => {
-                    response.ok ? showToast("Added to the cart!") : console.log("Item was not added");
+                    response.ok ? showToast() : console.log("Item was not added");
                 })
                 .catch((error) => {
                     console.log(error);
@@ -87,7 +89,7 @@ function updateCart(id) {
                     body: JSON.stringify({quantity: newQuantity}),
                 })
                 .then((response) => {
-                    response.ok ? showToast("Added to the cart!") : console.log("Item was not added");
+                    response.ok ? showToast() : console.log("Item was not added");
                 })
                 .catch((error) => {
                     console.log(error);
@@ -116,16 +118,65 @@ function returnQuantity(cart, item_id) {
     }
 }
 
-function showToast(message) {
+function showToast() {
     const toastEl = document.getElementById("cartToast");
-    const toastBody = toastEl.querySelector(".toast-body");
-    toastBody.textContent = message;
 
-    const toast = new bootstrap.Toast(toastEl, {
+    if (currentToast) {
+        currentToast.dispose();
+    }
+
+    const newToastEl = toastEl.cloneNode(true);
+    toastEl.parentNode.replaceChild(newToastEl, toastEl);
+    
+    currentToast = new bootstrap.Toast(newToastEl, {
         autohide: true,
         delay: 1500
     });
-    toast.show();
+
+    currentToast.show();
+}
+
+function displayCartItems() {
+    fetch("/api/cart/items")
+        .then((response) => {
+            return response.json();
+        })
+        .then((cart) => {
+            const cartItemsContainer = document.getElementById("cartItems");
+            cartItemsContainer.innerHTML = "";
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+            }
+            else {
+                for (item of cart) {
+                    const quantity = item.quantity
+                    fetch(`/api/items/${item.item_id}`)
+                        .then((response) => {
+                            return response.json();
+                        })
+                        .then((body) => {
+                            const itemElement = document.createElement("div");
+                            itemElement.className = "cart-item mb-3";
+                            itemElement.innerHTML = `
+                                <h6>${body[0].name}</h6>
+                                <p>Quantity: ${quantity}</p>
+                                <p>Price: $${(body[0].price*quantity).toFixed(2)}</p>
+                                <button class="btn btn-danger btn-sm remove-btn">Remove</button>
+                            `;
+                            cartItemsContainer.appendChild(itemElement);
+
+                            const removeButton = itemElement.querySelector(".remove-btn");
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                }
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 }
 
 fetch("/api/item/categories")
@@ -174,4 +225,10 @@ filterSelect.addEventListener("change", () => {
         const categoryId = selectedCategory.getAttribute("data-id");
         displayItemsFromCategory(categoryId);
     }
+});
+
+document.querySelector('.nav-link[href="#cart"]').addEventListener('click', () => {
+    displayCartItems();
+    const cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
+    cartModal.show();
 });
