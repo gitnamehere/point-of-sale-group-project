@@ -23,6 +23,9 @@ fetch("/api/orders")
 				<td>${totalQuantity(order.items)}</td>
 				<td>$${order.subtotal}</td>
 				<td></td>
+                <td>
+                    <a href="/pos/payment?id=${order.id}" class="btn btn-primary">Pay</a>
+                </td>
             `;
 
             const detailTr = document.createElement("tr");
