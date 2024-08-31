@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const multer = require("multer");
 const Papa = require("papaparse");
 const { log } = require("console");
+const { send } = require("process");
 
 apiRouter.use(cookieParser());
 
@@ -259,7 +260,7 @@ apiRouter.get("/item/categories", (req, res) => {
 apiRouter.post("/item/add", (req, res) => {
     const body = req.body;
 
-    insertItem(body, res);
+    insertItem(body, res, true);
 
     // if (
     //     !body.hasOwnProperty("category") ||
@@ -282,7 +283,7 @@ apiRouter.post("/item/add", (req, res) => {
     // );
 });
 
-function insertItem(body, response) {
+function insertItem(body, response, sendStatus = false) {
     if (
         !body.hasOwnProperty("category") ||
         !body.hasOwnProperty("name") ||
@@ -291,7 +292,7 @@ function insertItem(body, response) {
         body.name.length > 50 ||
         body.name.length < 1
     ) {
-        console.log("shitty item:", body);
+        return response.sendStatus(400);
     }
 
     const { category, name, description, price } = body;
@@ -299,6 +300,8 @@ function insertItem(body, response) {
     query(
         "INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)",
         [category, name, description, price],
+        response,
+        sendStatus
     );
 }
 
@@ -327,12 +330,16 @@ apiRouter.post("/item/upload", upload.single("file"), (req, res) => {
                     console.log(error);
                     return res.sendStatus(500);
                 });
+            
+            // results.data[0].category = validCats.indexOf(results.data[0].category) + 1;
+
+            // insertItem(results.data[0], res);
 
             for (let i = 0; i < results.data.length; i++) {
                 let itemCat = results.data[i].category;
                 if (validCats.includes(itemCat)) {
                     results.data[i].category = validCats.indexOf(itemCat) + 1;
-                    insertItem(results.data[i], res);
+                    insertItem(results.data[i]);
                 }
             }
         },

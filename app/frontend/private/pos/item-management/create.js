@@ -65,8 +65,7 @@ upload.addEventListener("click", () => {
         body: file,
     })
     .then(async (response) => {
-        const result = await response.json();
-        console.log(result.data);
+        response.ok ? alert("Success") : alert("Failure");
     })
     .catch((error) => {
         console.log(error);
