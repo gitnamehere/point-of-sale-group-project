@@ -144,7 +144,7 @@ fetch(`/api/orders/${orderId}`, {
         console.log(error);
     });
 
-fetch("/api/orders")
+fetch(`/api/orders/${orderId}`)
     .then((response) => response.json())
     .then((body) => {
         for (let order of body) {
