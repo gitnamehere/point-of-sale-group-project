@@ -14,7 +14,6 @@
     <div class="header">
         <h1 class="header-title">Orders</h1>
         <div class="header-buttons">
-            <a href="/pos/payment?id=1" class="header-button btn btn-light">Pay</a>
             <a href="/pos/sales-report" class="header-button btn btn-light">Sales Reporting</a>
             <a href="/pos/ordering" class="header-button btn btn-light">New Order</a>
             <a href="/pos" class="header-button btn btn-light">Home</a>
@@ -39,6 +38,7 @@
                     <th scope="col">Items</th>
                     <th scope="col">Total</th>
                     <th scope="col">Status</th>
+                    <th scope="col"></th> <!-- For the payment button. -->
                 </tr>
             </thead>
             <tbody id="orders"></tbody>

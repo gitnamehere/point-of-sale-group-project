@@ -144,14 +144,6 @@ fetch(`/api/orders/${orderId}`, {
         console.log(error);
     });
 
-function totalQuantity(items) {
-    let total = 0;
-    for (let i in items) {
-        total += items[i];
-    }
-    return total;
-}
-
 fetch("/api/orders")
     .then((response) => response.json())
     .then((body) => {
