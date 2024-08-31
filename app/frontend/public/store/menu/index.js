@@ -154,10 +154,15 @@ function displayCartItems() {
 
                 Promise.all(itemPromises)
                     .then((itemsDetails) => {
+                        let subtotal = 0;
+
                         itemsDetails.forEach((itemDetail, index) => {
                             const item = cart[index];
                             const id = item.item_id;
                             const quantity = item.quantity;
+                            const itemTotalPrice = itemDetail[0].price * quantity;
+
+                            subtotal += itemTotalPrice;
 
                             const itemElement = document.createElement("div");
                             itemElement.className = "cart-item mb-3";
@@ -168,7 +173,7 @@ function displayCartItems() {
                                     <input type="number" class="form-control form-control-sm quantity-input" value="${quantity}" min="1" style="width: 60px; display: inline-block;">
                                     <button class="btn btn-sm btn-secondary increase-btn">+</button>
                                 </div>
-                                <p>Price: $<span class="item-price">${(itemDetail[0].price * quantity).toFixed(2)}</span></p>
+                                <p>Price: $<span class="item-price">${itemTotalPrice.toFixed(2)}</span></p>
                                 <button class="btn btn-danger btn-sm remove-btn">Remove</button>
                             `;
                             cartItemsContainer.appendChild(itemElement);
@@ -199,6 +204,8 @@ function displayCartItems() {
                                 .catch(error => {
                                     console.log(error)
                                 });
+
+                                updateCartTotal();
                             }
 
                             decreaseBtn.addEventListener("click", () => {
@@ -228,6 +235,30 @@ function displayCartItems() {
                                 });
                             })
                         });
+
+                        const totalElement = document.createElement("div");
+                        totalElement.className = "cart-total mt-3";
+                        cartItemsContainer.appendChild(totalElement);
+
+                        updateCartTotal();
+
+                        function updateCartTotal() {
+                            subtotal = 0;
+                            const itemPrices = cartItemsContainer.querySelectorAll(".item-price");
+                            for (price of itemPrices) {
+                                subtotal += parseFloat(price.textContent);
+                            }
+
+                            const tax = subtotal * 0.08;
+                            const total = subtotal + tax;
+
+                            totalElement.innerHTML = `
+                                <hr>
+                                <p>Subtotal: $${subtotal.toFixed(2)}</p>
+                                <p>Tax (8%): $${tax.toFixed(2)}</p>
+                                <h5>Total: $${total.toFixed(2)}</h5>
+                            `;
+                        }
                     })
                     .catch((error) => {
                         console.log(error)}
