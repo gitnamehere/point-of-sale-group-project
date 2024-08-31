@@ -3,6 +3,7 @@ const itemTable = document.getElementById("items");
 const filterSelect = document.getElementById("filterSelect");
 
 let currentToast = null;
+let subtotal = null;
 
 function displayItemsFromCategory(id) {
     fetch(`/api/items?category=${id}`)
@@ -154,7 +155,7 @@ function displayCartItems() {
 
                 Promise.all(itemPromises)
                     .then((itemsDetails) => {
-                        let subtotal = 0;
+                        subtotal = 0;
 
                         itemsDetails.forEach((itemDetail, index) => {
                             const item = cart[index];
@@ -253,7 +254,6 @@ function displayCartItems() {
                             const total = subtotal + tax;
 
                             totalElement.innerHTML = `
-                                <hr>
                                 <p>Subtotal: $${subtotal.toFixed(2)}</p>
                                 <p>Tax (8%): $${tax.toFixed(2)}</p>
                                 <h5>Total: $${total.toFixed(2)}</h5>
@@ -268,6 +268,22 @@ function displayCartItems() {
         .catch((error) => {
             console.log(error)}
         );
+}
+
+function sendOrder(cartItems) {
+    fetch("/api/orders/create", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({order: cartItems, subtotal}),
+    })
+    .then(response => {
+        response.ok ? alert("Thank you for your order!") : alert("Order failed")
+})
+    .catch(error => {
+        console.error(error);
+    });
 }
 
 fetch("/api/item/categories")
@@ -322,4 +338,37 @@ document.querySelector(".nav-link[href='#cart']").addEventListener("click", () =
     displayCartItems();
     const cartModal = new bootstrap.Modal(document.getElementById("cartModal"));
     cartModal.show();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const placeOrderBtn = document.getElementById("placeOrderBtn");
+    const confirmOrderBtn = document.getElementById("confirmOrderBtn");
+    const confirmOrderModal = new bootstrap.Modal(document.getElementById("confirmOrderModal"));
+
+    placeOrderBtn.addEventListener("click", () => {
+        document.querySelector("#cartModal .modal-body").scrollTop = 0;
+        confirmOrderModal.show();
+    });
+
+    confirmOrderBtn.addEventListener("click", () => {
+        fetch("/api/cart/items")
+            .then((response) => {
+                return response.json()
+            })
+            .then((body) => {
+                const cartItems = {};
+
+                for (item of body) {
+                    cartItems[item.item_id] = item.quantity;
+                }
+
+                sendOrder(cartItems);
+                
+                confirmOrderModal.hide();
+                bootstrap.Modal.getInstance(document.getElementById("cartModal")).hide();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    });
 });
