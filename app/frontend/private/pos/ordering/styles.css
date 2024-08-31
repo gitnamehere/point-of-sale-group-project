@@ -69,7 +69,7 @@ body {
     padding: 8px;
     height: 56px;
     font-weight: 700;
-    background-color: #FFF8;
+    background-color: #fff8;
 }
 
 #items-container {
@@ -87,7 +87,7 @@ body {
     border: 1px solid black;
     border-radius: 8px;
     padding: 8px;
-    background-color: #FFF8;
+    background-color: #fff8;
     aspect-ratio: 1/1;
 }
 
