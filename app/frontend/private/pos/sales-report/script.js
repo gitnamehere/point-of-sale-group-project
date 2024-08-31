@@ -1,20 +1,17 @@
-// Item example
-const salesData = [
-    {
-        orderId: 1,
-        name: "red trinket",
-        quantity: 2,
-        dateOrdered: "2024-08-15",
-        totalPrice: "$3.98",
-    },
-    {
-        orderId: 2,
-        name: "blue trinket",
-        quantity: 1,
-        dateOrdered: "2024-08-16",
-        totalPrice: "$2.99",
-    },
-];
+let salesData = [];
+
+fetch("/api/orders")
+    .then((response) => {
+        return response.json();
+    }).then((body) => {
+        for (let order of body) {
+            salesData.push(order);
+        }
+    }).catch((error) => {
+        console.log(error);
+    })
+
+console.log(salesData);
 
 const tableBody = document.querySelector("#salesReportTable tbody");
 
@@ -26,11 +23,11 @@ function generateReport() {
     salesData.forEach((data) => {
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td>${data.orderId}</td>
-            <td>${data.name}</td>
-            <td>${data.quantity}</td>
-            <td>${data.dateOrdered}</td>
-            <td>${data.totalPrice}</td>
+            <td>${data.id}</td>
+            <td>${data.date_ordered}</td>
+            <td>${data.is_paid}</td>
+            <td>${data.subtotal}</td>
+            <td>${data.total}</td>
         `;
         tableBody.appendChild(row);
     });
