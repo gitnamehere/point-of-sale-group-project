@@ -452,4 +452,33 @@ apiRouter.put("/business-information", (req, res) => {
     );
 });
 
+// also make this public
+apiRouter.get("/themes", (req, res) => {
+    query("SELECT * FROM themes", [], res);
+});
+
+apiRouter.put("/themes", (req, res) => {
+    const body = req.body;
+
+    if (
+        !body.hasOwnProperty("background_color") ||
+        !body.hasOwnProperty("primary_color") ||
+        !body.hasOwnProperty("secondary_color") ||
+        body.background_color.length < 1 ||
+        body.primary_color.length < 1 ||
+        body.secondary_color.length < 1
+    ) {
+        return res.sendStatus(400);
+    }
+
+    const { background_color, primary_color, secondary_color } = body;
+
+    query(
+        "UPDATE themes SET background_color = $1, primary_color = $2, secondary_color = $3 WHERE id = 1",
+        [background_color, primary_color, secondary_color],
+        res,
+        true,
+    );
+});
+
 module.exports = { apiRouter, authentication };
