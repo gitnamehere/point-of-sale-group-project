@@ -145,7 +145,6 @@ function displayCartItems() {
     fetch("/api/cart/items")
         .then((response) => response.json())
         .then((cart) => {
-            console.log(cart);
             const cartItemsContainer = document.getElementById("cartItems");
             cartItemsContainer.innerHTML = "";
 
@@ -308,7 +307,7 @@ function sendOrder(cartItems) {
                 : alert("Order failed");
         })
         .catch((error) => {
-            console.error(error);
+            console.log(error);
         });
 }
 
