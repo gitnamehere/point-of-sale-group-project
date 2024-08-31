@@ -85,7 +85,8 @@ CREATE TABLE business_information (
 	phone_number VARCHAR(12) NOT NULL, --Phone example: 800-123-4567
 	address_one TEXT NOT NULL,
 	address_two TEXT NOT NULL,
-	description TEXT NOT NULL
+	description TEXT NOT NULL,
+	tax_rate DECIMAL (3,2) DEFAULT 0.00 --TODO: test and implement this
 );
 
 INSERT INTO business_information (business_name, email, phone_number, address_one, address_two, description) VALUES ('Business', 'test@example.com', '000-000-0000', '1 Placeholder St', 'A, TX 00000', 'Insert business description here');
