@@ -6,8 +6,6 @@ const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
 const Papa = require("papaparse");
-const { log } = require("console");
-const { send } = require("process");
 
 apiRouter.use(cookieParser());
 
@@ -199,33 +197,18 @@ apiRouter.post("/accounts/add", (req, res) => {
 });
 
 // item categories
+apiRouter.post("/category/add", (req, res) => {
+    const body = req.body;
 
-function insertCategory(body, response) {
     if (
         !body.hasOwnProperty("name") ||
         body.name.length > 50 ||
         body.name.length < 1
     ) {
-        return response.sendStatus(400);
+        return res.sendStatus(400);
     }
 
-    query("INSERT INTO item_category(name) VALUES($1)", [body.name], response, true);
-}
-
-apiRouter.post("/category/add", (req, res) => {
-    const body = req.body;
-
-    insertCategory(body, res);
-
-    // if (
-    //     !body.hasOwnProperty("name") ||
-    //     body.name.length > 50 ||
-    //     body.name.length < 1
-    // ) {
-    //     return res.sendStatus(400);
-    // }
-
-    // query("INSERT INTO item_category(name) VALUES($1)", [body.name], res, true);
+    query("INSERT INTO item_category(name) VALUES($1)", [body.name], res, true);
 });
 
 // items
@@ -260,30 +243,6 @@ apiRouter.get("/item/categories", (req, res) => {
 apiRouter.post("/item/add", (req, res) => {
     const body = req.body;
 
-    insertItem(body, res, true);
-
-    // if (
-    //     !body.hasOwnProperty("category") ||
-    //     !body.hasOwnProperty("name") ||
-    //     !body.hasOwnProperty("description") ||
-    //     !body.hasOwnProperty("price") ||
-    //     body.name.length > 50 ||
-    //     body.name.length < 1
-    // ) {
-    //     return res.sendStatus(400);
-    // }
-
-    // const { category, name, description, price } = body;
-
-    // query(
-    //     "INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)",
-    //     [category, name, description, price],
-    //     res,
-    //     true,
-    // );
-});
-
-function insertItem(body, response, sendStatus = false) {
     if (
         !body.hasOwnProperty("category") ||
         !body.hasOwnProperty("name") ||
@@ -292,7 +251,7 @@ function insertItem(body, response, sendStatus = false) {
         body.name.length > 50 ||
         body.name.length < 1
     ) {
-        return response.sendStatus(400);
+        return res.sendStatus(400);
     }
 
     const { category, name, description, price } = body;
@@ -300,10 +259,10 @@ function insertItem(body, response, sendStatus = false) {
     query(
         "INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)",
         [category, name, description, price],
-        response,
-        sendStatus
+        res,
+        true,
     );
-}
+});
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -350,14 +309,12 @@ apiRouter.post("/item/upload", upload.single("file"), (req, res) => {
                 if (!categories.hasOwnProperty(category)) {
                     await pool.query("INSERT INTO item_category (name) VALUES ($1) RETURNING id", [category])
                     .then((result) => {
-                        console.log(result.rows);
                         categories[category] = result.rows[0].id;
                     })
                     .catch(error => {
                         console.log(error);
                         return res.sendStatus(500);
                     })
-                    console.log(`No Category found for ${category}`)
                 }
 
                 await pool.query("INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)", [categories[category], name, description, price])
