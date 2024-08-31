@@ -138,45 +138,105 @@ function showToast() {
 
 function displayCartItems() {
     fetch("/api/cart/items")
-        .then((response) => {
-            return response.json();
-        })
+        .then((response) => response.json())
         .then((cart) => {
+            console.log(cart)
             const cartItemsContainer = document.getElementById("cartItems");
             cartItemsContainer.innerHTML = "";
 
             if (cart.length === 0) {
                 cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
-            }
+            } 
             else {
-                for (item of cart) {
-                    const quantity = item.quantity
-                    fetch(`/api/items/${item.item_id}`)
-                        .then((response) => {
-                            return response.json();
-                        })
-                        .then((body) => {
+                const itemPromises = cart.map(item => 
+                    fetch(`/api/items/${item.item_id}`).then(response => response.json())
+                );
+
+                Promise.all(itemPromises)
+                    .then((itemsDetails) => {
+                        itemsDetails.forEach((itemDetail, index) => {
+                            const item = cart[index];
+                            const id = item.item_id;
+                            const quantity = item.quantity;
+
                             const itemElement = document.createElement("div");
                             itemElement.className = "cart-item mb-3";
                             itemElement.innerHTML = `
-                                <h6>${body[0].name}</h6>
-                                <p>Quantity: ${quantity}</p>
-                                <p>Price: $${(body[0].price*quantity).toFixed(2)}</p>
+                                <h6>${itemDetail[0].name}</h6>
+                                <div class="quantity-control">
+                                    <button class="btn btn-sm btn-secondary decrease-btn">-</button>
+                                    <input type="number" class="form-control form-control-sm quantity-input" value="${quantity}" min="1" style="width: 60px; display: inline-block;">
+                                    <button class="btn btn-sm btn-secondary increase-btn">+</button>
+                                </div>
+                                <p>Price: $<span class="item-price">${(itemDetail[0].price * quantity).toFixed(2)}</span></p>
                                 <button class="btn btn-danger btn-sm remove-btn">Remove</button>
                             `;
                             cartItemsContainer.appendChild(itemElement);
 
+                            const quantityInput = itemElement.querySelector(".quantity-input");
+                            const decreaseBtn = itemElement.querySelector(".decrease-btn");
+                            const increaseBtn = itemElement.querySelector(".increase-btn");
+                            const itemPrice = itemElement.querySelector(".item-price");
                             const removeButton = itemElement.querySelector(".remove-btn");
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        })
-                }
+
+                            function updateQuantity(newQuantity) {
+                                if (newQuantity < 1) newQuantity = 1;
+                                quantityInput.value = newQuantity;
+                                itemPrice.textContent = (itemDetail[0].price * newQuantity).toFixed(2);
+
+                                fetch(`/api/cart/update/${id}`, {
+                                    method: "PUT",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({quantity: newQuantity}),
+                                })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        console.log("Failed to update");
+                                    }
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                });
+                            }
+
+                            decreaseBtn.addEventListener("click", () => {
+                                updateQuantity(parseInt(quantityInput.value) - 1);
+                            });
+
+                            increaseBtn.addEventListener("click", () => {
+                                updateQuantity(parseInt(quantityInput.value) + 1);
+                            });
+
+                            quantityInput.addEventListener("change", () => {
+                                updateQuantity(parseInt(quantityInput.value));
+                            });
+
+                            removeButton.addEventListener("click", () => {
+                                fetch(`/api/cart/delete/${id}`, {
+                                    method: "DELETE",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                })
+                                .then(response => {
+                                    response.ok ? displayCartItems() : console.log("Failed to remove");
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                });
+                            })
+                        });
+                    })
+                    .catch((error) => {
+                        console.log(error)}
+                    );
             }
         })
         .catch((error) => {
-            console.log(error);
-        });
+            console.log(error)}
+        );
 }
 
 fetch("/api/item/categories")
@@ -227,8 +287,8 @@ filterSelect.addEventListener("change", () => {
     }
 });
 
-document.querySelector('.nav-link[href="#cart"]').addEventListener('click', () => {
+document.querySelector(".nav-link[href='#cart']").addEventListener("click", () => {
     displayCartItems();
-    const cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
+    const cartModal = new bootstrap.Modal(document.getElementById("cartModal"));
     cartModal.show();
 });
