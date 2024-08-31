@@ -12,14 +12,19 @@
         <link rel="stylesheet" type="text/css" href="styles.css" />
     </head>
     <body>
-        <div class="header">
-            <h1 class="header-title">POS</h1>
+        <div class="header primary-background">
+            <h1 class="header-title secondary-text">POS</h1>
             <div class="header-buttons">
-                <div class="header-button btn btn-light">
+                <div
+                    class="header-button btn secondary-background primary-text"
+                >
                     <img src="jace.jpeg" />
                     <span>Mike O'Hearn</span>
                 </div>
-                <div id="logout" class="header-button btn btn-light">
+                <div
+                    id="logout"
+                    class="header-button btn secondary-background primary-text"
+                >
                     Logout
                 </div>
             </div>
@@ -33,16 +38,16 @@
                 <a href="/pos/orders"
                     ><div class="button btn btn-primary">Orders</div></a
                 >
-                <a href="/store"
-                    ><div class="button btn btn-primary">Store Page</div></a
+                <a href="/pos/sales-report"
+                    ><div class="button btn btn-primary">Sales Reports</div></a
                 >
                 <a href="/pos/item-management/create.html"
                     ><div class="button btn btn-primary">
                         Item Management
                     </div></a
                 >
-                <a href="/pos/sales-report"
-                    ><div class="button btn btn-primary">Sales Report</div></a
+                <a href="/store"
+                    ><div class="button btn btn-primary">Store Page</div></a
                 >
                 <a href="/pos/settings"
                     ><div class="button btn btn-primary">Settings</div></a
@@ -51,6 +56,7 @@
         </div>
 
         <script src="script.js"></script>
+        <script src="/themes.js"></script>
         <script src="/business-info.js"></script>
     </body>
 </html>
