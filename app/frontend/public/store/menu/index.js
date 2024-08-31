@@ -3,7 +3,7 @@ const itemTable = document.getElementById("items");
 const filterSelect = document.getElementById("filterSelect");
 
 let currentToast = null;
-let subtotal = null;
+let subtotal = 0;
 
 function displayItemsFromCategory(id) {
     fetch(`/api/items?category=${id}`)
@@ -14,7 +14,8 @@ function displayItemsFromCategory(id) {
             const sortOption = filterSelect.value;
             if (sortOption === "1") {
                 body.sort((a, b) => b.price - a.price);
-            } else if (sortOption === "2") {
+            } 
+            else if (sortOption === "2") {
                 body.sort((a, b) => a.price - b.price);
             }
 
@@ -362,7 +363,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     cartItems[item.item_id] = item.quantity;
                 }
 
-                sendOrder(cartItems);
+                if (Object.keys(cartItems).length === 0) {
+                    alert("No items!");
+                }
+                else {
+                    sendOrder(cartItems);
+                }
                 
                 confirmOrderModal.hide();
                 bootstrap.Modal.getInstance(document.getElementById("cartModal")).hide();
