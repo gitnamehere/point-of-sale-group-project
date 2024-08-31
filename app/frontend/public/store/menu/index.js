@@ -14,8 +14,7 @@ function displayItemsFromCategory(id) {
             const sortOption = filterSelect.value;
             if (sortOption === "1") {
                 body.sort((a, b) => b.price - a.price);
-            } 
-            else if (sortOption === "2") {
+            } else if (sortOption === "2") {
                 body.sort((a, b) => a.price - b.price);
             }
 
@@ -44,7 +43,8 @@ function displayItemsFromCategory(id) {
                 col.appendChild(card);
                 row.appendChild(col);
 
-                const addToCartButton = cardBody.querySelector(".btn.btn-primary");
+                const addToCartButton =
+                    cardBody.querySelector(".btn.btn-primary");
                 addToCartButton.addEventListener("click", () => {
                     updateCart(item.id);
                 });
@@ -71,16 +71,17 @@ function updateCart(id) {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({item_id: id, quantity: 1}),
+                    body: JSON.stringify({ item_id: id, quantity: 1 }),
                 })
-                .then((response) => {
-                    response.ok ? showToast() : console.log("Item was not added");
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-            }
-            else {
+                    .then((response) => {
+                        response.ok
+                            ? showToast()
+                            : console.log("Item was not added");
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } else {
                 const newQuantity = returnQuantity(body, id) + 1;
 
                 fetch(`/api/cart/update/${id}`, {
@@ -88,19 +89,21 @@ function updateCart(id) {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({quantity: newQuantity}),
+                    body: JSON.stringify({ quantity: newQuantity }),
                 })
-                .then((response) => {
-                    response.ok ? showToast() : console.log("Item was not added");
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+                    .then((response) => {
+                        response.ok
+                            ? showToast()
+                            : console.log("Item was not added");
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             }
         })
         .catch((error) => {
             console.log(error);
-        })
+        });
 }
 
 function checkItemId(cart, item_id) {
@@ -129,10 +132,10 @@ function showToast() {
 
     const newToastEl = toastEl.cloneNode(true);
     toastEl.parentNode.replaceChild(newToastEl, toastEl);
-    
+
     currentToast = new bootstrap.Toast(newToastEl, {
         autohide: true,
-        delay: 1500
+        delay: 1500,
     });
 
     currentToast.show();
@@ -142,16 +145,17 @@ function displayCartItems() {
     fetch("/api/cart/items")
         .then((response) => response.json())
         .then((cart) => {
-            console.log(cart)
+            console.log(cart);
             const cartItemsContainer = document.getElementById("cartItems");
             cartItemsContainer.innerHTML = "";
 
             if (cart.length === 0) {
                 cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
-            } 
-            else {
-                const itemPromises = cart.map(item => 
-                    fetch(`/api/items/${item.item_id}`).then(response => response.json())
+            } else {
+                const itemPromises = cart.map((item) =>
+                    fetch(`/api/items/${item.item_id}`).then((response) =>
+                        response.json(),
+                    ),
                 );
 
                 Promise.all(itemPromises)
@@ -162,7 +166,8 @@ function displayCartItems() {
                             const item = cart[index];
                             const id = item.item_id;
                             const quantity = item.quantity;
-                            const itemTotalPrice = itemDetail[0].price * quantity;
+                            const itemTotalPrice =
+                                itemDetail[0].price * quantity;
 
                             subtotal += itemTotalPrice;
 
@@ -180,42 +185,55 @@ function displayCartItems() {
                             `;
                             cartItemsContainer.appendChild(itemElement);
 
-                            const quantityInput = itemElement.querySelector(".quantity-input");
-                            const decreaseBtn = itemElement.querySelector(".decrease-btn");
-                            const increaseBtn = itemElement.querySelector(".increase-btn");
-                            const itemPrice = itemElement.querySelector(".item-price");
-                            const removeButton = itemElement.querySelector(".remove-btn");
+                            const quantityInput =
+                                itemElement.querySelector(".quantity-input");
+                            const decreaseBtn =
+                                itemElement.querySelector(".decrease-btn");
+                            const increaseBtn =
+                                itemElement.querySelector(".increase-btn");
+                            const itemPrice =
+                                itemElement.querySelector(".item-price");
+                            const removeButton =
+                                itemElement.querySelector(".remove-btn");
 
                             function updateQuantity(newQuantity) {
                                 if (newQuantity < 1) newQuantity = 1;
                                 quantityInput.value = newQuantity;
-                                itemPrice.textContent = (itemDetail[0].price * newQuantity).toFixed(2);
+                                itemPrice.textContent = (
+                                    itemDetail[0].price * newQuantity
+                                ).toFixed(2);
 
                                 fetch(`/api/cart/update/${id}`, {
                                     method: "PUT",
                                     headers: {
                                         "Content-Type": "application/json",
                                     },
-                                    body: JSON.stringify({quantity: newQuantity}),
+                                    body: JSON.stringify({
+                                        quantity: newQuantity,
+                                    }),
                                 })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        console.log("Failed to update");
-                                    }
-                                })
-                                .catch(error => {
-                                    console.log(error)
-                                });
+                                    .then((response) => {
+                                        if (!response.ok) {
+                                            console.log("Failed to update");
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                    });
 
                                 updateCartTotal();
                             }
 
                             decreaseBtn.addEventListener("click", () => {
-                                updateQuantity(parseInt(quantityInput.value) - 1);
+                                updateQuantity(
+                                    parseInt(quantityInput.value) - 1,
+                                );
                             });
 
                             increaseBtn.addEventListener("click", () => {
-                                updateQuantity(parseInt(quantityInput.value) + 1);
+                                updateQuantity(
+                                    parseInt(quantityInput.value) + 1,
+                                );
                             });
 
                             quantityInput.addEventListener("change", () => {
@@ -229,13 +247,15 @@ function displayCartItems() {
                                         "Content-Type": "application/json",
                                     },
                                 })
-                                .then(response => {
-                                    response.ok ? displayCartItems() : console.log("Failed to remove");
-                                })
-                                .catch(error => {
-                                    console.log(error)
-                                });
-                            })
+                                    .then((response) => {
+                                        response.ok
+                                            ? displayCartItems()
+                                            : console.log("Failed to remove");
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                    });
+                            });
                         });
 
                         const totalElement = document.createElement("div");
@@ -246,7 +266,10 @@ function displayCartItems() {
 
                         function updateCartTotal() {
                             subtotal = 0;
-                            const itemPrices = cartItemsContainer.querySelectorAll(".item-price");
+                            const itemPrices =
+                                cartItemsContainer.querySelectorAll(
+                                    ".item-price",
+                                );
                             for (price of itemPrices) {
                                 subtotal += parseFloat(price.textContent);
                             }
@@ -262,13 +285,13 @@ function displayCartItems() {
                         }
                     })
                     .catch((error) => {
-                        console.log(error)}
-                    );
+                        console.log(error);
+                    });
             }
         })
         .catch((error) => {
-            console.log(error)}
-        );
+            console.log(error);
+        });
 }
 
 function sendOrder(cartItems) {
@@ -277,14 +300,16 @@ function sendOrder(cartItems) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({order: cartItems, subtotal}),
+        body: JSON.stringify({ order: cartItems, subtotal }),
     })
-    .then(response => {
-        response.ok ? alert("Thank you for your order!") : alert("Order failed")
-})
-    .catch(error => {
-        console.error(error);
-    });
+        .then((response) => {
+            response.ok
+                ? alert("Thank you for your order!")
+                : alert("Order failed");
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 }
 
 fetch("/api/item/categories")
@@ -335,16 +360,22 @@ filterSelect.addEventListener("change", () => {
     }
 });
 
-document.querySelector(".nav-link[href='#cart']").addEventListener("click", () => {
-    displayCartItems();
-    const cartModal = new bootstrap.Modal(document.getElementById("cartModal"));
-    cartModal.show();
-});
+document
+    .querySelector(".nav-link[href='#cart']")
+    .addEventListener("click", () => {
+        displayCartItems();
+        const cartModal = new bootstrap.Modal(
+            document.getElementById("cartModal"),
+        );
+        cartModal.show();
+    });
 
 document.addEventListener("DOMContentLoaded", () => {
     const placeOrderBtn = document.getElementById("placeOrderBtn");
     const confirmOrderBtn = document.getElementById("confirmOrderBtn");
-    const confirmOrderModal = new bootstrap.Modal(document.getElementById("confirmOrderModal"));
+    const confirmOrderModal = new bootstrap.Modal(
+        document.getElementById("confirmOrderModal"),
+    );
 
     placeOrderBtn.addEventListener("click", () => {
         document.querySelector("#cartModal .modal-body").scrollTop = 0;
@@ -354,7 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
     confirmOrderBtn.addEventListener("click", () => {
         fetch("/api/cart/items")
             .then((response) => {
-                return response.json()
+                return response.json();
             })
             .then((body) => {
                 const cartItems = {};
@@ -365,13 +396,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (Object.keys(cartItems).length === 0) {
                     alert("No items!");
-                }
-                else {
+                } else {
                     sendOrder(cartItems);
                 }
-                
+
                 confirmOrderModal.hide();
-                bootstrap.Modal.getInstance(document.getElementById("cartModal")).hide();
+                bootstrap.Modal.getInstance(
+                    document.getElementById("cartModal"),
+                ).hide();
             })
             .catch((error) => {
                 console.log(error);

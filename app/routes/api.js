@@ -456,10 +456,7 @@ apiRouter.put("/business-information", (req, res) => {
 apiRouter.post("/cart/add", (req, res) => {
     const body = req.body;
 
-    if (
-        !body.hasOwnProperty("item_id") ||
-        !body.hasOwnProperty("quantity")
-    ) {
+    if (!body.hasOwnProperty("item_id") || !body.hasOwnProperty("quantity")) {
         return res.sendStatus(400);
     }
 
@@ -469,14 +466,14 @@ apiRouter.post("/cart/add", (req, res) => {
         "INSERT INTO cart_item (item_id, quantity) VALUES ($1, $2)",
         [item_id, quantity],
         res,
-        true
+        true,
     );
-})
+});
 
 // GET API endpoint to retrieve all items in the cart
 apiRouter.get("/cart/items", (req, res) => {
     query("SELECT * FROM cart_item ORDER BY id ASC", [], res);
-})
+});
 
 // PUT API endpoint to update the quantity of the item
 apiRouter.put("/cart/update/:id", (req, res) => {
@@ -488,25 +485,20 @@ apiRouter.put("/cart/update/:id", (req, res) => {
     }
 
     const { quantity } = body;
-    
+
     query(
         "UPDATE cart_item SET quantity = $1 WHERE item_id = $2",
         [quantity, id],
         res,
-        true
+        true,
     );
-})
+});
 
 // DELETE API endpoint to remove item from cart
 apiRouter.delete("/cart/delete/:id", (req, res) => {
     const id = req.params.id;
 
-    query(
-        "DELETE FROM cart_item WHERE item_id = $1",
-        [id],
-        res,
-        true
-    );
+    query("DELETE FROM cart_item WHERE item_id = $1", [id], res, true);
 });
 
 module.exports = { apiRouter, authentication };
