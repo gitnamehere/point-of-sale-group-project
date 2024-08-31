@@ -335,12 +335,44 @@ apiRouter.post("/item/upload", upload.single("file"), (req, res) => {
 
             // insertItem(results.data[0], res);
 
+            let shit = new Response();
+
             for (let i = 0; i < results.data.length; i++) {
+                if (
+                    !results.data[i].hasOwnProperty("category") ||
+                    !results.data[i].hasOwnProperty("name") ||
+                    !results.data[i].hasOwnProperty("description") ||
+                    !results.data[i].hasOwnProperty("price") ||
+                    results.data[i].name.length > 50 ||
+                    results.data[i].name.length < 1
+                ) {
+                    return res.sendStatus(400);
+                }
+
                 let itemCat = results.data[i].category;
                 if (validCats.includes(itemCat)) {
-                    results.data[i].category = validCats.indexOf(itemCat) + 1;
-                    insertItem(results.data[i]);
+                    console.log("cat found");
                 }
+                else {
+                    console.log("nocat")
+                }
+                results.data[i].category = validCats.indexOf(itemCat) + 1;
+            
+                const { category, name, description, price } = results.data[i];
+            
+                query(
+                    "INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)",
+                    [category, name, description, price],
+                    res,
+                    false
+                );
+                break;
+                // let itemCat = results.data[i].category;
+                // if (validCats.includes(itemCat)) {
+                //     results.data[i].category = validCats.indexOf(itemCat) + 1;
+                    
+                //     //insertItem(results.data[i], shit);
+                // }
             }
         },
         error: (error) => {
