@@ -494,7 +494,19 @@ apiRouter.put("/cart/update/:id", (req, res) => {
         [quantity, id],
         res,
         true
-    )
+    );
 })
+
+// DELETE API endpoint to remove item from cart
+apiRouter.delete("/cart/delete/:id", (req, res) => {
+    const id = req.params.id;
+
+    query(
+        "DELETE FROM cart_item WHERE item_id = $1",
+        [id],
+        res,
+        true
+    );
+});
 
 module.exports = { apiRouter, authentication };
