@@ -156,7 +156,7 @@ orderButton.addEventListener("click", () => {
             if (response.status === 200) {
                 alert("Order placed!");
                 clearOrder(); // in case the user presses the back button
-                window.location = "/pos/payment/?id=1";
+                window.location = "/pos/orders";
             } else {
                 alert("An error occured");
             }
