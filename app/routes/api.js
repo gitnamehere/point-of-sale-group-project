@@ -199,18 +199,32 @@ apiRouter.post("/accounts/add", (req, res) => {
 
 // item categories
 
-apiRouter.post("/category/add", (req, res) => {
-    const body = req.body;
-
+function insertCategory(body, response) {
     if (
         !body.hasOwnProperty("name") ||
         body.name.length > 50 ||
         body.name.length < 1
     ) {
-        return res.sendStatus(400);
+        return response.sendStatus(400);
     }
 
-    query("INSERT INTO item_category(name) VALUES($1)", [body.name], res, true);
+    query("INSERT INTO item_category(name) VALUES($1)", [body.name], response, true);
+}
+
+apiRouter.post("/category/add", (req, res) => {
+    const body = req.body;
+
+    insertCategory(body, res);
+
+    // if (
+    //     !body.hasOwnProperty("name") ||
+    //     body.name.length > 50 ||
+    //     body.name.length < 1
+    // ) {
+    //     return res.sendStatus(400);
+    // }
+
+    // query("INSERT INTO item_category(name) VALUES($1)", [body.name], res, true);
 });
 
 // items
