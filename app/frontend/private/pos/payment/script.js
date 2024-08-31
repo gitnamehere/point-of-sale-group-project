@@ -129,9 +129,12 @@ fetch(`/api/orders/${orderId}`, {
                     body: JSON.stringify(orderDetails),
                 })
                     .then((response) => {
-                        response.ok
-                            ? alert(`Your change is $${change.toFixed(2)}`)
-                            : alert("Error: Payment could not be processed");
+                        if (response.ok) {
+                            alert(`Your change is $${change.toFixed(2)}`);
+                            window.location = "/pos/orders/";
+                        } else {
+                            alert("Error: Payment could not be processed");
+                        }
                     })
                     .catch((error) => console.log(error));
             }
