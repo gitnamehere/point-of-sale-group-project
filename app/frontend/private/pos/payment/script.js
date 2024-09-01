@@ -19,7 +19,7 @@ const payBtn = document.getElementById("payButton");
 const paidBtn = document.getElementById("paidButton");
 const grandTotal = document.getElementById("grandTotal");
 const amountPaid = document.getElementById("amountPaid");
-const change = document.getElementById("change");
+const changeElement = document.getElementById("change");
 const orders = document.getElementById("orders");
 
 let discountPercentage = 0;
@@ -106,7 +106,7 @@ function handlePaymentButton() {
     } else {
         grandTotal.textContent = formatCurrency(total);
         amountPaid.textContent = formatCurrency(cash);
-        change.textContent = formatCurrency(change);
+        changeElement.textContent = formatCurrency(change);
 
         const payModal = new bootstrap.Modal(document.getElementById('payModal'));
         payModal.show();
