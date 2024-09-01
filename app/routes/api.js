@@ -568,9 +568,9 @@ apiRouter.put("/cart/update/:id", (req, res) => {
         "UPDATE cart_item SET quantity = $1 WHERE item_id = $2",
         [quantity, id],
         res,
-        true
+        true,
     );
-}
+});
 
 // DELETE API endpoint to remove item from cart
 apiRouter.delete("/cart/delete/:id", (req, res) => {
