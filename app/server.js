@@ -13,7 +13,7 @@ let hostname;
 // fly.io sets NODE_ENV to production automatically, otherwise it's unset when running locally
 hostname = process.env.NODE_ENV == "production" ? "0.0.0.0" : "localhost";
 
-const { apiRouter } = require("./routes/api");
+const { apiRouter, pool } = require("./routes/api");
 const { posRouter } = require("./routes/pos");
 const { storeRouter } = require("./routes/store");
 
@@ -42,6 +42,36 @@ app.get("/business-info.js", (req, res) => {
 
 app.get("/themes.js", (req, res) => {
     res.sendFile("frontend/files/themes.js", { root: __dirname });
+});
+
+app.get("/themes.css", (req, res) => {
+    pool.query("SELECT * FROM themes")
+        .then((result) => {
+            const { background_color, primary_color, secondary_color } =
+                result.rows[0];
+            res.send(`body {
+    background-color: "${background_color}" !important;
+}
+
+.primary-background {
+    background-color: "${primary_color}";
+}
+
+.primary-text {
+    color: "${primary_color}";
+}
+
+.secondary-background {
+    background-color: "${secondary_color}";
+}
+
+.secondary-text {
+    color: "${secondary_color}";
+}`);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 });
 
 app.listen(port, hostname, () => {
