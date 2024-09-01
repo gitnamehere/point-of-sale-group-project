@@ -4,6 +4,8 @@ const apiRouter = express.Router();
 const { Pool } = require("pg");
 const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
+const multer = require("multer");
+const Papa = require("papaparse");
 
 apiRouter.use(cookieParser());
 
@@ -195,7 +197,6 @@ apiRouter.post("/accounts/add", (req, res) => {
 });
 
 // item categories
-
 apiRouter.post("/category/add", (req, res) => {
     const body = req.body;
 
@@ -261,6 +262,83 @@ apiRouter.post("/item/add", (req, res) => {
         res,
         true,
     );
+});
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+apiRouter.post("/item/upload", upload.single("file"), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded." });
+    }
+    const csvData = req.file.buffer.toString("utf-8");
+
+    Papa.parse(csvData, {
+        header: true,
+        complete: async (results) => {
+            let categories = {};
+            await pool
+                .query("SELECT * FROM item_category")
+                .then((result) => {
+                    for (let i = 0; i < result.rows.length; i++) {
+                        const { id, name } = result.rows[i];
+                        categories[name] = id;
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    return res.sendStatus(500);
+                });
+
+            for (let i = 0; i < results.data.length; i++) {
+                if (
+                    !results.data[i].hasOwnProperty("category") ||
+                    !results.data[i].hasOwnProperty("name") ||
+                    !results.data[i].hasOwnProperty("description") ||
+                    !results.data[i].hasOwnProperty("price") ||
+                    results.data[i].name.length > 50 ||
+                    results.data[i].name.length < 1
+                ) {
+                    // if there is an invalid item data, skip it
+                    continue;
+                }
+
+                const { category, name, description, price } = results.data[i];
+
+                // add the category if it doesn't already exist
+                if (!categories.hasOwnProperty(category)) {
+                    await pool
+                        .query(
+                            "INSERT INTO item_category (name) VALUES ($1) RETURNING id",
+                            [category],
+                        )
+                        .then((result) => {
+                            categories[category] = result.rows[0].id;
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            return res.sendStatus(500);
+                        });
+                }
+
+                await pool
+                    .query(
+                        "INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)",
+                        [categories[category], name, description, price],
+                    )
+                    .catch((error) => {
+                        console.log(error);
+                        return res.sendStatus(500);
+                    });
+            }
+
+            res.sendStatus(200);
+        },
+        error: (error) => {
+            res.status(500).json({ error: "Error parsing CSV file." });
+            console.error("Error parsing CSV file:", error);
+        },
+    });
 });
 
 // PUT API endpoint to update exisiting item
