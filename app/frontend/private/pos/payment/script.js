@@ -35,7 +35,7 @@ function fetchOrder(orderId) {
         headers: {
             "Content-Type": "application/json",
         },
-    }).then(response => response.json());
+    }).then((response) => response.json());
 }
 
 function fetchDiscount(code) {
@@ -43,13 +43,12 @@ function fetchDiscount(code) {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-        }
-    }).then(response => response.json());
+        },
+    }).then((response) => response.json());
 }
 
 function fetchItem(itemId) {
-    return fetch(`/api/items/${itemId}`)
-        .then(response => response.json());
+    return fetch(`/api/items/${itemId}`).then((response) => response.json());
 }
 
 function updateCalculations(subtotal, discount, tip) {
@@ -78,11 +77,7 @@ function handleDiscountButton(subtotal) {
             .catch((error) => {
                 console.log(error);
                 discountElement.textContent = "$0.00";
-                updateCalculations(
-                    subtotal,
-                    discountPercentage,
-                    tipPercentage,
-                );
+                updateCalculations(subtotal, discountPercentage, tipPercentage);
             });
     } else {
         discountElement.textContent = "$0.00";
@@ -96,19 +91,27 @@ function handleTip(subtotal, event) {
 }
 
 function handlePaymentButton() {
-    const orderDetails = { discountAmount: discountPercentage, tipAmount: tipPercentage, total };
+    const orderDetails = {
+        discountAmount: discountPercentage,
+        tipAmount: tipPercentage,
+        total,
+    };
     const cash = parseFloat(cashInput.value.replace("$", ""));
     const change = cash - total;
 
     if (cash < total) {
-        alert("Error: Payment amount is less than total. Please enter a sufficient amount.");
+        alert(
+            "Error: Payment amount is less than total. Please enter a sufficient amount.",
+        );
         return;
     } else {
         grandTotal.textContent = formatCurrency(total);
         amountPaid.textContent = formatCurrency(cash);
         changeElement.textContent = formatCurrency(change);
 
-        const payModal = new bootstrap.Modal(document.getElementById('payModal'));
+        const payModal = new bootstrap.Modal(
+            document.getElementById("payModal"),
+        );
         payModal.show();
 
         paidBtn.addEventListener("click", () => {
@@ -132,7 +135,9 @@ function handlePaymentButton() {
                                 if (response.ok) {
                                     window.location = "/pos/orders/";
                                 } else {
-                                    alert("Error: Payment could not be processed");
+                                    alert(
+                                        "Error: Payment could not be processed",
+                                    );
                                 }
                             })
                             .catch((error) => console.log(error));
@@ -141,24 +146,31 @@ function handlePaymentButton() {
                     }
                 })
                 .catch((error) => console.log(error));
-        })
+        });
     }
 }
 
 function initialize() {
-    fetchOrder(orderId).then(data => {
-        const subtotal = parseFloat(data[0].subtotal);
-        subtotalElement.textContent = formatCurrency(subtotal);
+    fetchOrder(orderId)
+        .then((data) => {
+            const subtotal = parseFloat(data[0].subtotal);
+            subtotalElement.textContent = formatCurrency(subtotal);
 
-        updateCalculations(subtotal, discountPercentage, tipPercentage);
+            updateCalculations(subtotal, discountPercentage, tipPercentage);
 
-        discountBtn.addEventListener("click", () => handleDiscountButton(subtotal));
-        tipBtns.forEach(button => button.addEventListener("click", event => handleTip(subtotal, event)));
-        payBtn.addEventListener("click", handlePaymentButton);
+            discountBtn.addEventListener("click", () =>
+                handleDiscountButton(subtotal),
+            );
+            tipBtns.forEach((button) =>
+                button.addEventListener("click", (event) =>
+                    handleTip(subtotal, event),
+                ),
+            );
+            payBtn.addEventListener("click", handlePaymentButton);
 
-        data.forEach(order => {
-            const detailTr = document.createElement("tr");
-            detailTr.innerHTML = `
+            data.forEach((order) => {
+                const detailTr = document.createElement("tr");
+                detailTr.innerHTML = `
                 <td colspan="4">
                     <table class="table table-striped" id="${order.id}">
                         <thead>
@@ -175,26 +187,27 @@ function initialize() {
                 </td>
             `;
 
-            const tbody = detailTr.querySelector("tbody");
-            const itemIds = Object.keys(order.items);
+                const tbody = detailTr.querySelector("tbody");
+                const itemIds = Object.keys(order.items);
 
-            itemIds.forEach(id => {
-                fetchItem(id)
-                    .then(body => {
-                        const itemRow = document.createElement("tr");
-                        itemRow.innerHTML = `
+                itemIds.forEach((id) => {
+                    fetchItem(id)
+                        .then((body) => {
+                            const itemRow = document.createElement("tr");
+                            itemRow.innerHTML = `
                             <td>${body[0].id}</td>
                             <td>${body[0].name}</td>
                             <td>${order.items[id]}</td>
                             <td>$${(body[0].price * order.items[id]).toFixed(2)}</td>
                         `;
-                        tbody.appendChild(itemRow);
-                    })
-                    .catch(error => console.error(error));
+                            tbody.appendChild(itemRow);
+                        })
+                        .catch((error) => console.error(error));
+                });
+                orders.appendChild(detailTr);
             });
-            orders.appendChild(detailTr);
-        });
-    }).catch(error => console.error(error));
+        })
+        .catch((error) => console.error(error));
 }
 
 numPadBtns.forEach((button) => {
