@@ -6,6 +6,9 @@ const secondaryBackground = document.getElementsByClassName(
 );
 const secondaryText = document.getElementsByClassName("secondary-text");
 
+// fix flickering when setting themes
+document.body.style.display = "none";
+
 fetch("/api/themes")
     .then((response) => {
         if (response.status !== 200) return alert("Error fetching themes");
@@ -29,7 +32,9 @@ fetch("/api/themes")
             }
         });
     })
+    .then(() => document.body.style.display = "unset")
     .catch((error) => {
         console.log(error);
+        document.body.style.display = "unset";
         alert("Error fetching themes");
     });
