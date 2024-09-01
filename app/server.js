@@ -40,6 +40,10 @@ app.get("/business-info.js", (req, res) => {
     res.sendFile("frontend/files/business-info.js", { root: __dirname });
 });
 
+app.get("/themes.js", (req, res) => {
+    res.sendFile("frontend/files/themes.js", { root: __dirname });
+});
+
 app.listen(port, hostname, () => {
     console.log(`http://${hostname}:${port}`);
 });

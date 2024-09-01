@@ -6,6 +6,11 @@ const addressTwoInput = document.getElementById("address-two");
 const emailInput = document.getElementById("email");
 const submit = document.getElementById("submit");
 
+const backgroundColorInput = document.getElementById("background-color");
+const primaryColorInput = document.getElementById("primary-color");
+const secondaryColorInput = document.getElementById("secondary-color");
+const submitTheme = document.getElementById("submit-theme");
+
 fetch("/api/business-information")
     .then((response) => {
         if (response.status !== 200)
@@ -53,6 +58,47 @@ submit.addEventListener("click", () => {
             response.status !== 200
                 ? alert("Error changing business information")
                 : alert("Successfully changed business settings!");
+        })
+        .catch((error) => {
+            console.log(error);
+            alert("An error occured");
+        });
+});
+
+fetch("/api/themes")
+    .then((response) => {
+        if (response.status !== 200) return alert("Error fetching themes");
+
+        return response.json().then((body) => {
+            const { background_color, primary_color, secondary_color } =
+                body[0];
+
+            backgroundColorInput.value = background_color;
+            primaryColorInput.value = primary_color;
+            secondaryColorInput.value = secondary_color;
+        });
+    })
+    .catch((error) => {
+        console.log(error);
+        alert("An error occured");
+    });
+
+submitTheme.addEventListener("click", () => {
+    fetch("/api/themes", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            background_color: backgroundColorInput.value,
+            primary_color: primaryColorInput.value,
+            secondary_color: secondaryColorInput.value,
+        }),
+    })
+        .then((response) => {
+            response.status !== 200
+                ? alert("Error setting theme")
+                : alert("Successfully changed theme!");
         })
         .catch((error) => {
             console.log(error);

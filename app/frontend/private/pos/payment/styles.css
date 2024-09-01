@@ -11,12 +11,46 @@ body {
     height: 100%;
 }
 
+.orderSummary,
+#payment {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table,
+th,
+td {
+    border: 1px solid #ddd;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+}
+
+#calculations div {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
 .container {
     display: flex;
+    width: 80%;
+    max-width: 1200px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .orderSummary {
-    width: 40%;
+    width: 100%;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -37,9 +71,9 @@ body {
 
 .payment {
     width: 60%;
-    padding: 20px;
+    padding: 50px;
     display: flex;
-    flex-direction: right;
+    flex-direction: left;
 }
 
 #cashInput {

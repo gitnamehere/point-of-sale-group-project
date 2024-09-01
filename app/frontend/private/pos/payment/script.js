@@ -19,6 +19,7 @@ let discountPercentage = 0;
 let tipPercentage = 0;
 let change = 0;
 let isPaid = false; // for now until ordering screen handles payment status
+const orders = document.getElementById("orders");
 
 numPadBtns.forEach((button) => {
     button.addEventListener("click", function () {
@@ -128,13 +129,69 @@ fetch(`/api/orders/${orderId}`, {
                     body: JSON.stringify(orderDetails),
                 })
                     .then((response) => {
-                        response.ok
-                            ? alert(`Your change is $${change.toFixed(2)}`)
-                            : alert("Error: Payment could not be processed");
+                        if (response.ok) {
+                            alert(`Your change is $${change.toFixed(2)}`);
+                            window.location = "/pos/orders/";
+                        } else {
+                            alert("Error: Payment could not be processed");
+                        }
                     })
                     .catch((error) => console.log(error));
             }
         });
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+
+fetch(`/api/orders/${orderId}`)
+    .then((response) => response.json())
+    .then((body) => {
+        for (let order of body) {
+            const detailTr = document.createElement("tr");
+            detailTr.classList.add("collapse");
+            detailTr.innerHTML = `
+                <td colspan="4">
+                    <table class="table table-striped" id="${order.id}">
+                        <thead>
+                            <tr>
+                                <th scope="col">Item ID</th>
+                                <th scope="col">Product Name</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </td>
+            `;
+
+            const tbody = detailTr.querySelector("tbody");
+            const itemIds = Object.keys(order.items);
+
+            for (let i = 0; i < itemIds.length; i++) {
+                let id = itemIds[i];
+
+                fetch(`/api/items/${id}`)
+                    .then((response) => response.json())
+                    .then((body) => {
+                        const itemRow = document.createElement("tr");
+                        itemRow.innerHTML = `
+                            <td>${body[0].id}</td>
+                            <td>${body[0].name}</td>
+                            <td>${order.items[id]}</td>
+                            <td>$${(body[0].price * order.items[id]).toFixed(2)}</td>
+                        `;
+                        tbody.appendChild(itemRow);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+
+            orders.appendChild(detailTr);
+        }
     })
     .catch((error) => {
         console.log(error);

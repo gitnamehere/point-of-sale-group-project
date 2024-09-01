@@ -3,13 +3,15 @@ let salesData = [];
 fetch("/api/orders")
     .then((response) => {
         return response.json();
-    }).then((body) => {
+    })
+    .then((body) => {
         for (let order of body) {
             salesData.push(order);
         }
-    }).catch((error) => {
-        console.log(error);
     })
+    .catch((error) => {
+        console.log(error);
+    });
 
 console.log(salesData);
 
