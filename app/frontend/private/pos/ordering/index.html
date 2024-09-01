@@ -13,18 +13,26 @@
         <link rel="stylesheet" href="styles.css" />
     </head>
     <body>
-        <div class="header">
-            <h1 class="header-title">Ordering</h1>
+        <div class="header primary-background">
+            <h1 class="header-title secondary-text">Ordering</h1>
             <div class="header-buttons">
-                <a href="/pos/orders" class="header-button btn btn-light"
+                <a
+                    href="/pos/orders"
+                    class="header-button btn secondary-background primary-text"
                     >Orders</a
                 >
-                <a href="/pos" class="header-button btn btn-light">Home</a>
+                <a
+                    href="/pos"
+                    class="header-button btn secondary-background primary-text"
+                    >Home</a
+                >
             </div>
         </div>
         <div class="ordering-container container-fluid">
             <div id="categories" class="section"></div>
-            <div id="items" class="section"></div>
+            <div id="items-container" class="section">
+                <div id="items"></div>
+            </div>
             <div id="ticket" class="section">
                 <div class="ticket-body">
                     <h4 class="ticket-title">Order Ticket</h4>
@@ -74,5 +82,6 @@
             This section will be reserved for later use
         </div>
         <script src="script.js"></script>
+        <script src="/themes.js"></script>
     </body>
 </html>

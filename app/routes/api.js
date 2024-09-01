@@ -4,6 +4,8 @@ const apiRouter = express.Router();
 const { Pool } = require("pg");
 const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
+const multer = require("multer");
+const Papa = require("papaparse");
 
 apiRouter.use(cookieParser());
 
@@ -195,7 +197,6 @@ apiRouter.post("/accounts/add", (req, res) => {
 });
 
 // item categories
-
 apiRouter.post("/category/add", (req, res) => {
     const body = req.body;
 
@@ -261,6 +262,83 @@ apiRouter.post("/item/add", (req, res) => {
         res,
         true,
     );
+});
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+apiRouter.post("/item/upload", upload.single("file"), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded." });
+    }
+    const csvData = req.file.buffer.toString("utf-8");
+
+    Papa.parse(csvData, {
+        header: true,
+        complete: async (results) => {
+            let categories = {};
+            await pool
+                .query("SELECT * FROM item_category")
+                .then((result) => {
+                    for (let i = 0; i < result.rows.length; i++) {
+                        const { id, name } = result.rows[i];
+                        categories[name] = id;
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    return res.sendStatus(500);
+                });
+
+            for (let i = 0; i < results.data.length; i++) {
+                if (
+                    !results.data[i].hasOwnProperty("category") ||
+                    !results.data[i].hasOwnProperty("name") ||
+                    !results.data[i].hasOwnProperty("description") ||
+                    !results.data[i].hasOwnProperty("price") ||
+                    results.data[i].name.length > 50 ||
+                    results.data[i].name.length < 1
+                ) {
+                    // if there is an invalid item data, skip it
+                    continue;
+                }
+
+                const { category, name, description, price } = results.data[i];
+
+                // add the category if it doesn't already exist
+                if (!categories.hasOwnProperty(category)) {
+                    await pool
+                        .query(
+                            "INSERT INTO item_category (name) VALUES ($1) RETURNING id",
+                            [category],
+                        )
+                        .then((result) => {
+                            categories[category] = result.rows[0].id;
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            return res.sendStatus(500);
+                        });
+                }
+
+                await pool
+                    .query(
+                        "INSERT INTO item(category, name, description, price) VALUES($1, $2, $3, $4)",
+                        [categories[category], name, description, price],
+                    )
+                    .catch((error) => {
+                        console.log(error);
+                        return res.sendStatus(500);
+                    });
+            }
+
+            res.sendStatus(200);
+        },
+        error: (error) => {
+            res.status(500).json({ error: "Error parsing CSV file." });
+            console.error("Error parsing CSV file:", error);
+        },
+    });
 });
 
 // PUT API endpoint to update exisiting item
@@ -405,11 +483,126 @@ apiRouter.get("/discounts/:code", (req, res) => {
 
 apiRouter.put("/orders/process/:id", (req, res) => {
     const id = req.params.id;
-    const {discountAmount, tipAmount, total} = req.body;
+    const { discountAmount, tipAmount, total } = req.body;
 
     query(
         "UPDATE orders SET discount = $1, tips = $2, total = $3, is_paid = true WHERE id = $4",
         [discountAmount, tipAmount, total, id],
+        res,
+        true,
+    );
+});
+
+// TODO: should be a public API route (get)
+apiRouter.get("/business-information", (req, res) => {
+    query("SELECT * FROM business_information", [], res);
+});
+
+apiRouter.put("/business-information", (req, res) => {
+    const body = req.body;
+
+    // honestly we should write a function for this
+    if (
+        !body.hasOwnProperty("name") ||
+        !body.hasOwnProperty("description") ||
+        !body.hasOwnProperty("address_one") ||
+        !body.hasOwnProperty("address_two") ||
+        !body.hasOwnProperty("phone") ||
+        !body.hasOwnProperty("email") ||
+        body.name.length < 1 ||
+        body.description.length < 1 ||
+        body.phone.length > 12 ||
+        body.phone.length < 1 ||
+        body.address_one.length < 1 ||
+        body.address_two.length < 1 ||
+        body.email.length < 1
+    ) {
+        return res.sendStatus(400);
+    }
+
+    const { name, description, address_one, address_two, phone, email } = body;
+
+    query(
+        "UPDATE business_information SET business_name = $1, description = $2, address_one = $3, address_two = $4, phone_number = $5, email = $6 WHERE id = 1",
+        [name, description, address_one, address_two, phone, email],
+        res,
+        true,
+    );
+});
+
+// POST API endpoint to add items to cart_item
+apiRouter.post("/cart/add", (req, res) => {
+    const body = req.body;
+
+    if (!body.hasOwnProperty("item_id") || !body.hasOwnProperty("quantity")) {
+        return res.sendStatus(400);
+    }
+
+    const { item_id, quantity } = body;
+
+    query(
+        "INSERT INTO cart_item (item_id, quantity) VALUES ($1, $2)",
+        [item_id, quantity],
+        res,
+        true,
+    );
+});
+
+// GET API endpoint to retrieve all items in the cart
+apiRouter.get("/cart/items", (req, res) => {
+    query("SELECT * FROM cart_item ORDER BY id ASC", [], res);
+});
+
+// PUT API endpoint to update the quantity of the item
+apiRouter.put("/cart/update/:id", (req, res) => {
+    const id = req.params.id;
+    const body = req.body;
+
+    if (!body.hasOwnProperty("quantity")) {
+        return res.sendStatus(400);
+    }
+
+    const { quantity } = body;
+
+    query(
+        "UPDATE cart_item SET quantity = $1 WHERE item_id = $2",
+        [quantity, id],
+        res,
+        true,
+    );
+});
+
+// DELETE API endpoint to remove item from cart
+apiRouter.delete("/cart/delete/:id", (req, res) => {
+    const id = req.params.id;
+
+    query("DELETE FROM cart_item WHERE item_id = $1", [id], res, true);
+});
+
+// also make this public
+apiRouter.get("/themes", (req, res) => {
+    query("SELECT * FROM themes", [], res);
+});
+
+apiRouter.put("/themes", (req, res) => {
+    const body = req.body;
+
+    if (
+        !body.hasOwnProperty("background_color") ||
+        !body.hasOwnProperty("primary_color") ||
+        !body.hasOwnProperty("secondary_color") ||
+        body.background_color.length < 1 ||
+        body.primary_color.length < 1 ||
+        body.secondary_color.length < 1
+    ) {
+        return res.sendStatus(400);
+    }
+
+    const { background_color, primary_color, secondary_color } = body;
+
+    query(
+        "UPDATE themes SET background_color = $1, primary_color = $2, secondary_color = $3 WHERE id = 1",
+        [background_color, primary_color, secondary_color],
         res,
         true,
     );

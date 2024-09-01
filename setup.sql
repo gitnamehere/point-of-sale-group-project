@@ -80,8 +80,22 @@ CREATE TABLE tokens (
 
 CREATE TABLE business_information (
 	id SERIAL PRIMARY KEY,
-	business_name VARCHAR(50) NOT NULL,
-	phone_number VARCHAR(15) NOT NULL, --Phone example: 1-800-123-456
-	address TEXT NOT NULL,
-	description TEXT NOT NULL
+	business_name TEXT NOT NULL,
+	email TEXT NOT NULL,
+	phone_number VARCHAR(12) NOT NULL, --Phone example: 800-123-4567
+	address_one TEXT NOT NULL,
+	address_two TEXT NOT NULL,
+	description TEXT NOT NULL,
+	tax_rate DECIMAL (3,2) DEFAULT 0.00 --TODO: test and implement this
 );
+
+INSERT INTO business_information (business_name, email, phone_number, address_one, address_two, description) VALUES ('Business', 'test@example.com', '000-000-0000', '1 Placeholder St', 'A, TX 00000', 'Insert business description here');
+
+CREATE TABLE themes (
+	id SERIAL PRIMARY KEY,
+	background_color TEXT,
+	primary_color TEXT,
+	secondary_color TEXT
+);
+
+INSERT INTO themes (background_color, primary_color, secondary_color) VALUES ('#EEEEEE', '#111111', '#FFFFFF');

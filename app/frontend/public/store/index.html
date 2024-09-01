@@ -15,7 +15,9 @@
     <body>
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold" href="#home">ATS</a>
+                <a id="business-name" class="navbar-brand fw-bold" href="#home"
+                    >ATS</a
+                >
                 <button
                     class="navbar-toggler"
                     type="button"
@@ -39,7 +41,7 @@
 
         <section id="home">
             <img src="img/ape1.jpg" alt="ape" />
-            <a href="/store/ordering">
+            <a href="/store/menu">
                 <div id="order btn btn-primary" class="order">
                     <b>Order Now</b>
                 </div>
@@ -53,7 +55,7 @@
             class="d-flex flex-column justify-content-center align-items-center bg-light text-black"
         >
             <h1>ABOUT US</h1>
-            <p class="text-center">
+            <p id="description" class="text-center">
                 <b>ATS</b> or <b>APES TOGETHER STRONG</b> is a group<br />
                 dedicated to its craft. Nobody can stand in their way<br />
                 as they will always be together thus strong. Those have
@@ -84,13 +86,14 @@
                 </p>
                 <div class="d-flex flex-column">
                     <h4 class="mx-5">EMAIL</h4>
-                    <p class="mx-5">atsofficial@example.com</p>
+                    <p id="email" class="mx-5">atsofficial@example.com</p>
                     <h4 class="mx-5">LOCATION</h4>
-                    <p class="mx-5">
+                    <p id="address-one" class="mx-5">
                         123 Jungle Street, 22 Avenue, Whatever 92013-9000
                     </p>
+                    <p id="address-two" class="mx-5"></p>
                     <h4 class="mx-5">PHONE NUMBER</h4>
-                    <p class="mx-5">(234)-567-8900</p>
+                    <p id="phone" class="mx-5">(234)-567-8900</p>
                 </div>
             </div>
         </section>
@@ -100,6 +103,6 @@
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"
         ></script>
-        <script src="webPage.js"></script>
+        <script src="/business-info.js"></script>
     </body>
 </html>
