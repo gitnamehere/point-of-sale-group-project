@@ -49,24 +49,27 @@ app.get("/themes.css", (req, res) => {
         .then((result) => {
             const { background_color, primary_color, secondary_color } =
                 result.rows[0];
-            res.send(`body {
-    background-color: "${background_color}" !important;
+
+            // had to set the content type to text/css for it to work
+            // https://expressjs.com/en/5x/api.html#res.type
+            res.type("text/css").send(`body {
+    background-color: ${background_color};
 }
 
 .primary-background {
-    background-color: "${primary_color}";
+    background-color: ${primary_color};
 }
 
 .primary-text {
-    color: "${primary_color}";
+    color: ${primary_color};
 }
 
 .secondary-background {
-    background-color: "${secondary_color}";
+    background-color: ${secondary_color};
 }
 
 .secondary-text {
-    color: "${secondary_color}";
+    color: ${secondary_color};
 }`);
         })
         .catch((error) => {
