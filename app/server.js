@@ -68,6 +68,14 @@ app.get("/themes.css", (req, res) => {
     background-color: ${secondary_color};
 }
 
+.secondary-button {
+    background-color: ${secondary_color};
+}
+
+.secondary-button:hover {
+    background-color: ${secondary_color}66;
+}
+
 .secondary-text {
     color: ${secondary_color};
 }`);
