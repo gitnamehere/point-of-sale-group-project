@@ -608,4 +608,4 @@ apiRouter.put("/themes", (req, res) => {
     );
 });
 
-module.exports = { apiRouter, authentication };
+module.exports = { apiRouter, authentication, pool };
