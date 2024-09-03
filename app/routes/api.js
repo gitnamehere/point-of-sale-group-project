@@ -492,7 +492,7 @@ apiRouter.put("/cart/update/:id", (req, res) => {
         res,
         true
     );
-}
+});
 
 // DELETE API endpoint to remove item from cart
 apiRouter.delete("/cart/delete/:id", (req, res) => {
