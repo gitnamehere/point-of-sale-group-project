@@ -52,6 +52,10 @@
     transition: background-color 0.3s;
 }
 
+#orders a {
+    text-decoration: none;
+}
+
 .order-pay a:hover {
     background-color: #1f4670;
 }
