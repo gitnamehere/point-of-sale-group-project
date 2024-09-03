@@ -18,13 +18,10 @@ fetch("/api/orders")
             squareButton.href = `/pos/payment?id=${order.id}`
             // there are placeholders since there isn't much information yet
             squareButton.innerHTML = `
-                <div class="order-info">
+                <div class="order-button btn btn-light">
                     <div>Order #${order.id}</div>
-                    <div>Customer: Michael</div>
+                    <div>Michael</div>
                     <div>Subtotal: $${order.subtotal}</div>
-                    <div class="order-pay">
-                        <a href="/pos/payment?id=${order.id}" class="btn btn-primary">Pay</a>
-                    </div>
                 </div>
             `;
 
