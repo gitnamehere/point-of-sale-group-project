@@ -27,7 +27,7 @@ function fetchOrders(filter) {
                 squareButton.href = `/pos/payment?id=${order.id}`;
                 // there are placeholders since there isn't much information yet
                 squareButton.innerHTML = `
-                <div class="order-button ${order.is_void ? "void" : ""} ${order.is_paid && !order.is_void ? "paid" : ""} btn">
+                <div class="order-button ${order.is_void ? "void" : ""} ${order.is_paid && !order.is_void ? "paid" : ""} btn btn-light">
                     ${order.is_void ? "<div>VOIDED</div>" : ""}
                     <div>Order #${order.id}</div>
                     <div>Michael</div>
