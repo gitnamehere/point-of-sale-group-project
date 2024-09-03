@@ -505,8 +505,37 @@ apiRouter.delete("/items/:id", (req, res) => {
 
 // orders
 
+const orderFilters = ["paid", "unpaid", "void"];
+
 apiRouter.get("/orders", (req, res) => {
-    query("SELECT * FROM orders", [], res);
+    if (
+        !req.query.hasOwnProperty("filter") ||
+        !orderFilters.includes(req.query.filter)
+    )
+        return query("SELECT * FROM orders ORDER BY id ASC", [], res);
+
+    switch (req.query.filter) {
+        case "paid":
+            return query(
+                "SELECT * FROM orders WHERE is_paid = true AND is_void = false ORDER BY id ASC",
+                [],
+                res,
+            );
+        case "unpaid":
+            return query(
+                "SELECT * FROM orders WHERE is_paid = false AND is_void = false ORDER BY id ASC",
+                [],
+                res,
+            );
+        case "void":
+            return query(
+                "SELECT * FROM orders WHERE is_void = true ORDER BY id ASC",
+                [],
+                res,
+            );
+        default:
+            return query("SELECT * FROM orders ORDER BY id ASC", [], res);
+    }
 });
 
 apiRouter.get("/orders/:id", (req, res) => {
