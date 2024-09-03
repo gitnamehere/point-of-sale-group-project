@@ -165,7 +165,7 @@ apiRouter.get("/auth/pos/logout", (req, res) => {
         });
 });
 
-apiRouter.post("/auth/store/account/create", (req, res) => {
+apiRouter.post("/auth/store/account/create", async (req, res) => {
     const body = req.body;
 
     if (
@@ -184,7 +184,26 @@ apiRouter.post("/auth/store/account/create", (req, res) => {
         return res.sendStatus(400);
     }
 
+    let emails = [];
+    await pool
+        .query("SELECT email FROM customer")
+        .then((result) => {
+            for (let i = 0; i < result.rows.length; i++) {
+                emails.push(result.rows[i].email);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
+
+    console.log(emails);
     const {firstname, lastname, phone, email } = req.body;
+
+    if (emails.includes(email)) {
+        res.statusMessage = "Email Already Exists";
+        return res.sendStatus(500)
+    }
 
     query(
         "INSERT INTO customer(first_name, last_name, phone_number, email) VALUES($1, $2, $3, $4)",
