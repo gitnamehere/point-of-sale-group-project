@@ -14,8 +14,8 @@ fetch("/api/orders")
     })
     .then((body) => {
         for (let order of body) {
-            const squareButton = document.createElement("button");
-            squareButton.classList.add("order-button");
+            const squareButton = document.createElement("a");
+            squareButton.href = `/pos/payment?id=${order.id}`
             // there are placeholders since there isn't much information yet
             squareButton.innerHTML = `
                 <div class="order-info">
