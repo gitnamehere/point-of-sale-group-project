@@ -75,13 +75,8 @@ const authentication = (req, res, next) => {
 
     pool.query("SELECT * FROM tokens WHERE token = $1", [posAuth])
         .then((result) => {
-            if (result.rows.length === 0) {
-                // redirect to login page
-                // https://expressjs.com/en/4x/api.html#res.redirect
-                return res.redirect("/pos/login");
-            }
+            if (result.rows.length === 0) return res.sendStatus(401);
 
-            // not putting next() in here caused me an hour of pain
             next();
         })
         .catch((error) => {
@@ -150,6 +145,161 @@ apiRouter.post("/auth/pos/login", async (req, res) => {
         });
 });
 
+// O(n) time complexity :)
+// (there has to be a better way of doing this)
+apiRouter.post("/orders/create", async (req, res) => {
+    const body = req.body;
+
+    if (!body.hasOwnProperty("order")) return res.sendStatus(400);
+
+    const orderItems = Object.entries(body.order);
+
+    // get the list of (non deleted) item ids from the db
+    let validItems = [];
+    // use await here otherwise items would be undefined
+    await pool
+        .query("SELECT id FROM item WHERE is_deleted = false")
+        .then((result) => {
+            // there has to be a better way of doing this
+            for (let i = 0; i < result.rows.length; i++) {
+                validItems.push(result.rows[i].id);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
+
+    // validation (I haven't tested this with bad data yet)
+    for (let i = 0; i < orderItems.length; i++) {
+        // parse and update orderItems for later use
+        orderItems[i][0] = parseInt(orderItems[i][0]); // id
+        orderItems[i][1] = parseInt(orderItems[i][1]); // quantity
+
+        if (
+            isNaN(orderItems[i][0]) ||
+            isNaN(orderItems[i][1]) ||
+            !validItems.includes(orderItems[i][0])
+        )
+            return res.sendStatus(400);
+    }
+
+    // create the order and the corresponding order_items;
+    // conveniently, postgres has a CURRENT_DATE function
+    //https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-CURRENT
+    pool.query(
+        "INSERT INTO orders (items, subtotal, date_ordered) VALUES ($1, $2, CURRENT_DATE) RETURNING id",
+        [JSON.stringify(body.order), body.subtotal],
+    )
+        .then((result) => {
+            for (let i = 0; i < orderItems.length; i++) {
+                const itemId = orderItems[i][0];
+                const quantity = orderItems[i][1];
+                const orderId = result.rows[0].id;
+
+                pool.query(
+                    "INSERT INTO order_item (item_id, quantity, order_id) VALUES ($1, $2, $3)",
+                    [itemId, quantity, orderId],
+                ).catch((error) => {
+                    console.log(error);
+                    return res.sendStatus(500);
+                });
+            }
+
+            return res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
+});
+
+// request header to return all the items in the database, with optional query to return based on category
+apiRouter.get("/items", (req, res) => {
+    if (req.query.hasOwnProperty("category")) {
+        return query(
+            "SELECT * FROM item WHERE category = $1 AND is_deleted = false ORDER BY id ASC",
+            [req.query.category],
+            res,
+        );
+    }
+
+    query("SELECT * FROM item AND is_deleted = false ORDER BY id ASC", [], res);
+});
+
+apiRouter.get("/items/:id", (req, res) => {
+    query(
+        "SELECT * FROM item WHERE id = $1 AND is_deleted = false",
+        [req.params.id],
+        res,
+    );
+});
+
+// demo api endpoint that may be removed later
+apiRouter.get("/item/categories", (req, res) => {
+    query("SELECT * FROM item_category", [], res);
+});
+
+// POST API endpoint to add items to cart_item
+apiRouter.post("/cart/add", (req, res) => {
+    const body = req.body;
+
+    if (!body.hasOwnProperty("item_id") || !body.hasOwnProperty("quantity")) {
+        return res.sendStatus(400);
+    }
+
+    const { item_id, quantity } = body;
+
+    query(
+        "INSERT INTO cart_item (item_id, quantity) VALUES ($1, $2)",
+        [item_id, quantity],
+        res,
+        true,
+    );
+});
+
+// GET API endpoint to retrieve all items in the cart
+apiRouter.get("/cart/items", (req, res) => {
+    query("SELECT * FROM cart_item ORDER BY id ASC", [], res);
+});
+
+// PUT API endpoint to update the quantity of the item
+apiRouter.put("/cart/update/:id", (req, res) => {
+    const id = req.params.id;
+    const body = req.body;
+
+    if (!body.hasOwnProperty("quantity")) {
+        return res.sendStatus(400);
+    }
+
+    const { quantity } = body;
+
+    query(
+        "UPDATE cart_item SET quantity = $1 WHERE item_id = $2",
+        [quantity, id],
+        res,
+        true,
+    );
+});
+
+// DELETE API endpoint to remove item from cart
+apiRouter.delete("/cart/delete/:id", (req, res) => {
+    const id = req.params.id;
+
+    query("DELETE FROM cart_item WHERE item_id = $1", [id], res, true);
+});
+
+apiRouter.get("/business-information", (req, res) => {
+    query("SELECT * FROM business_information", [], res);
+});
+
+apiRouter.get("/themes", (req, res) => {
+    query("SELECT * FROM themes", [], res);
+});
+
+// routes after here needs api authentication
+apiRouter.use(authentication);
+
 apiRouter.get("/auth/pos/logout", (req, res) => {
     const { posAuth } = req.cookies;
 
@@ -212,32 +362,6 @@ apiRouter.post("/category/add", (req, res) => {
 });
 
 // items
-
-// request header to return all the items in the database, with optional query to return based on category
-apiRouter.get("/items", (req, res) => {
-    if (req.query.hasOwnProperty("category")) {
-        return query(
-            "SELECT * FROM item WHERE category = $1 AND is_deleted = false ORDER BY id ASC",
-            [req.query.category],
-            res,
-        );
-    }
-
-    query("SELECT * FROM item AND is_deleted = false ORDER BY id ASC", [], res);
-});
-
-apiRouter.get("/items/:id", (req, res) => {
-    query(
-        "SELECT * FROM item WHERE id = $1 AND is_deleted = false",
-        [req.params.id],
-        res,
-    );
-});
-
-// demo api endpoint that may be removed later
-apiRouter.get("/item/categories", (req, res) => {
-    query("SELECT * FROM item_category", [], res);
-});
 
 // POST API endpoint to add items in the database
 apiRouter.post("/item/add", (req, res) => {
@@ -381,75 +505,6 @@ apiRouter.delete("/items/:id", (req, res) => {
 
 // orders
 
-// O(n) time complexity :)
-// (there has to be a better way of doing this)
-apiRouter.post("/orders/create", async (req, res) => {
-    const body = req.body;
-
-    if (!body.hasOwnProperty("order")) return res.sendStatus(400);
-
-    const orderItems = Object.entries(body.order);
-
-    // get the list of (non deleted) item ids from the db
-    let validItems = [];
-    // use await here otherwise items would be undefined
-    await pool
-        .query("SELECT id FROM item WHERE is_deleted = false")
-        .then((result) => {
-            // there has to be a better way of doing this
-            for (let i = 0; i < result.rows.length; i++) {
-                validItems.push(result.rows[i].id);
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-            return res.sendStatus(500);
-        });
-
-    // validation (I haven't tested this with bad data yet)
-    for (let i = 0; i < orderItems.length; i++) {
-        // parse and update orderItems for later use
-        orderItems[i][0] = parseInt(orderItems[i][0]); // id
-        orderItems[i][1] = parseInt(orderItems[i][1]); // quantity
-
-        if (
-            isNaN(orderItems[i][0]) ||
-            isNaN(orderItems[i][1]) ||
-            !validItems.includes(orderItems[i][0])
-        )
-            return res.sendStatus(400);
-    }
-
-    // create the order and the corresponding order_items;
-    // conveniently, postgres has a CURRENT_DATE function
-    //https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-CURRENT
-    pool.query(
-        "INSERT INTO orders (items, subtotal, date_ordered) VALUES ($1, $2, CURRENT_DATE) RETURNING id",
-        [JSON.stringify(body.order), body.subtotal],
-    )
-        .then((result) => {
-            for (let i = 0; i < orderItems.length; i++) {
-                const itemId = orderItems[i][0];
-                const quantity = orderItems[i][1];
-                const orderId = result.rows[0].id;
-
-                pool.query(
-                    "INSERT INTO order_item (item_id, quantity, order_id) VALUES ($1, $2, $3)",
-                    [itemId, quantity, orderId],
-                ).catch((error) => {
-                    console.log(error);
-                    return res.sendStatus(500);
-                });
-            }
-
-            return res.sendStatus(200);
-        })
-        .catch((error) => {
-            console.log(error);
-            return res.sendStatus(500);
-        });
-});
-
 apiRouter.get("/orders", (req, res) => {
     query("SELECT * FROM orders", [], res);
 });
@@ -493,11 +548,6 @@ apiRouter.put("/orders/process/:id", (req, res) => {
     );
 });
 
-// TODO: should be a public API route (get)
-apiRouter.get("/business-information", (req, res) => {
-    query("SELECT * FROM business_information", [], res);
-});
-
 apiRouter.put("/business-information", (req, res) => {
     const body = req.body;
 
@@ -530,60 +580,6 @@ apiRouter.put("/business-information", (req, res) => {
     );
 });
 
-// POST API endpoint to add items to cart_item
-apiRouter.post("/cart/add", (req, res) => {
-    const body = req.body;
-
-    if (!body.hasOwnProperty("item_id") || !body.hasOwnProperty("quantity")) {
-        return res.sendStatus(400);
-    }
-
-    const { item_id, quantity } = body;
-
-    query(
-        "INSERT INTO cart_item (item_id, quantity) VALUES ($1, $2)",
-        [item_id, quantity],
-        res,
-        true,
-    );
-});
-
-// GET API endpoint to retrieve all items in the cart
-apiRouter.get("/cart/items", (req, res) => {
-    query("SELECT * FROM cart_item ORDER BY id ASC", [], res);
-});
-
-// PUT API endpoint to update the quantity of the item
-apiRouter.put("/cart/update/:id", (req, res) => {
-    const id = req.params.id;
-    const body = req.body;
-
-    if (!body.hasOwnProperty("quantity")) {
-        return res.sendStatus(400);
-    }
-
-    const { quantity } = body;
-
-    query(
-        "UPDATE cart_item SET quantity = $1 WHERE item_id = $2",
-        [quantity, id],
-        res,
-        true,
-    );
-});
-
-// DELETE API endpoint to remove item from cart
-apiRouter.delete("/cart/delete/:id", (req, res) => {
-    const id = req.params.id;
-
-    query("DELETE FROM cart_item WHERE item_id = $1", [id], res, true);
-});
-
-// also make this public
-apiRouter.get("/themes", (req, res) => {
-    query("SELECT * FROM themes", [], res);
-});
-
 apiRouter.put("/themes", (req, res) => {
     const body = req.body;
 
@@ -608,4 +604,4 @@ apiRouter.put("/themes", (req, res) => {
     );
 });
 
-module.exports = { apiRouter, authentication };
+module.exports = { apiRouter, pool };
