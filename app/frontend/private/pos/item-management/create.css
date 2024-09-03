@@ -83,14 +83,16 @@ button {
 }
 
 .first,
-.second {
+.second,
+.third {
     display: flex;
 }
 
 .general,
 .gallery,
 .price,
-.category {
+.category,
+.upload {
     background-color: rgb(255, 255, 255);
     border-radius: 10px;
     margin: 10px;

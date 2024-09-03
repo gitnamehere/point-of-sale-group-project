@@ -14,15 +14,15 @@ fetch("/api/orders")
     })
     .then((body) => {
         for (let order of body) {
-            const tr = document.createElement("tr");
+            const squareButton = document.createElement("a");
+            squareButton.href = `/pos/payment?id=${order.id}`
             // there are placeholders since there isn't much information yet
-            tr.innerHTML = `
-				<td>${order.id}</td>
-				<td></td>
-				<td>Michael</td>
-				<td>${totalQuantity(order.items)}</td>
-				<td>$${order.subtotal}</td>
-				<td></td>
+            squareButton.innerHTML = `
+                <div class="order-button btn btn-light">
+                    <div>Order #${order.id}</div>
+                    <div>Michael</div>
+                    <div>Subtotal: $${order.subtotal}</div>
+                </div>
             `;
 
             const detailTr = document.createElement("tr");
@@ -45,38 +45,7 @@ fetch("/api/orders")
                 </td>
 			`;
 
-            tr.addEventListener("click", () => {
-                detailTr.classList.toggle("show");
-
-                const tbody = detailTr.querySelector("tbody");
-                if (tbody.children.length === 0) {
-                    const itemIds = Object.keys(order.items);
-
-                    for (let i = 0; i < itemIds.length; i++) {
-                        let id = itemIds[i];
-
-                        fetch(`/api/items/${id}`)
-                            .then((response) => {
-                                return response.json();
-                            })
-                            .then((body) => {
-                                const itemRow = document.createElement("tr");
-                                itemRow.innerHTML = `
-									<td>${body[0].id}</td>
-									<td>${body[0].name}</td>
-									<td>${order.items[id]}</td>
-									<td>$${(body[0].price * order.items[id]).toFixed(2)}</td>
-								`;
-                                tbody.appendChild(itemRow);
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                            });
-                    }
-                }
-            });
-
-            orders.append(tr);
+            orders.append(squareButton);
             orders.appendChild(detailTr);
         }
     })
