@@ -52,6 +52,16 @@
     transition: background-color 0.3s;
 }
 
+.paid {
+    background-color: #006527 !important;
+    color: white !important;
+}
+
+.void {
+    background-color: gray !important;
+    color: white !important;
+}
+
 #orders a {
     text-decoration: none;
 }
