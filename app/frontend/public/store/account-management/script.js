@@ -21,7 +21,6 @@ submit.addEventListener("click", () => {
         },
         body: JSON.stringify(customer),
     }).then((response) => {
-        console.log("response:", response)
         response.ok ? alert("Success") : alert(response.statusText);
 
     });

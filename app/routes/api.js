@@ -197,7 +197,6 @@ apiRouter.post("/auth/store/account/create", async (req, res) => {
             return res.sendStatus(500);
         });
 
-    console.log(emails);
     const {firstname, lastname, phone, email } = req.body;
 
     if (emails.includes(email)) {
