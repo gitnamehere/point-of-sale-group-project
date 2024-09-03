@@ -315,6 +315,53 @@ apiRouter.get("/auth/pos/logout", (req, res) => {
         });
 });
 
+apiRouter.post("/auth/store/account/create", async (req, res) => {
+    const body = req.body;
+
+    if (
+        !body.hasOwnProperty("firstname") ||
+        !body.hasOwnProperty("lastname") ||
+        !body.hasOwnProperty("phone") ||
+        !body.hasOwnProperty("email") ||
+        body.firstname.length > 50 ||
+        body.firstname.length < 1 ||
+        body.lastname.length > 50 ||
+        body.lastname.length < 1 ||
+        body.phone.length < 1 ||
+        body.phone.length > 12 ||
+        body.email.length < 1
+    ) {
+        return res.sendStatus(400);
+    }
+
+    let emails = [];
+    await pool
+        .query("SELECT email FROM customer")
+        .then((result) => {
+            for (let i = 0; i < result.rows.length; i++) {
+                emails.push(result.rows[i].email);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
+
+    const {firstname, lastname, phone, email } = req.body;
+
+    if (emails.includes(email)) {
+        res.statusMessage = "Email Already Exists";
+        return res.sendStatus(500)
+    }
+
+    query(
+        "INSERT INTO customer(first_name, last_name, phone_number, email) VALUES($1, $2, $3, $4)",
+         [firstname, lastname, phone, email],
+        res,
+        true,
+    );
+});
+
 // TODO: update this to new schema
 apiRouter.post("/accounts/add", (req, res) => {
     const body = req.body;
