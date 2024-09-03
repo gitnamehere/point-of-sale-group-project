@@ -71,7 +71,8 @@ td {
     text-align: left;
 }
 
-#calculations, #payment{
+#calculations,
+#payment {
     display: flex;
     flex-direction: column;
 }
