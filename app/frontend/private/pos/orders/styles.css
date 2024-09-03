@@ -33,9 +33,9 @@
 
 #orders {
     display: flex;
+    margin-top: 16px;
     flex-wrap: wrap;
-    gap: 60px;
-    padding: 50px;
+    gap: 16px;
 }
 
 .order-button {
