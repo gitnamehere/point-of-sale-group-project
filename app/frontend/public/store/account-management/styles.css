@@ -18,3 +18,7 @@ input,
 button {
     width: auto;
 }
+
+.navbar .navbar-nav .nav-link {
+    color: white;
+}
