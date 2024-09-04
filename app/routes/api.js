@@ -351,7 +351,7 @@ apiRouter.post("/auth/store/account/create", async (req, res) => {
 
     if (emails.includes(email)) {
         res.statusMessage = "Email Already Exists";
-        return res.sendStatus(500)
+        return res.sendStatus(500);
     }
 
     query(
@@ -633,7 +633,7 @@ apiRouter.put("/orders/void/:id", (req, res) => {
         res,
         true,
     );
-})
+});
 
 apiRouter.put("/orders/refund/:id", (req, res) => {
     const id = req.params.id;
@@ -644,7 +644,7 @@ apiRouter.put("/orders/refund/:id", (req, res) => {
         res,
         true,
     );
-})
+});
 
 apiRouter.put("/business-information", (req, res) => {
     const body = req.body;
