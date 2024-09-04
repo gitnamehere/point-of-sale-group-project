@@ -140,41 +140,37 @@ function handlePaymentButton() {
 }
 
 function handleVoidButton() {
-    voidBtn.addEventListener("click", () => {
-        fetch(`/api/orders/void/${orderId}`, {
-            method: "PUT",
-        })
-            .then((response) => {
-                if (response.ok) {
-                    window.location = "/pos/orders/";
-                } else {
-                    alert("Error: Order could not be voided");
-                }
-            })
-            .catch((error) => {
-                console.log("Error:", error);
+    fetch(`/api/orders/void/${orderId}`, {
+        method: "PUT",
+    })
+        .then((response) => {
+            if (response.ok) {
+                window.location = "/pos/orders/";
+            } else {
                 alert("Error: Order could not be voided");
-            });
-    });
+            }
+        })
+        .catch((error) => {
+            console.log("Error:", error);
+            alert("Error: Order could not be voided");
+        });
 }
 
 function handleRefundButton() {
-    refundBtn.addEventListener("click", () => {
-        fetch(`/api/orders/refund/${orderId}`, {
-            method: "PUT",
-        })
-            .then((response) => {
-                if (response.ok) {
-                    window.location = "/pos/orders/";
-                } else {
-                    alert("Error: Order could not be refunded");
-                }
-            })
-            .catch((error) => {
-                console.log("Error:", error);
+    fetch(`/api/orders/refund/${orderId}`, {
+        method: "PUT",
+    })
+        .then((response) => {
+            if (response.ok) {
+                window.location = "/pos/orders/";
+            } else {
                 alert("Error: Order could not be refunded");
-            });
-    });
+            }
+        })
+        .catch((error) => {
+            console.log("Error:", error);
+            alert("Error: Order could not be refunded");
+        });
 }
 
 function initialize() {
