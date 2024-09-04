@@ -347,7 +347,7 @@ apiRouter.post("/auth/store/account/create", async (req, res) => {
             return res.sendStatus(500);
         });
 
-    const {firstname, lastname, phone, email } = req.body;
+    const { firstname, lastname, phone, email } = req.body;
 
     if (emails.includes(email)) {
         res.statusMessage = "Email Already Exists";
@@ -356,7 +356,7 @@ apiRouter.post("/auth/store/account/create", async (req, res) => {
 
     query(
         "INSERT INTO customer(first_name, last_name, phone_number, email) VALUES($1, $2, $3, $4)",
-         [firstname, lastname, phone, email],
+        [firstname, lastname, phone, email],
         res,
         true,
     );
@@ -623,6 +623,28 @@ apiRouter.put("/orders/process/:id", (req, res) => {
         true,
     );
 });
+
+apiRouter.put("/orders/void/:id", (req, res) => {
+    const id = req.params.id;
+
+    query(
+        "UPDATE orders SET is_void = true WHERE id = $1 AND is_paid = false",
+        [id],
+        res,
+        true,
+    );
+})
+
+apiRouter.put("/orders/refund/:id", (req, res) => {
+    const id = req.params.id;
+
+    query(
+        "UPDATE orders SET is_paid = false WHERE id = $1 AND is_paid = true",
+        [id],
+        res,
+        true,
+    );
+})
 
 apiRouter.put("/business-information", (req, res) => {
     const body = req.body;

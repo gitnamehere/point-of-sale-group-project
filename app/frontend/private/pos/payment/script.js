@@ -17,6 +17,8 @@ const numPadBtns = document.querySelectorAll(".num-btn");
 const clearBtn = document.getElementById("clear");
 const payBtn = document.getElementById("payButton");
 const paidBtn = document.getElementById("paidButton");
+const voidBtn = document.getElementById("voidButton");
+const refundBtn = document.getElementById("refundButton");
 const grandTotal = document.getElementById("grandTotal");
 const amountPaid = document.getElementById("amountPaid");
 const changeElement = document.getElementById("change");
@@ -124,30 +126,55 @@ function handlePaymentButton() {
             })
                 .then((response) => {
                     if (response.ok) {
-                        fetch(`/api/orders/process/${orderId}`, {
-                            method: "PUT",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify(orderDetails),
-                        })
-                            .then((response) => {
-                                if (response.ok) {
-                                    window.location = "/pos/orders/";
-                                } else {
-                                    alert(
-                                        "Error: Payment could not be processed",
-                                    );
-                                }
-                            })
-                            .catch((error) => console.log(error));
+                        window.location = "/pos/orders/";
                     } else {
                         alert("Error: Payment could not be processed");
                     }
                 })
-                .catch((error) => console.log(error));
+                .catch((error) => {
+                    console.log("Error:", error);
+                    alert("Error: Payment could not be processed");
+                });
         });
     }
+}
+
+function handleVoidButton() {
+    voidBtn.addEventListener("click", () => {
+        fetch(`/api/orders/void/${orderId}`, {
+            method: "PUT",
+        })
+            .then((response) => {
+                if (response.ok) {
+                    window.location = "/pos/orders/";
+                } else {
+                    alert("Error: Order could not be voided");
+                }
+            })
+            .catch((error) => {
+                console.log("Error:", error);
+                alert("Error: Order could not be voided");
+            });
+    });
+}
+
+function handleRefundButton() {
+    refundBtn.addEventListener("click", () => {
+        fetch(`/api/orders/refund/${orderId}`, {
+            method: "PUT",
+        })
+            .then((response) => {
+                if (response.ok) {
+                    window.location = "/pos/orders/";
+                } else {
+                    alert("Error: Order could not be refunded");
+                }
+            })
+            .catch((error) => {
+                console.log("Error:", error);
+                alert("Error: Order could not be refunded");
+            });
+    });
 }
 
 function initialize() {
@@ -166,6 +193,8 @@ function initialize() {
                     handleTip(subtotal, event),
                 ),
             );
+            voidBtn.addEventListener("click", handleVoidButton);
+            refundBtn.addEventListener("click", handleRefundButton);
             payBtn.addEventListener("click", handlePaymentButton);
 
             data.forEach((order) => {
