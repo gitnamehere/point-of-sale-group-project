@@ -297,25 +297,7 @@ apiRouter.get("/themes", (req, res) => {
     query("SELECT * FROM themes", [], res);
 });
 
-// routes after here needs api authentication
-apiRouter.use(authentication);
-
-apiRouter.get("/auth/pos/logout", (req, res) => {
-    const { posAuth } = req.cookies;
-
-    if (posAuth === undefined) return res.sendStatus(400);
-
-    pool.query("DELETE FROM tokens WHERE token = $1", [posAuth])
-        .then(() => {
-            return res.redirect("/pos/login");
-        })
-        .catch((error) => {
-            console.log(error);
-            res.sendStatus(500);
-        });
-});
-
-apiRouter.post("/auth/store/account/create", async (req, res) => {
+apiRouter.post("/store/account/create", async (req, res) => {
     const body = req.body;
 
     if (
@@ -361,6 +343,26 @@ apiRouter.post("/auth/store/account/create", async (req, res) => {
         true,
     );
 });
+
+// routes after here needs api authentication
+apiRouter.use(authentication);
+
+apiRouter.get("/auth/pos/logout", (req, res) => {
+    const { posAuth } = req.cookies;
+
+    if (posAuth === undefined) return res.sendStatus(400);
+
+    pool.query("DELETE FROM tokens WHERE token = $1", [posAuth])
+        .then(() => {
+            return res.redirect("/pos/login");
+        })
+        .catch((error) => {
+            console.log(error);
+            res.sendStatus(500);
+        });
+});
+
+
 
 // TODO: update this to new schema
 apiRouter.post("/auth/accounts/create", async (req, res) => {

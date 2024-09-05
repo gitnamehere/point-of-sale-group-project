@@ -14,7 +14,7 @@ submit.addEventListener("click", () => {
         phone: phoneNumberInput.value,
         email: emailInput.value,
     };
-    fetch("/api/auth/store/account/create", {
+    fetch("/api/store/account/create", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
