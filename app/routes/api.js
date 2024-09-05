@@ -367,7 +367,6 @@ apiRouter.get("/auth/pos/logout", (req, res) => {
 // TODO: update this to new schema
 apiRouter.post("/auth/accounts/create", async (req, res) => {
     const body = req.body;
-    console.log(body)
     if (
         !body.hasOwnProperty("username") ||
         !body.hasOwnProperty("firstname") ||
@@ -388,14 +387,19 @@ apiRouter.post("/auth/accounts/create", async (req, res) => {
         return res.sendStatus(400);
     }
 
-    const { username, password, firstname, lastname, accountType } = req.body;
+    await pool.query("SELECT * FROM accounts WHERE username = $1", [username])
+    .then(result => {
+        if (result.rows.length > 0) return res.sendStatus(400);
+    })
+
+    const { username, password, firstname, lastname} = req.body;
 
     let hash = "";
-            hash = await argon2.hash(password);
-            console.log(hash)
+    
+    hash = await argon2.hash(password);
 
     query("INSERT INTO accounts (username, password, first_name, last_name, account_type) VALUES ($1, $2, $3, $4, $5)",
-        [username, hash, firstname, lastname, accountType],
+        [username, hash, firstname, lastname, "admin"],
         res,
         true,
     );
