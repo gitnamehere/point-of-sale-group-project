@@ -17,7 +17,7 @@ create.addEventListener("click", () => {
         accountType: "admin",
     };
 
-    fetch("/api/auth/accounts/create", {
+    fetch("/api/auth/pos/accounts/create", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

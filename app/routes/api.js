@@ -365,7 +365,7 @@ apiRouter.get("/auth/pos/logout", (req, res) => {
 
 
 // TODO: update this to new schema
-apiRouter.post("/auth/accounts/create", async (req, res) => {
+apiRouter.post("/auth/pos/accounts/create", async (req, res) => {
     const body = req.body;
     if (
         !body.hasOwnProperty("username") ||
@@ -412,31 +412,32 @@ apiRouter.post("/auth/accounts/create", async (req, res) => {
 
 apiRouter.put("/auth/pos/account/modify/:id", async (req, res) => {
     const body = req.body;
-
-    if (
-        !body.hasOwnProperty("username") ||
-        !body.hasOwnProperty("firstname") ||
-        !body.hasOwnProperty("lastname") ||
-        !body.hasOwnProperty("password") ||
-        body.username.length > 50 ||
-        body.username.length < 1 ||
-        body.password.length > 50 ||
-        body.password.length < 1 ||
-        body.firstname.length > 50 ||
-        body.firstname.length < 1 ||
-        body.lastname.length > 50 ||
-        body.lastname.length < 1
-    ) {
-        return res.sendStatus(400);
-    }
-
+   
     const id = req.params.id;
 
-    const { username, password, firstname, lastname} = req.body;
+    const { username, password, firstname, lastname} = body;
 
-    await pool.query("SELECT * FROM accounts WHERE id = $1", [id])
+    const result = await pool
+        .query("SELECT * FROM accounts WHERE username = $1", [body.username])
+        .then((result) => {
+            if (result.rows.length === 0) return res.sendStatus(400);
+
+            return result.rows[0];
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
+
+    const { dbPassword } = result;
+
+    const verified = await argon2.verify(dbPassword, password);
+
+    if (!verified) return res.sendStatus(400);
+
+    await pool.query("SELECT * FROM accounts WHERE username = $1", [username])
     .then(async result => {
-        if (result.rows.length > 0) {
+        if (result.rows[0].id != id) {
             res.statusMessage = "Username Already Exists";
 
             return res.sendStatus(400);
@@ -445,20 +446,18 @@ apiRouter.put("/auth/pos/account/modify/:id", async (req, res) => {
         let hash = "";
     
         hash = await argon2.hash(password);
-
-        query("INSERT INTO accounts (username, password, first_name, last_name, account_type) VALUES ($1, $2, $3, $4, $5)",
-            [username, hash, firstname, lastname, "admin"],
-            res,
-            true,
-        );
     })
 
     query(
-        "UPDATE accounts SET username = $1, password = $2, first_name = $3, last_name = $4 WHERE id = $4 AND is_deleted = false",
-        [name, description, price, id],
+        "UPDATE accounts SET username = $1, password = $2, first_name = $3, last_name = $4 WHERE id = $5",
+        [username, hash, firstname, lastname, id],
         res,
         true,
     );
+});
+
+apiRouter.get("/auth/accounts", async (req, res) => {
+    return query("SELECT * FROM accounts ORDER BY id ASC", [], res);
 });
 
 // item categories
