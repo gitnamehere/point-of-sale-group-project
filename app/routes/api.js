@@ -161,7 +161,6 @@ apiRouter.post("/orders/create", async (req, res) => {
             result.rows.forEach((item) => {
                 items[item.id] = parseFloat(item.price);
             });
-            console.log(items);
         })
         .catch((error) => {
             console.log(error);
@@ -183,14 +182,15 @@ apiRouter.post("/orders/create", async (req, res) => {
     }
 
     let taxRate = 0;
-    await pool.query("SELECT tax_rate FROM business_information")
-    .then(result => {
-        taxRate = result.rows[0].tax_rate;
-    })
-    .catch(error =>  {
-        console.log(error);
-        return res.sendStatus(500);
-    });
+    await pool
+        .query("SELECT tax_rate FROM business_information")
+        .then((result) => {
+            taxRate = result.rows[0].tax_rate;
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.sendStatus(500);
+        });
 
     // create the order and the corresponding order_items;
     // conveniently, postgres has a CURRENT_DATE function
@@ -216,7 +216,17 @@ apiRouter.post("/orders/create", async (req, res) => {
                 });
             }
 
-            return query("UPDATE orders SET subtotal = $1, tax = $2, total = $3 WHERE id = $4", [subtotal, subtotal * taxRate, subtotal + (subtotal * taxRate), result.rows[0].id], res, true);
+            return query(
+                "UPDATE orders SET subtotal = $1, tax = $2, total = $3 WHERE id = $4",
+                [
+                    subtotal,
+                    subtotal * taxRate,
+                    subtotal + subtotal * taxRate,
+                    result.rows[0].id,
+                ],
+                res,
+                true,
+            );
         })
         .catch((error) => {
             console.log(error);
