@@ -363,16 +363,19 @@ apiRouter.post("/auth/store/account/create", async (req, res) => {
 });
 
 // TODO: update this to new schema
-apiRouter.post("/accounts/add", (req, res) => {
+apiRouter.post("/auth/accounts/create", async (req, res) => {
     const body = req.body;
-
+    console.log(body)
     if (
         !body.hasOwnProperty("username") ||
         !body.hasOwnProperty("firstname") ||
         !body.hasOwnProperty("lastname") ||
         !body.hasOwnProperty("accountType") ||
+        !body.hasOwnProperty("password") ||
         body.username.length > 50 ||
         body.username.length < 1 ||
+        body.password.length > 50 ||
+        body.password.length < 1 ||
         body.firstname.length > 50 ||
         body.firstname.length < 1 ||
         body.lastname.length > 50 ||
@@ -383,11 +386,14 @@ apiRouter.post("/accounts/add", (req, res) => {
         return res.sendStatus(400);
     }
 
-    const { username, firstname, lastname, accountType } = req.body;
+    const { username, password, firstname, lastname, accountType } = req.body;
 
-    query(
-        "INSERT INTO account(username, first_name, last_name, account_type) VALUES($1, $2, $3, $4)",
-        [username, firstname, lastname, accountType],
+    let hash = "";
+            hash = await argon2.hash(password);
+            console.log(hash)
+
+    query("INSERT INTO accounts (username, password, first_name, last_name, account_type) VALUES ($1, $2, $3, $4, $5)",
+        [username, hash, firstname, lastname, accountType],
         res,
         true,
     );

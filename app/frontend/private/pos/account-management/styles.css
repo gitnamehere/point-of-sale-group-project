@@ -8,11 +8,16 @@
     background-color: #111;
 }
 
+.half {
+    width: 49%;
+    margin: 1px;
+}
+
 .container {
     display: flex;
     justify-content: center;
     height: auto;
-    width: fit-content;
+    width: 700px;
 }
 
 .header-title {
