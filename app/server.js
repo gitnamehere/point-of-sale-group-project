@@ -25,7 +25,8 @@ app.use("/pos", posRouter);
 app.use("/store", storeRouter);
 
 app.get("/", (req, res) => {
-    res.sendFile("/frontend/public/index.html", { root: __dirname });
+    res.redirect("/store");
+    // res.sendFile("/frontend/public/index.html", { root: __dirname });
 });
 
 app.get("/style.css", (req, res) => {

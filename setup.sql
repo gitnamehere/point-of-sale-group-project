@@ -30,6 +30,7 @@ CREATE TABLE orders (
 	subtotal DECIMAL(10,2),
 	discount DECIMAL(10,2),
 	tips DECIMAL(10, 2),
+	tax DECIMAL(10, 2),
 	total DECIMAL(10,2),
 	is_paid BOOLEAN DEFAULT false,
 	is_void BOOLEAN DEFAULT false,

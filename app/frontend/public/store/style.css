@@ -12,10 +12,6 @@ html {
     font-weight: bold;
 }
 
-.navbar .navbar-nav .nav-link {
-    color: white;
-}
-
 .horizontal-line {
     border-top: 10px solid #505050;
 }
@@ -39,8 +35,6 @@ html {
     left: 50%;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
-    background-color: #990000;
-    color: rgb(255, 255, 255);
     font-size: 25px;
     padding: 20px 24px;
     border: none;

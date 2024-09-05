@@ -2,10 +2,13 @@ const categoryList = document.getElementById("categories");
 const itemGrid = document.getElementById("items");
 const ticketTable = document.getElementById("ticket-table");
 const subtotal = document.getElementById("subtotal");
+const salesTax = document.getElementById("taxes"); 
 const total = document.getElementById("total");
 const deleteItemButton = document.getElementById("delete-item");
 const clearOrderButton = document.getElementById("clear");
 const orderButton = document.getElementById("order");
+
+let taxRate = 0;
 
 // map of items in order stored as item id: quantity
 let order = {};
@@ -112,9 +115,12 @@ function updateTotals() {
             subtotalCount + parseFloat(items[i].children[2].textContent);
     }
 
-    subtotal.textContent = subtotalCount.toFixed(2);
-    // also update total since we aren't handling taxes yet
-    total.textContent = subtotalCount.toFixed(2);
+    const tax = subtotalCount * taxRate;
+    const orderTotal = subtotalCount + tax;
+
+    subtotal.textContent = subtotalCount.toFixed(2)
+    salesTax.textContent = tax.toFixed(2);
+    total.textContent = orderTotal.toFixed(2);
 }
 
 function clearOrder() {
@@ -186,6 +192,17 @@ fetch("/api/item/categories")
                     ? fetchItemsByCategoryId(body[0].id)
                     : alert("No Categories Found");
             })
+            .catch((error) => console.log(error));
+    })
+    .catch((error) => console.log(error));
+
+fetch("/api/business-information")
+    .then((response) => {
+        if (response.status !== 200) return alert("Error fetching tax rate");
+
+        response
+            .json()
+            .then((body) => (taxRate = parseFloat(body[0].tax_rate)))
             .catch((error) => console.log(error));
     })
     .catch((error) => console.log(error));
