@@ -29,9 +29,9 @@ function fetchOrders(filter) {
                 squareButton.innerHTML = `
                 <div class="order-button ${order.is_void ? "void" : ""} ${order.is_paid && !order.is_void ? "paid" : ""} btn btn-light">
                     ${order.is_void ? "<div>VOIDED</div>" : ""}
-                    <div>Order #${order.id}</div>
+                    <div><b>Order #${order.id}</b></div>
                     <div>Michael</div>
-                    <div>Subtotal: $${order.subtotal}</div>
+                    <div>$${order.total}</div>
                 </div>
             `;
 
