@@ -387,19 +387,75 @@ apiRouter.post("/auth/accounts/create", async (req, res) => {
         return res.sendStatus(400);
     }
 
+    const { username, password, firstname, lastname} = req.body;
+
     await pool.query("SELECT * FROM accounts WHERE username = $1", [username])
-    .then(result => {
-        if (result.rows.length > 0) return res.sendStatus(400);
+    .then(async result => {
+        if (result.rows.length > 0) {
+            res.statusMessage = "Username Already Exists";
+
+            return res.sendStatus(400);
+        }
+
+        let hash = "";
+    
+        hash = await argon2.hash(password);
+
+        query("INSERT INTO accounts (username, password, first_name, last_name, account_type) VALUES ($1, $2, $3, $4, $5)",
+            [username, hash, firstname, lastname, "admin"],
+            res,
+            true,
+        );
     })
+    
+});
+
+apiRouter.put("/auth/pos/account/modify/:id", async (req, res) => {
+    const body = req.body;
+
+    if (
+        !body.hasOwnProperty("username") ||
+        !body.hasOwnProperty("firstname") ||
+        !body.hasOwnProperty("lastname") ||
+        !body.hasOwnProperty("password") ||
+        body.username.length > 50 ||
+        body.username.length < 1 ||
+        body.password.length > 50 ||
+        body.password.length < 1 ||
+        body.firstname.length > 50 ||
+        body.firstname.length < 1 ||
+        body.lastname.length > 50 ||
+        body.lastname.length < 1
+    ) {
+        return res.sendStatus(400);
+    }
+
+    const id = req.params.id;
 
     const { username, password, firstname, lastname} = req.body;
 
-    let hash = "";
-    
-    hash = await argon2.hash(password);
+    await pool.query("SELECT * FROM accounts WHERE id = $1", [id])
+    .then(async result => {
+        if (result.rows.length > 0) {
+            res.statusMessage = "Username Already Exists";
 
-    query("INSERT INTO accounts (username, password, first_name, last_name, account_type) VALUES ($1, $2, $3, $4, $5)",
-        [username, hash, firstname, lastname, "admin"],
+            return res.sendStatus(400);
+        }
+
+        let hash = "";
+    
+        hash = await argon2.hash(password);
+
+        query("INSERT INTO accounts (username, password, first_name, last_name, account_type) VALUES ($1, $2, $3, $4, $5)",
+            [username, hash, firstname, lastname, "admin"],
+            res,
+            true,
+        );
+    })
+
+    query(
+        "UPDATE accounts SET username = $1, password = $2, first_name = $3, last_name = $4 WHERE id = $4 AND is_deleted = false",
+        [name, description, price, id],
         res,
         true,
     );
