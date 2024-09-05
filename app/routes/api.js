@@ -154,16 +154,14 @@ apiRouter.post("/orders/create", async (req, res) => {
 
     const orderItems = Object.entries(body.order);
 
-    // get the list of (non deleted) item ids from the db
-    let validItems = [];
-    // use await here otherwise items would be undefined
+    let items = {};
     await pool
-        .query("SELECT id FROM item WHERE is_deleted = false")
+        .query("SELECT * FROM item WHERE is_deleted = false")
         .then((result) => {
-            // there has to be a better way of doing this
-            for (let i = 0; i < result.rows.length; i++) {
-                validItems.push(result.rows[i].id);
-            }
+            result.rows.forEach((item) => {
+                items[item.id] = parseFloat(item.price);
+            });
+            console.log(items);
         })
         .catch((error) => {
             console.log(error);
@@ -179,23 +177,35 @@ apiRouter.post("/orders/create", async (req, res) => {
         if (
             isNaN(orderItems[i][0]) ||
             isNaN(orderItems[i][1]) ||
-            !validItems.includes(orderItems[i][0])
+            !items.hasOwnProperty(orderItems[i][0])
         )
             return res.sendStatus(400);
     }
+
+    let taxRate = 0;
+    await pool.query("SELECT tax_rate FROM business_information")
+    .then(result => {
+        taxRate = result.rows[0].tax_rate;
+    })
+    .catch(error =>  {
+        console.log(error);
+        return res.sendStatus(500);
+    });
 
     // create the order and the corresponding order_items;
     // conveniently, postgres has a CURRENT_DATE function
     //https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-CURRENT
     pool.query(
-        "INSERT INTO orders (items, subtotal, date_ordered) VALUES ($1, $2, CURRENT_DATE) RETURNING id",
-        [JSON.stringify(body.order), body.subtotal],
+        "INSERT INTO orders (items, date_ordered) VALUES ($1, CURRENT_DATE) RETURNING id",
+        [JSON.stringify(body.order)],
     )
         .then((result) => {
+            let subtotal = 0;
             for (let i = 0; i < orderItems.length; i++) {
                 const itemId = orderItems[i][0];
                 const quantity = orderItems[i][1];
                 const orderId = result.rows[0].id;
+                subtotal += items[itemId];
 
                 pool.query(
                     "INSERT INTO order_item (item_id, quantity, order_id) VALUES ($1, $2, $3)",
@@ -206,7 +216,7 @@ apiRouter.post("/orders/create", async (req, res) => {
                 });
             }
 
-            return res.sendStatus(200);
+            return query("UPDATE orders SET subtotal = $1, tax = $2, total = $3 WHERE id = $4", [subtotal, subtotal * taxRate, subtotal + (subtotal * taxRate), result.rows[0].id], res, true);
         })
         .catch((error) => {
             console.log(error);
