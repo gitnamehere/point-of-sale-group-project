@@ -56,44 +56,50 @@ function updatePaidOrderCount() {
 
 function updateTotalProfit() {
     const totalProfit = salesData
-        .filter(order => order.is_paid) // Filter to include only paid orders
+        .filter((order) => order.is_paid) // Filter to include only paid orders
         .reduce((sum, order) => sum + (parseFloat(order.total) || 0), 0);
     totalProfitElement.textContent = totalProfit.toFixed(2);
 }
 
 function updateTotalDiscounts() {
     const totalDiscounts = salesData
-        .filter(order => order.is_paid)
+        .filter((order) => order.is_paid)
         .reduce((sum, order) => sum + (parseFloat(order.discount) || 0), 0);
     totalDiscountsElement.textContent = totalDiscounts.toFixed(2);
 }
 
 function updateTotalTips() {
     const totalTips = salesData
-        .filter(order => order.is_paid)
+        .filter((order) => order.is_paid)
         .reduce((sum, order) => sum + (parseFloat(order.tips) || 0), 0);
     totalTipsElement.textContent = totalTips.toFixed(2);
 }
 
 function filter() {
     const filterDateInput = document.getElementById("filterDate").value;
-    const filterItemInput = document.getElementById("filterItem").value.toLowerCase();
+    const filterItemInput = document
+        .getElementById("filterItem")
+        .value.toLowerCase();
 
     let filteredData = salesData;
     let totalQuantity = 0;
     let totalProfit = 0;
 
     if (filterDateInput) {
-        const filterDate = new Date(filterDateInput).toISOString().split('T')[0]; // YYYY-MM-DD
-        filteredData = filteredData.filter(order => {
-            const orderDate = new Date(order.date_ordered).toISOString().split('T')[0];
+        const filterDate = new Date(filterDateInput)
+            .toISOString()
+            .split("T")[0]; // YYYY-MM-DD
+        filteredData = filteredData.filter((order) => {
+            const orderDate = new Date(order.date_ordered)
+                .toISOString()
+                .split("T")[0];
             return orderDate === filterDate;
         });
     }
 
     if (filterItemInput) {
-        filteredData = filteredData.filter(order => {
-            return Object.keys(order.items || {}).some(id => {
+        filteredData = filteredData.filter((order) => {
+            return Object.keys(order.items || {}).some((id) => {
                 const item = itemCache[id];
                 if (item && item.name.toLowerCase().includes(filterItemInput)) {
                     totalQuantity += order.items[id];
@@ -112,7 +118,6 @@ function filter() {
 
     generateReport(filteredData);
 }
-
 
 function generateReport(data) {
     tableBody.innerHTML = "";
