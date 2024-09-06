@@ -25,7 +25,7 @@ fetch("/api/orders")
     });
 
 document.addEventListener("DOMContentLoaded", () => {
-    filterBtn.addEventListener("click", filterByDate);
+    filterBtn.addEventListener("click", filter);
 })
 
 function updateOrderCount() {
@@ -52,20 +52,20 @@ function updateTotalTips() {
     totalTipsElement.textContent = totalTips.toFixed(2);
 }
 
-function filterByDate() {
+function filter() {
     const filterDateInput = document.getElementById("filterDate").value
+    const filterItemInput = document.getElementById("filterItem").value.toLowerCase();
 
-    if (!filterDateInput) {
-        generateReport(salesData);
-        return;
+    let filteredData = salesData;
+
+    if (filterDateInput) {
+        const filterDate = new Date(filterDateInput).toISOString().split('T')[0]; // YYYY-MM-DD
+        filteredData = filteredData.filter(order => {
+            const orderDate = new Date(order.date_ordered).toISOString().split('T')[0];
+            return orderDate === filterDate;
+        });
     }
 
-    const filterDate = new Date(filterDateInput).toISOString().split('T')[0]; // YYYY-MM-DD
-    const filteredData = salesData.filter(order => {
-        const orderDate = new Date(order.date_ordered).toISOString().split('T')[0];
-        return orderDate === filterDate;
-    });
-    
     generateReport(filteredData);
 }
 
@@ -75,16 +75,62 @@ function generateReport(data) {
         return;
     }
     data.forEach((order) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
             <td>${order.id}</td>
             <td>${order.date_ordered}</td>
             <td>${order.is_paid}</td>
             <td>${order.subtotal}</td>
-            <td>${order.discount || 0.00.toFixed(2)}</td>
-            <td>${order.tips || 0.00.toFixed(2)}</td>
+            <td>${order.discount || (0.00.toFixed(2))}</td>
+            <td>${order.tips || (0.00.toFixed(2))}</td>
             <td>${order.total}</td>
         `;
-        tableBody.appendChild(row);
+
+        const detailTr = document.createElement("tr");
+        detailTr.classList.add("collapse");
+        detailTr.innerHTML = `
+            <td colspan="7">
+                <table class="table table-striped item-details"; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th scope="col">Item ID</th>
+                            <th scope="col">Product Name</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </td>
+        `;
+
+        tr.addEventListener("click", () => {
+            detailTr.classList.toggle("show");
+            const tbody = detailTr.querySelector("tbody");
+
+            if (tbody.children.length === 0) {
+                const itemIds = Object.keys(order.items || {});
+
+                itemIds.forEach(id => {
+                    fetch(`/api/items/${id}`)
+                        .then(response => response.json())
+                        .then(item => {
+                            const itemRow = document.createElement("tr");
+                            itemRow.innerHTML = `
+                                <td>${item[0].id}</td>
+                                <td>${item[0].name}</td>
+                                <td>${order.items[id]}</td>
+                                <td>$${(item[0].price * order.items[id]).toFixed(2)}</td>
+                            `;
+                            tbody.appendChild(itemRow);
+                        })
+                        .catch(error => console.log(error));
+                });
+            }
+        });
+
+        tableBody.appendChild(tr);
+        tableBody.appendChild(detailTr);
     });
 }
