@@ -436,8 +436,6 @@ apiRouter.put("/auth/pos/account/modify/:id", async (req, res) => {
         await pool.query("SELECT * FROM accounts WHERE id = $1", [id])
         .then(async result => { pass = result.rows[0].password});
 
-        console.log(pass);
-
         const verified = await argon2.verify(pass, body.password);
 
         if (!verified) return res.sendStatus(400);
