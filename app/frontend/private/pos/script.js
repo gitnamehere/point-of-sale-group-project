@@ -1,4 +1,12 @@
 const logout = document.getElementById("logout");
+const currentUser = document.getElementById("user");
+
+fetch("/api/auth/pos/currentUser")
+    .then(async (response) => {
+        const user = await response.json();
+        currentUser.textContent = user.first_name + " " + user.last_name;
+    })
+    .catch((error) => console.log(error));
 
 logout.addEventListener("click", () => {
     fetch("/api/auth/pos/logout")
