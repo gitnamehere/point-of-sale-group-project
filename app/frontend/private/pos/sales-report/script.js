@@ -56,7 +56,7 @@ function updatePaidOrderCount() {
 
 function updateTotalProfit() {
     const totalProfit = salesData
-        .filter((order) => order.is_paid) // Filter to include only paid orders
+        .filter((order) => order.is_paid)
         .reduce((sum, order) => sum + (parseFloat(order.total) || 0), 0);
     totalProfitElement.textContent = totalProfit.toFixed(2);
 }
@@ -125,14 +125,17 @@ function generateReport(data) {
         return;
     }
     data.forEach((order) => {
+        const discountAmount = (parseFloat(order.discount) || 0) * (parseFloat(order.total) || 0);
+        const tipsAmount = (parseFloat(order.tips) || 0) * (parseFloat(order.total) || 0);
+
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${order.id}</td>
             <td>${order.date_ordered}</td>
             <td>${order.is_paid}</td>
             <td>${order.subtotal}</td>
-            <td>${order.discount || (0.0).toFixed(2)}</td>
-            <td>${order.tips || (0.0).toFixed(2)}</td>
+            <td>${discountAmount.toFixed(2)}</td>
+            <td>${tipsAmount.toFixed(2)}</td>
             <td>${order.total}</td>
         `;
 
@@ -140,7 +143,7 @@ function generateReport(data) {
         detailTr.classList.add("collapse");
         detailTr.innerHTML = `
             <td colspan="7">
-                <table class="table table-striped item-details"; width: 100%;">
+                <table class="table table-striped item-details" width="100%">
                     <thead>
                         <tr>
                             <th scope="col">Item ID</th>

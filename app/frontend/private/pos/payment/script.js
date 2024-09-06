@@ -101,7 +101,8 @@ function handlePaymentButton() {
     const cash = parseFloat(cashInput.value.replace("$", ""));
     const change = cash - total;
 
-    if (cash < total) {
+    if (cash < total.toFixed(2)) {
+        console.log(total);
         alert(
             "Error: Payment amount is less than total. Please enter a sufficient amount.",
         );
