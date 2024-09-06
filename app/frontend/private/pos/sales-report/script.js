@@ -62,18 +62,16 @@ function updateTotalProfit() {
 }
 
 function updateTotalDiscounts() {
-    const totalDiscounts = salesData.reduce(
-        (sum, order) => sum + (parseFloat(order.discount) || 0),
-        0,
-    );
+    const totalDiscounts = salesData
+        .filter(order => order.is_paid)
+        .reduce((sum, order) => sum + (parseFloat(order.discount) || 0), 0);
     totalDiscountsElement.textContent = totalDiscounts.toFixed(2);
 }
 
 function updateTotalTips() {
-    const totalTips = salesData.reduce(
-        (sum, order) => sum + (parseFloat(order.tips) || 0),
-        0,
-    );
+    const totalTips = salesData
+        .filter(order => order.is_paid)
+        .reduce((sum, order) => sum + (parseFloat(order.tips) || 0), 0);
     totalTipsElement.textContent = totalTips.toFixed(2);
 }
 
