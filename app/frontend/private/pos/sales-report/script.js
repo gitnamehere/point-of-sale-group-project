@@ -5,6 +5,8 @@ const totalProfitElement = document.getElementById("totalProfit");
 const totalDiscountsElement = document.getElementById("totalDiscounts");
 const totalTipsElement = document.getElementById("totalTips");
 const tableBody = document.querySelector("#salesReportTable tbody");
+const itemOrderedTotalElement = document.getElementById("itemOrderedTotal");
+const itemProfitlElement = document.getElementById("itemProfit");
 let salesData = [];
 let itemCache = {};
 
@@ -14,9 +16,19 @@ fetch("/api/orders")
     })
     .then((body) => {
         salesData = body;
+        // fetching items for caching
         return Promise.all(
-            Array.from(new Set(salesData.flatMap(order => Object.keys(order.items || {}))))
-                .map(id => fetch(`/api/items/${id}`).then(response => response.json()).then(item => itemCache[id] = item[0]))
+            Array.from(
+                new Set(
+                    salesData.flatMap((order) =>
+                        Object.keys(order.items || {}),
+                    ),
+                ),
+            ).map((id) =>
+                fetch(`/api/items/${id}`)
+                    .then((response) => response.json())
+                    .then((item) => (itemCache[id] = item[0])),
+            ),
         );
     })
     .then(() => {
@@ -27,59 +39,83 @@ fetch("/api/orders")
         updateTotalTips();
         generateReport(salesData);
     })
-    .catch(error => console.log(error));
+    .catch((error) => console.log(error));
 
 document.addEventListener("DOMContentLoaded", () => {
     filterBtn.addEventListener("click", filter);
-})
+});
 
 function updateOrderCount() {
     orderCountElement.textContent = salesData.length;
 }
 
 function updatePaidOrderCount() {
-    const paidOrders = salesData.filter(order => order.is_paid === true);
+    const paidOrders = salesData.filter((order) => order.is_paid === true);
     paidOrdersElement.textContent = paidOrders.length;
 }
 
 function updateTotalProfit() {
-    const totalProfit = salesData.reduce((sum, order) => sum + (parseFloat(order.total) || 0), 0);
+    const totalProfit = salesData.reduce(
+        (sum, order) => sum + (parseFloat(order.total) || 0),
+        0,
+    );
     totalProfitElement.textContent = totalProfit.toFixed(2);
 }
 
 function updateTotalDiscounts() {
-    const totalDiscounts = salesData.reduce((sum, order) => sum + (parseFloat(order.discount) || 0), 0);
+    const totalDiscounts = salesData.reduce(
+        (sum, order) => sum + (parseFloat(order.discount) || 0),
+        0,
+    );
     totalDiscountsElement.textContent = totalDiscounts.toFixed(2);
 }
 
 function updateTotalTips() {
-    const totalTips = salesData.reduce((sum, order) => sum + (parseFloat(order.tips) || 0), 0);
+    const totalTips = salesData.reduce(
+        (sum, order) => sum + (parseFloat(order.tips) || 0),
+        0,
+    );
     totalTipsElement.textContent = totalTips.toFixed(2);
 }
 
 function filter() {
-    const filterDateInput = document.getElementById("filterDate").value
-    const filterItemInput = document.getElementById("filterItem").value.toLowerCase();
+    const filterDateInput = document.getElementById("filterDate").value;
+    const filterItemInput = document
+        .getElementById("filterItem")
+        .value.toLowerCase();
 
     let filteredData = salesData;
+    let totalQuantity = 0;
+    let totalProfit = 0;
 
     if (filterDateInput) {
-        const filterDate = new Date(filterDateInput).toISOString().split('T')[0]; // YYYY-MM-DD
-        filteredData = filteredData.filter(order => {
-            const orderDate = new Date(order.date_ordered).toISOString().split('T')[0];
+        const filterDate = new Date(filterDateInput)
+            .toISOString()
+            .split("T")[0]; // YYYY-MM-DD
+        filteredData = filteredData.filter((order) => {
+            const orderDate = new Date(order.date_ordered)
+                .toISOString()
+                .split("T")[0];
             return orderDate === filterDate;
         });
     }
 
-
     if (filterItemInput) {
-        filteredData = filteredData.filter(order => {
-            return Object.keys(order.items || {}).some(id => {
+        filteredData = filteredData.filter((order) => {
+            return Object.keys(order.items || {}).some((id) => {
                 const item = itemCache[id];
-                return item && item.name.toLowerCase().includes(filterItemInput);
+                if (item && item.name.toLowerCase().includes(filterItemInput)) {
+                    totalQuantity += order.items[id];
+                    totalProfit += item.price * order.items[id];
+                    return true;
+                }
+                return false;
             });
         });
     }
+
+    itemOrderedTotalElement.textContent = totalQuantity;
+    itemProfitlElement.textContent = totalProfit.toFixed(2);
 
     generateReport(filteredData);
 }
@@ -96,8 +132,8 @@ function generateReport(data) {
             <td>${order.date_ordered}</td>
             <td>${order.is_paid}</td>
             <td>${order.subtotal}</td>
-            <td>${order.discount || (0.00.toFixed(2))}</td>
-            <td>${order.tips || (0.00.toFixed(2))}</td>
+            <td>${order.discount || (0.0).toFixed(2)}</td>
+            <td>${order.tips || (0.0).toFixed(2)}</td>
             <td>${order.total}</td>
         `;
 
@@ -127,10 +163,10 @@ function generateReport(data) {
             if (tbody.children.length === 0) {
                 const itemIds = Object.keys(order.items || {});
 
-                itemIds.forEach(id => {
+                itemIds.forEach((id) => {
                     fetch(`/api/items/${id}`)
-                        .then(response => response.json())
-                        .then(item => {
+                        .then((response) => response.json())
+                        .then((item) => {
                             const itemRow = document.createElement("tr");
                             itemRow.innerHTML = `
                                 <td>${item[0].id}</td>
@@ -140,7 +176,7 @@ function generateReport(data) {
                             `;
                             tbody.appendChild(itemRow);
                         })
-                        .catch(error => console.log(error));
+                        .catch((error) => console.log(error));
                 });
             }
         });
