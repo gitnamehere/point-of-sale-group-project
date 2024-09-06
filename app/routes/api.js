@@ -317,25 +317,7 @@ apiRouter.get("/themes", (req, res) => {
     query("SELECT * FROM themes", [], res);
 });
 
-// routes after here needs api authentication
-apiRouter.use(authentication);
-
-apiRouter.get("/auth/pos/logout", (req, res) => {
-    const { posAuth } = req.cookies;
-
-    if (posAuth === undefined) return res.sendStatus(400);
-
-    pool.query("DELETE FROM tokens WHERE token = $1", [posAuth])
-        .then(() => {
-            return res.redirect("/pos/login");
-        })
-        .catch((error) => {
-            console.log(error);
-            res.sendStatus(500);
-        });
-});
-
-apiRouter.post("/auth/store/account/create", async (req, res) => {
+apiRouter.post("/store/account/create", async (req, res) => {
     const body = req.body;
 
     if (
@@ -382,17 +364,37 @@ apiRouter.post("/auth/store/account/create", async (req, res) => {
     );
 });
 
-// TODO: update this to new schema
-apiRouter.post("/accounts/add", (req, res) => {
-    const body = req.body;
+// routes after here needs api authentication
+apiRouter.use(authentication);
 
+apiRouter.get("/auth/pos/logout", (req, res) => {
+    const { posAuth } = req.cookies;
+
+    if (posAuth === undefined) return res.sendStatus(400);
+
+    pool.query("DELETE FROM tokens WHERE token = $1", [posAuth])
+        .then(() => {
+            return res.redirect("/pos/login");
+        })
+        .catch((error) => {
+            console.log(error);
+            res.sendStatus(500);
+        });
+});
+
+// TODO: update this to new schema
+apiRouter.post("/auth/pos/accounts/create", async (req, res) => {
+    const body = req.body;
     if (
         !body.hasOwnProperty("username") ||
         !body.hasOwnProperty("firstname") ||
         !body.hasOwnProperty("lastname") ||
         !body.hasOwnProperty("accountType") ||
+        !body.hasOwnProperty("password") ||
         body.username.length > 50 ||
         body.username.length < 1 ||
+        body.password.length > 50 ||
+        body.password.length < 1 ||
         body.firstname.length > 50 ||
         body.firstname.length < 1 ||
         body.lastname.length > 50 ||
@@ -403,14 +405,76 @@ apiRouter.post("/accounts/add", (req, res) => {
         return res.sendStatus(400);
     }
 
-    const { username, firstname, lastname, accountType } = req.body;
+    const { username, password, firstname, lastname } = req.body;
 
-    query(
-        "INSERT INTO account(username, first_name, last_name, account_type) VALUES($1, $2, $3, $4)",
-        [username, firstname, lastname, accountType],
-        res,
-        true,
-    );
+    await pool
+        .query("SELECT * FROM accounts WHERE username = $1", [username])
+        .then(async (result) => {
+            if (result.rows.length > 0) {
+                res.statusMessage = "Username Already Exists";
+
+                return res.sendStatus(400);
+            }
+
+            let hash = "";
+
+            hash = await argon2.hash(password);
+
+            query(
+                "INSERT INTO accounts (username, password, first_name, last_name, account_type) VALUES ($1, $2, $3, $4, $5)",
+                [username, hash, firstname, lastname, "admin"],
+                res,
+                true,
+            );
+        });
+});
+
+apiRouter.put("/auth/pos/account/modify/:id", async (req, res) => {
+    const body = req.body;
+
+    const id = req.params.id;
+
+    const { username, firstname, lastname } = body;
+
+    await pool
+        .query("SELECT * FROM accounts WHERE username = $1", [username])
+        .then(async (result) => {
+            if (result.rows.length != 0) {
+                for (let i = 0; i < result.rows.length; i++) {
+                    if (
+                        result.rows[i].username == username &&
+                        result.rows[i].id != id
+                    ) {
+                        res.statusMessage = "Username Already Exists";
+
+                        return res.sendStatus(400);
+                    }
+                }
+            }
+
+            let pass = "";
+
+            await pool
+                .query("SELECT * FROM accounts WHERE id = $1", [id])
+                .then(async (result) => {
+                    pass = result.rows[0].password;
+                });
+
+            const verified = await argon2.verify(pass, body.password);
+
+            if (!verified) return res.sendStatus(400);
+
+            query(
+                "UPDATE accounts SET username = $1, first_name = $2, last_name = $3 WHERE id = $4",
+                [username, firstname, lastname, id],
+                res,
+                true,
+            );
+        });
+});
+
+apiRouter.get("/auth/accounts", async (req, res) => {
+    return query("SELECT * FROM accounts ORDER BY id ASC", [], res);
 });
 
 // item categories

@@ -1,25 +1,28 @@
 // rename the file to use across other files
+
+const usernameInput = document.getElementById("userName");
 const firstnameInput = document.getElementById("firstName");
 const lastnameInput = document.getElementById("lastName");
-const phoneNumberInput = document.getElementById("phone");
-const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 
-const submit = document.getElementById("submit");
+const create = document.getElementById("submit");
 
-submit.addEventListener("click", () => {
-    console.log("clicked");
-    const customer = {
+// handle item data sent to the backend
+create.addEventListener("click", () => {
+    const account = {
+        username: usernameInput.value,
         firstname: firstnameInput.value,
         lastname: lastnameInput.value,
-        phone: phoneNumberInput.value,
-        email: emailInput.value,
+        password: passwordInput.value,
+        accountType: "admin",
     };
-    fetch("/api/store/account/create", {
+
+    fetch("/api/auth/pos/accounts/create", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(customer),
+        body: JSON.stringify(account),
     }).then((response) => {
         response.ok ? alert("Success") : alert(response.statusText);
     });
