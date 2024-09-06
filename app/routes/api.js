@@ -447,10 +447,6 @@ apiRouter.put("/auth/pos/account/modify/:id", async (req, res) => {
             true,
         );
     })
-
-    
-
-    
 });
 
 apiRouter.get("/auth/accounts", async (req, res) => {
