@@ -33,14 +33,41 @@
         <div class="container">
             <div class="main-content">
                 <section class="report-section">
-                    <h2>Sales Report Overview</h2>
+                    <h2>Sales Report</h2>
+                    <div>
+                        <label for="filterDate">Filter by Date: </label>
+                        <input type="date" id="filterDate">
+                        <button onclick="filterByDate()">Filter</button>
+                    </div>                    
+                    <table id="generalStats">
+                        <thead>
+                            <tr>
+                                <th>Total Orders</th>
+                                <th>Total Paid Orders</th>
+                                <th>Total Profit</th>
+                                <th>Total Discounts</th>
+                                <th>Total Tips</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span id="orderCount">0</span></td>
+                                <td><span id="paidOrders">0</span></td>
+                                <td><span id="totalProfit">0.00</span></td>
+                                <td><span id="totalDiscounts">0.00</span></td>
+                                <td><span id="totalTips">0.00</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <table id="salesReportTable">
                         <thead>
                             <tr>
                                 <th>Order ID</th>
                                 <th>Date Ordered</th>
-                                <th>Ordered Processed</th>
+                                <th>Payment Status</th>
                                 <th>Subtotal</th>
+                                <th>Discount</th>
+                                <th>Tips</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
@@ -48,9 +75,6 @@
                     </table>
                 </section>
             </div>
-            <footer class="footer">
-                <button id="generateReport">Generate Report</button>
-            </footer>
         </div>
         <script src="script.js"></script>
     </body>
