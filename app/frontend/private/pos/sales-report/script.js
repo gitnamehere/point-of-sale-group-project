@@ -125,8 +125,8 @@ function generateReport(data) {
         return;
     }
     data.forEach((order) => {
-        const discountAmount = (parseFloat(order.discount) || 0) * (parseFloat(order.total) || 0);
-        const tipsAmount = (parseFloat(order.tips) || 0) * (parseFloat(order.total) || 0);
+        const discountAmount = (parseFloat(order.discount) || 0) * (parseFloat(order.subtotal) || 0);
+        const tipsAmount = (parseFloat(order.tips) || 0) * (parseFloat(order.subtotal) || 0);
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
