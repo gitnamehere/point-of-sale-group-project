@@ -27,6 +27,10 @@ const orders = document.getElementById("orders");
 let discountPercentage = 0;
 let tipPercentage = 0;
 
+let discountAmount;
+let tipAmount;
+let total;
+
 function formatCurrency(value) {
     return `$ ${value.toFixed(2)}`;
 }
@@ -102,7 +106,6 @@ function handlePaymentButton() {
     const change = cash - total;
 
     if (cash < total.toFixed(2)) {
-        console.log(total);
         alert(
             "Error: Payment amount is less than total. Please enter a sufficient amount.",
         );
