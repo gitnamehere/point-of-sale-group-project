@@ -23,9 +23,9 @@ fetch("/api/auth/accounts")
             const account = body[i];
             const option = document.createElement("option");
             option.value = account.id;
-            option.textContent = account.first_name + " " + account.last_name
+            option.textContent = account.first_name + " " + account.last_name;
             accounts.append(option);
-            accountList.push(account)
+            accountList.push(account);
         }
     })
     .catch((error) => {
@@ -39,7 +39,7 @@ accounts.addEventListener("change", () => {
     firstnameInput.value = accountList[accountId - 1].first_name;
     lastnameInput.value = accountList[accountId - 1].last_name;
     usernameInput.value = accountList[accountId - 1].username;
-})
+});
 
 // handle item data sent to the backend
 update.addEventListener("click", () => {
