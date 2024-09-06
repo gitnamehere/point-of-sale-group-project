@@ -4,7 +4,7 @@ const itemTable = document.querySelector(".items");
 const nameInput = document.getElementById("name");
 const descInput = document.getElementById("description");
 const priceInput = document.getElementById("price");
-let selectedItemId = null;
+let selectedAccountId = null;
 
 // buttons
 const apply = document.getElementById("submit");

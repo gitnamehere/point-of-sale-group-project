@@ -1,0 +1,52 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    height: 80px;
+    background-color: #111;
+}
+
+.half {
+    width: 49%;
+    margin: 1px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    height: auto;
+    width: 700px;
+}
+
+.header-title {
+    color: #eee;
+    margin: auto 0;
+    font-weight: 700 !important;
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: auto;
+}
+
+.header-button {
+    margin-left: 16px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.card {
+    margin: auto;
+    padding: 32px;
+    width: 1000px;
+}
+
+input,
+textarea,
+button {
+    width: 100%;
+}
