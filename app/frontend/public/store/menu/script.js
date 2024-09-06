@@ -310,6 +310,9 @@ function sendOrder(cartItems) {
 document.addEventListener("DOMContentLoaded", () => {
     const placeOrderBtn = document.getElementById("placeOrderBtn");
     const confirmOrderBtn = document.getElementById("confirmOrderBtn");
+    const guestOrderBtn = document.getElementById("guestOrderBtn");
+    const userOrderBtn = document.getElementById("confirmOrderBtn");
+
     const confirmOrderModal = new bootstrap.Modal(
         document.getElementById("confirmOrderModal"),
     );
@@ -324,6 +327,41 @@ document.addEventListener("DOMContentLoaded", () => {
         if (cart.length === 0) {
             alert("No items!");
         } else {
+            sendOrder(cart);
+        }
+
+        confirmOrderModal.hide();
+        bootstrap.Modal.getInstance(
+            document.getElementById("cartModal"),
+        ).hide();
+    });
+
+    guestOrderBtn.addEventListener("click", () => {
+        const cart = getCartFromLocalStorage();
+        const first = document.getElementById("firstName");
+        const last = document.getElementById("lastName");
+        const phone = document.getElementById("phone");
+
+        const customer = {
+            firstname: first.value,
+            lastname: last.value,
+            phone: phone.value,
+            email: null,
+        };
+
+        if (cart.length === 0) {
+            alert("No items!");
+        } else {
+            fetch("/api/store/account/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(customer),
+            })
+            .then((response) => {
+                console.log(response)
+            })
             sendOrder(cart);
         }
 

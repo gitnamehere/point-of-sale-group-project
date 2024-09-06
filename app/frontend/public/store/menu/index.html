@@ -142,8 +142,33 @@
                             aria-label="Close"
                         ></button>
                     </div>
-                    <div class="modal-body">
-                        Are you sure you want to place this order?
+                    <div class="modal-body" id="shit">
+                        <label for="name">Checkout as Guest:</label>
+                        <div class="mb-3">
+                        <input
+                            id="firstName"
+                            class="half"
+                            placeholder="First name"
+                        />
+                        <input id="lastName" class="half" placeholder="Last name" /><br/>
+                        <input id="phone" class="phone" placeholder="Phone Number" />
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            id="guestOrderBtn"
+                        >
+                            Guest Checkout
+                        </button>
+                        </div>
+                        <div class="separator">or</div>
+                        <label for="name">Checkout as User:</label>
+                        <div class="mb-3">
+                        <input
+                            id="email"
+                            class="half"
+                            placeholder="Email Address"
+                        />
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button

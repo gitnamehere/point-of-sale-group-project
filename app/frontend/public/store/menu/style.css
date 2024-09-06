@@ -21,6 +21,12 @@
     background-color: #555;
 }
 
+#shit, input {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
 .modal-dialog-slide {
     max-width: 400px;
     margin: 0;
@@ -48,6 +54,31 @@
     margin: 0;
 }
 
+.phone {
+    width: 70%;
+}
+
 .quantity-input[type="number"] {
     -moz-appearance: textfield;
 }
+
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .separator::before,
+  .separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #000;
+  }
+  
+  .separator:not(:empty)::before {
+    margin-right: .25em;
+  }
+  
+  .separator:not(:empty)::after {
+    margin-left: .25em;
+  }

@@ -330,8 +330,7 @@ apiRouter.post("/store/account/create", async (req, res) => {
         body.lastname.length > 50 ||
         body.lastname.length < 1 ||
         body.phone.length < 1 ||
-        body.phone.length > 12 ||
-        body.email.length < 1
+        body.phone.length > 12
     ) {
         return res.sendStatus(400);
     }
@@ -351,7 +350,7 @@ apiRouter.post("/store/account/create", async (req, res) => {
 
     const { firstname, lastname, phone, email } = req.body;
 
-    if (emails.includes(email)) {
+    if (emails.includes(email) && email != null) {
         res.statusMessage = "Email Already Exists";
         return res.sendStatus(500);
     }
