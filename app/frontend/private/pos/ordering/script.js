@@ -2,7 +2,7 @@ const categoryList = document.getElementById("categories");
 const itemGrid = document.getElementById("items");
 const ticketTable = document.getElementById("ticket-table");
 const subtotal = document.getElementById("subtotal");
-const salesTax = document.getElementById("taxes"); 
+const salesTax = document.getElementById("taxes");
 const total = document.getElementById("total");
 const deleteItemButton = document.getElementById("delete-item");
 const clearOrderButton = document.getElementById("clear");
@@ -118,7 +118,7 @@ function updateTotals() {
     const tax = subtotalCount * taxRate;
     const orderTotal = subtotalCount + tax;
 
-    subtotal.textContent = subtotalCount.toFixed(2)
+    subtotal.textContent = subtotalCount.toFixed(2);
     salesTax.textContent = tax.toFixed(2);
     total.textContent = orderTotal.toFixed(2);
 }
