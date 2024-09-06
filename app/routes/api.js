@@ -370,22 +370,19 @@ apiRouter.use(authentication);
 apiRouter.get("/auth/pos/currentUser", async (req, res) => {
     const { posAuth } = req.cookies;
 
-
     await pool
         .query("SELECT * FROM tokens WHERE token = $1", [posAuth])
         .then(async (result) => {
             const id = result.rows[0].user_id;
 
-            await pool.query("SELECT * FROM accounts WHERE id = $1", [id])
+            await pool
+                .query("SELECT * FROM accounts WHERE id = $1", [id])
                 .then((result) => {
                     const user = result.rows[0];
                     return res.json(user);
-
-                })
-
-
+                });
         });
-})
+});
 
 apiRouter.get("/auth/pos/logout", (req, res) => {
     const { posAuth } = req.cookies;
