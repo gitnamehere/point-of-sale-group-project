@@ -6,6 +6,7 @@ const totalDiscountsElement = document.getElementById("totalDiscounts");
 const totalTipsElement = document.getElementById("totalTips");
 const tableBody = document.querySelector("#salesReportTable tbody");
 let salesData = [];
+let itemCache = {};
 
 fetch("/api/orders")
     .then((response) => {
@@ -13,6 +14,12 @@ fetch("/api/orders")
     })
     .then((body) => {
         salesData = body;
+        return Promise.all(
+            Array.from(new Set(salesData.flatMap(order => Object.keys(order.items || {}))))
+                .map(id => fetch(`/api/items/${id}`).then(response => response.json()).then(item => itemCache[id] = item[0]))
+        );
+    })
+    .then(() => {
         updateOrderCount();
         updatePaidOrderCount();
         updateTotalProfit();
@@ -20,9 +27,7 @@ fetch("/api/orders")
         updateTotalTips();
         generateReport(salesData);
     })
-    .catch((error) => {
-        console.log(error);
-    });
+    .catch(error => console.log(error));
 
 document.addEventListener("DOMContentLoaded", () => {
     filterBtn.addEventListener("click", filter);
@@ -63,6 +68,16 @@ function filter() {
         filteredData = filteredData.filter(order => {
             const orderDate = new Date(order.date_ordered).toISOString().split('T')[0];
             return orderDate === filterDate;
+        });
+    }
+
+
+    if (filterItemInput) {
+        filteredData = filteredData.filter(order => {
+            return Object.keys(order.items || {}).some(id => {
+                const item = itemCache[id];
+                return item && item.name.toLowerCase().includes(filterItemInput);
+            });
         });
     }
 
