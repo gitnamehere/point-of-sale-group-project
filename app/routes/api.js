@@ -412,48 +412,47 @@ apiRouter.post("/auth/pos/accounts/create", async (req, res) => {
 
 apiRouter.put("/auth/pos/account/modify/:id", async (req, res) => {
     const body = req.body;
-   
+
     const id = req.params.id;
 
-    const { username, password, firstname, lastname} = body;
+    const { username, firstname, lastname} = body;
 
-    const result = await pool
-        .query("SELECT * FROM accounts WHERE username = $1", [body.username])
-        .then((result) => {
-            if (result.rows.length === 0) return res.sendStatus(400);
-
-            return result.rows[0];
-        })
-        .catch((error) => {
-            console.log(error);
-            return res.sendStatus(500);
-        });
-
-    const { dbPassword } = result;
-
-    const verified = await argon2.verify(dbPassword, password);
-
-    if (!verified) return res.sendStatus(400);
-
+    
     await pool.query("SELECT * FROM accounts WHERE username = $1", [username])
     .then(async result => {
-        if (result.rows[0].id != id) {
-            res.statusMessage = "Username Already Exists";
+        if (result.rows.length != 0) {
 
-            return res.sendStatus(400);
+            for (let i = 0; i < result.rows.length; i++) {
+                if (result.rows[i].username == username && result.rows[i].id != id) {
+                    res.statusMessage = "Username Already Exists";
+
+                    return res.sendStatus(400);
+                }
+            }
         }
 
-        let hash = "";
-    
-        hash = await argon2.hash(password);
+        let pass = "";
+
+        await pool.query("SELECT * FROM accounts WHERE id = $1", [id])
+        .then(async result => { pass = result.rows[0].password});
+
+        console.log(pass);
+
+        const verified = await argon2.verify(pass, body.password);
+
+        if (!verified) return res.sendStatus(400);
+
+        query(
+            "UPDATE accounts SET username = $1, first_name = $2, last_name = $3 WHERE id = $4",
+            [username, firstname, lastname, id],
+            res,
+            true,
+        );
     })
 
-    query(
-        "UPDATE accounts SET username = $1, password = $2, first_name = $3, last_name = $4 WHERE id = $5",
-        [username, hash, firstname, lastname, id],
-        res,
-        true,
-    );
+    
+
+    
 });
 
 apiRouter.get("/auth/accounts", async (req, res) => {
