@@ -1,4 +1,4 @@
-const filterDateInput = document.getElementById("filterDate").value;
+const filterBtn = document.getElementById("filterButton");
 const orderCountElement = document.getElementById("orderCount");
 const paidOrdersElement = document.getElementById("paidOrders");
 const totalProfitElement = document.getElementById("totalProfit");
@@ -16,13 +16,17 @@ fetch("/api/orders")
         updateOrderCount();
         updatePaidOrderCount();
         updateTotalProfit();
-        updateTotalDiscounts
-        updateTotalTips
+        updateTotalDiscounts();
+        updateTotalTips();
         generateReport(salesData);
-        })
+    })
     .catch((error) => {
         console.log(error);
     });
+
+document.addEventListener("DOMContentLoaded", () => {
+    filterBtn.addEventListener("click", filterByDate);
+})
 
 function updateOrderCount() {
     orderCountElement.textContent = salesData.length;
@@ -49,6 +53,8 @@ function updateTotalTips() {
 }
 
 function filterByDate() {
+    const filterDateInput = document.getElementById("filterDate").value
+
     if (!filterDateInput) {
         generateReport(salesData);
         return;
@@ -59,26 +65,25 @@ function filterByDate() {
         const orderDate = new Date(order.date_ordered).toISOString().split('T')[0];
         return orderDate === filterDate;
     });
-
+    
     generateReport(filteredData);
 }
-
 
 function generateReport(data) {
     tableBody.innerHTML = "";
     if (data.length === 0) {
         return;
     }
-    salesData.forEach((data) => {
+    data.forEach((order) => {
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td>${data.id}</td>
-            <td>${data.date_ordered}</td>
-            <td>${data.is_paid}</td>
-            <td>${data.subtotal}</td>
-            <td>${data.discount || 0.00.toFixed(2) }</td>
-            <td>${data.tips || 0.00.toFixed(2) }</td>
-            <td>${data.total}</td>
+            <td>${order.id}</td>
+            <td>${order.date_ordered}</td>
+            <td>${order.is_paid}</td>
+            <td>${order.subtotal}</td>
+            <td>${order.discount || 0.00.toFixed(2)}</td>
+            <td>${order.tips || 0.00.toFixed(2)}</td>
+            <td>${order.total}</td>
         `;
         tableBody.appendChild(row);
     });
